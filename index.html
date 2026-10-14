@@ -866,6 +866,7 @@
   .bw-seat svg { width: 100%; height: 100%; }
   .bw-seat .dk { fill: #fff; stroke: #94a3b8; stroke-width: .35; } .bw-seat .sp { stroke: #cbd5e1; stroke-width: .25; }
   .bw-seat .tmc { opacity: .3; }
+  .bw-seat .sgt { text-anchor: middle; font-weight: 900; } .bw-seat .sgn { text-anchor: middle; font-weight: 700; fill: #1f2937; }
   .bw-seat .nm { text-anchor: middle; font-weight: 700; fill: #1f2937; } .bw-seat .nm.ab { fill: #94a3b8; text-decoration: line-through; }
   .bw-seat .ob { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: .3; } .bw-seat .ol { text-anchor: middle; fill: #64748b; font-weight: 600; }
   .bw-seat .taf { fill: #1f5135; } .bw-seat .tf { fill: #fff; font-size: 2.6px; font-weight: 800; text-anchor: middle; letter-spacing: .3px; }
@@ -6601,6 +6602,12 @@ function seatSvg(p) {
   const dn = displayNames(c.students), stu = new Map(c.students.map(s => [s.id, s]));
   const teamIdx = p.teams !== false && ui.teams ? new Map(ui.teams.list.flatMap((t, i) => t.map(id => [id, i]))) : null;
   const n2 = v => +v.toFixed(2);
+  // Tischordnung „Gruppenarbeit“: Gruppen der aktuellen Gruppeneinteilung sitzen an Tischinseln (Namensschild statt fester Plätze)
+  const islTeam = new Map(), signs = [];
+  if (lay === 'gw' && lay === curLay && p.teams !== false && ui.teams && ui.teams.place) {
+    const isl = new Map(islands().map(x => [x.key, x]));
+    Object.entries(ui.teams.place).forEach(([t, key]) => { const x = isl.get(key), mem = ui.teams.list[+t]; if (!x || !mem || !mem.length) return; x.desks.forEach(d => islTeam.set(d.id, +t)); signs.push({ t: +t, x, mem }); });
+  }
   let out = '';
   out += `<rect x="${n2(tafX)}" y="${n2(tafY)}" width="${n2(tafW)}" height="4" rx="1" class="taf"/><text x="${n2(tafX + tafW / 2)}" y="${n2(tafY + 2.85)}" class="tf">TAFEL</text>`;
   if (zone) { const y0 = Math.min(fy(ZONE.y0), fy(ZONE.y1)), y1 = Math.max(fy(ZONE.y0), fy(ZONE.y1)); out += `<rect x="${ZONE.x0}" y="${n2(y0)}" width="${ZONE.x1 - ZONE.x0}" height="${n2(y1 - y0)}" rx="1.5" class="zn"/><text x="${ZONE.x0 + 1.5}" y="${n2(flip ? y1 - 1.2 : y0 + 2.8)}" class="znl" text-anchor="start">Gruppenraum</text>`; }
@@ -6609,8 +6616,8 @@ function seatSvg(p) {
     const up = rot > 90.5 && rot < 269.5;   // Schrift sonst auf dem Kopf
     out += `<g transform="translate(${n2(fx(it.x))} ${n2(fy(it.y))}) rotate(${n2(rot)})">`;
     if (isDesk(it)) {
-      const g = it.groupId && groups.find(x => x.id === it.groupId);
-      out += `<rect x="${n2(-it.w / 2)}" y="${n2(-it.h / 2)}" width="${n2(it.w)}" height="${n2(it.h)}" rx=".8" class="dk"${g ? ` style="stroke:${g.color}"` : ''}/>`;
+      const g = it.groupId && groups.find(x => x.id === it.groupId), tI = islTeam.get(it.id);
+      out += `<rect x="${n2(-it.w / 2)}" y="${n2(-it.h / 2)}" width="${n2(it.w)}" height="${n2(it.h)}" rx=".8" class="dk"${tI != null ? ` style="stroke:${teamColor(tI)};fill:color-mix(in srgb, ${teamColor(tI)} 22%, #fff);stroke-width:.5"` : g ? ` style="stroke:${g.color}"` : ''}/>`;
       const k = it.seats.length, sw = it.w / k;
       it.seats.forEach((s, i) => {
         const sx = -it.w / 2 + sw * i;
@@ -6630,6 +6637,21 @@ function seatSvg(p) {
       out += `<rect x="${n2(-it.w / 2)}" y="${n2(-it.h / 2)}" width="${n2(it.w)}" height="${n2(it.h)}" rx=".8" class="ob"/>` + (it.label ? `<text x="0" y="${n2(fs * 0.36)}" class="ol" style="font-size:${n2(fs)}px"${up ? ' transform="rotate(180)"' : ''}>${esc(it.label)}</text>` : '');
     }
     out += '</g>';
+  });
+  // Namensschilder der Gruppen (über den Tischinseln)
+  const R = (ui.teams && ui.teams.roles) || {};
+  signs.forEach(({ t, x, mem }) => {
+    let a = 1e9, b = -1e9, c0 = 1e9, c1 = -1e9;
+    x.desks.forEach(d => { const e = halfExt(d); a = Math.min(a, fx(d.x) - e.hx); b = Math.max(b, fx(d.x) + e.hx); c0 = Math.min(c0, fy(d.y) - e.hy); c1 = Math.max(c1, fy(d.y) + e.hy); });
+    const names = mem.slice().sort((p1, p2) => ((R[p2] || []).includes('lead') ? 1 : 0) - ((R[p1] || []).includes('lead') ? 1 : 0)).map(id => (roleIcons(id) ? roleIcons(id) + ' ' : '') + (dn.get(id) || '?'));
+    const fs = 2.1, lh = fs * 1.2, title = teamTitle(t), maxC = Math.max(12, Math.round((b - a + 8) / (fs * 0.58)));
+    const lines = []; names.forEach(nm => { const L = lines[lines.length - 1]; if (L && (L + '  ' + nm).length <= maxC) lines[lines.length - 1] = L + '  ' + nm; else lines.push(nm); });
+    const longest = Math.max(title.length, ...lines.map(x => x.length));
+    const w = Math.min(longest * fs * 0.6 + 3, x1 - x0), h = (lines.length + 1) * lh + 1.8;
+    const cx = (a + b) / 2, cy = (c0 + c1) / 2, sx = clamp(cx - w / 2, x0, x1 - w), sy = cy - h / 2;
+    out += `<g class="sg"><rect x="${n2(sx)}" y="${n2(sy)}" width="${n2(w)}" height="${n2(h)}" rx="1.2" style="fill:color-mix(in srgb, ${teamColor(t)} 12%, #fff);stroke:${teamColor(t)};stroke-width:.5"/>` +
+      `<text x="${n2(sx + w / 2)}" y="${n2(sy + 0.9 + fs * 0.9)}" class="sgt" style="fill:${teamColor(t)};font-size:${n2(fs * 0.85)}px">${esc(title.toUpperCase())}</text>` +
+      lines.map((nm, i) => `<text x="${n2(sx + w / 2)}" y="${n2(sy + 0.9 + fs * 0.9 + (i + 1) * lh)}" class="sgn" style="font-size:${fs}px" xml:space="preserve">${esc(nm)}</text>`).join('') + '</g>';
   });
   return `<svg viewBox="${n2(x0 - 1.5)} ${n2(y0 - 1.5)} ${n2(x1 - x0 + 3)} ${n2(y1 - y0 + 3)}" preserveAspectRatio="xMidYMid meet">${out}</svg>`;
 }
