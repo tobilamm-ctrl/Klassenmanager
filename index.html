@@ -619,12 +619,17 @@
 
   @media (max-width: 960px) { .layout { grid-template-columns: 1fr; } main { position: static; max-height: none; } main .room { width: 100%; } }
   /* ===== 🏠 Startseite & 🖥 Tafel ===== */
-  .headrow .viewsw button { padding: 7px 10px; font-size: .9rem; } #hfName { min-width: 80px; max-width: 200px; }
-  @media (max-width: 1450px) { .headrow .viewsw button { padding: 6px 7px; font-size: .84rem; } }
-  @media (max-width: 1340px) { .headrow .viewsw button { padding: 5px 5px; font-size: .78rem; } .headrow h1 { font-size: 1.1rem; } #hfName { min-width: 60px; max-width: 120px; } }
-  @media (max-width: 1250px) { .headrow .viewsw button { padding: 4px 4px; font-size: .74rem; } .headrow h1 { font-size: 1rem; } .headfile select { max-width: 100px; } }
+  /* Kopfzeile: richtet sich nach der tatsächlich verfügbaren Breite (nicht nach der Fensterbreite) – nichts darf sich überlagern */
+  .headrow { container-type: inline-size; container-name: hr; }
+  .headrow .logo, .headrow .viewsw, .headrow h1, #setBtn { flex: 0 0 auto; }
+  .headrow h1 { font-size: 1.6rem; }
+  .headfile { flex: 0 1 auto; min-width: 0; overflow: hidden; } .headfile > * { flex: 0 0 auto; } .headfile > #hfName { flex: 0 1 auto; min-width: 24px; }
+  .headrow .viewsw button { padding: 7px 9px; font-size: .9rem; }
+  #hfName { min-width: 60px; max-width: 180px; } .headfile select { max-width: 130px; }
+  @container hr (max-width: 1400px) { #hfSave .t { display: none; } .headrow h1 { font-size: 1.35rem; } .headrow .viewsw button { padding: 5px 6px; font-size: .8rem; } #hfName { max-width: 110px; } .headfile select { max-width: 105px; } .headfile { gap: 6px; } }
+  @container hr (max-width: 1250px) { .headrow h1 { font-size: 1.15rem; } .headrow .viewsw button { padding: 5px 5px; font-size: .78rem; } #hfName { max-width: 110px; } .headfile select { max-width: 100px; } }
+  @container hr (max-width: 1120px) { .headrow h1 { font-size: 1rem; } .headrow .viewsw button { padding: 4px 4px; font-size: .74rem; } .headrow .logo { height: 34px; } #hfName { max-width: 90px; } }
   @media (max-width: 1100px) { .headrow { flex-wrap: wrap !important; } }
-  @media (max-width: 1500px) { #hfSave .t { display: none; } .headfile select { max-width: 120px; } }
   #setBtn { background: #fff; border: 1px solid #d6d9e0; color: var(--muted); font-size: 1.1rem; padding: 6px 10px; border-radius: 10px; flex: none; }
   #setBtn.active { border-color: var(--accent); color: var(--accent); box-shadow: inset 0 -3px 0 var(--sun); }
   body.view-set #setBtn { margin-left: auto; }
@@ -1125,7 +1130,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-10</p>
+          <p class="hint" style="margin:0">Version 2026-11-11</p>
         </div>
       </details>
 
