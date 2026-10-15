@@ -930,6 +930,20 @@
   .rc-sub { font-size: .8rem; font-weight: 800; color: var(--muted); margin: 10px 0 4px; }
   .rc-small select { font: inherit; font-size: 1rem; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 8px; }
   .rc-dv { font-size: 1.3rem; font-weight: 800; }
+  #vpBar { display: none; position: fixed; right: 10px; bottom: 10px; z-index: 60; gap: 4px; background: rgba(255,255,255,.94); padding: 5px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,.2); opacity: .45; transition: opacity .2s; }
+  #vpBar:hover { opacity: 1; } body.vpresent #vpBar { display: flex; }
+  body.vpresent .headrow, body.vpresent .sidebar, body.vpresent .result, body.vpresent main > .hint, body.vpresent #rcBadge.on { display: none !important; }
+  body.vpresent .layout { display: block; }
+  body.vpresent main { position: fixed; inset: 0; z-index: 50; max-height: none; overflow: auto; background: var(--bg, #f5f6f3); padding: 14px 18px 60px; }
+  body.vpresent #ttView { max-height: none; font-size: 1.12rem; }
+  body.vpresent #ttView .topbar > *:not(.tt-week):not(#ttTitle) { display: none; } body.vpresent #ttTitle { display: inline !important; font-size: 1.4rem !important; }
+  body.vpresent .cal-top > *:not([data-cm]):not(h2) { display: none; } body.vpresent .cal .add, body.vpresent .cal-leg { display: none !important; }
+  body.vpresent .cal .cd { min-height: 13vh; } body.vpresent .cal .ce { font-size: .95rem; } body.vpresent .cal .dn { font-size: 1.05rem; }
+  .rc-form { border: 1.5px solid #e5e7eb; border-radius: 12px; padding: 10px; margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+  .rc-form label { display: flex; flex-direction: column; gap: 3px; font-size: .85rem; font-weight: 700; color: var(--muted); } .rc-form label.w { flex: 1 1 260px; }
+  .rc-form input, .rc-form select { font: inherit; font-size: 1.05rem; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 8px; color: var(--ink); }
+  .rc-form .rc-row { flex-basis: 100%; }
+  .rc-ack { position: sticky; top: 40px; z-index: 3; background: #dcfce7; border: 1.5px solid #16a34a; color: #166534; border-radius: 10px; padding: 8px 12px; font-weight: 800; margin-top: 6px; }
   /* Zeichnen */
   .bd-ink { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 30; pointer-events: none; }
   body.bd-drawing .bd-ink { pointer-events: auto; cursor: crosshair; touch-action: none; }
@@ -1183,7 +1197,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-13</p>
+          <p class="hint" style="margin:0">Version 2026-11-14</p>
         </div>
       </details>
 
@@ -1342,7 +1356,7 @@
           <button id="ttRaster" title="Stundenraster bearbeiten">⚙ Raster</button>
           <button id="ttHwAdd" class="primary" title="Neue Hausaufgabe eintragen">＋ Hausaufgabe</button>
           <button id="ttExamAdd" class="primary" title="Probe oder Termin (Ausflug, Elternabend …) eintragen">＋ Probe/Termin</button>
-          <button id="ttSend" title="Stundenplan, Hausaufgaben und Proben per QR-Code an die Schüler-iPads">📲 An Schüler</button>
+          <button id="ttSend" title="Stundenplan, Hausaufgaben und Proben per QR-Code an die Schüler-iPads">📲 An Schüler</button><button id="ttPresent" title="Stundenplan bildschirmfüllend zeigen">⛶ Präsentieren</button>
           <label class="chk"><input type="checkbox" id="ttSat"> Samstag</label>
           <span class="tt-week"><button id="ttPrev" title="Woche zurück">◀</button><button id="ttThis" title="Zur aktuellen Woche"></button><button id="ttNext" title="Woche vor">▶</button></span>
           <span class="spacer"></span>
@@ -1467,6 +1481,7 @@
   </div>
 </div>
 <div id="rcPanel" hidden></div>
+<div id="vpBar"><button data-vp="board" title="Zur Tafel">🖥 Tafel</button><button data-vp="plan" title="Zum Sitzplan">🪑 Sitzplan</button><button data-vp="exit" class="primary" title="Präsentation beenden (Esc)">✕ Beenden</button></div>
 <button id="rcBadge" hidden title="Fernbedienung – antippen für Code und Einstellungen"></button>
 <div id="phFloat" hidden></div>
 <div id="clkFull" hidden><div class="cf-a"></div><div class="cf-d"></div><div class="cf-dt"></div><button data-cf="close" class="cf-x">✕ Schließen</button></div>
@@ -4440,6 +4455,7 @@ function setView(v) {
   document.body.classList.toggle('view-start', v === 'start');
   document.body.classList.toggle('view-board', v === 'board');
   document.body.classList.toggle('view-cal', v === 'cal');
+  if (ui.vPresent && v !== 'tt' && v !== 'cal') setVPresent(false);
   if (v !== 'board' && ui.bdDraw) { ui.bdDraw = false; document.body.classList.remove('bd-drawing'); renderPen(); }
   $('setBtn').classList.toggle('active', v === 'set');
   try { if (v !== 'set') localStorage.setItem('km-lastview', v); } catch {}
@@ -7039,7 +7055,7 @@ function renderCal() {
       <span class="spacer"></span>
       <label class="chk" style="font-size:.85rem"><input type="checkbox" id="calHw"${lim.hw ? ' checked' : ''}> Hausaufgaben &amp; Abhaklisten</label>
       <span class="lim" title="Ab wann der Kalender warnt">⚠ Warnung ab mehr als <input type="number" id="calDay" min="1" max="5" value="${lim.day}"> Probe(n) pro Tag oder <input type="number" id="calWeek" min="1" max="10" value="${lim.week}"> pro Woche</span>
-      <button class="primary" id="calAdd">＋ Probe / Termin</button></div>` +
+      <button class="primary" id="calAdd">＋ Probe / Termin</button><button id="calPresent" title="Kalender bildschirmfüllend zeigen">⛶ Präsentieren</button></div>` +
     (warns.length ? `<div class="cal-warn"><b>⚠ Zu viele Proben:</b>${warns.map(w => `<span>${esc(w)}</span>`).join('')}</div>` : '') +
     `<div class="cal" style="grid-template-columns:56px repeat(${nd}, minmax(0, 1fr))">${html}</div>
     <div class="cal-leg"><span>📝 Probe</span><span>📌 Termin</span><span>📚 Hausaufgabe fällig</span><span>📋 Abhakliste fällig</span><span>Schraffiert: Ferien / Feiertag</span><span>Tage antippen: ＋📝 / ＋📌 trägt direkt an diesem Tag ein.</span></div>`;
@@ -7051,6 +7067,7 @@ $('calView').addEventListener('click', e => {
   const k = e.target.closest('[data-chk]'); if (k) { openChk(k.dataset.chk); return; }
   const a = e.target.closest('[data-add]'); if (a) { const ds = a.closest('[data-ds]').dataset.ds; openExam(null, a.dataset.add === 'ev' ? 'ev' : ''); $('exDate').value = ds; return; }
   if (e.target.id === 'calAdd') openExam(null);
+  if (e.target.id === 'calPresent') setVPresent(true);
 });
 $('calView').addEventListener('change', e => {
   const l = calLim();
@@ -7132,7 +7149,9 @@ function rcState() {
     flip: !!ui.flipped, gw: GW(), room2: GW() && c.room2Off === false, big: !$('teamsDlg').hidden,
     teams: ui.teams ? { n: ui.teams.list.length, mode: ui.teams.mode, list: !!ui.showTeamList, col: $('teamColor').checked, roles: Object.keys(ui.teams.roles || {}).length > 0, name: ui.teams.savedName || '' } : null,
     tmode: $('teamMode').value, tn: $('teamN').value,
-    sets: (c.teamSets || []).map(t => ({ id: t.id, name: t.name })) };
+    sets: (c.teamSets || []).map(t => ({ id: t.id, name: t.name })),
+    cur: ui.bdPresent ? 'board' : ui.present ? 'plan' : ui.vPresent ? ui.view : '',
+    subj: ((c.tt && c.tt.subjects) || []).map(x => x.name), ttW: ui.ttWeek || 0, calM: ui.calMon || todayStr().slice(0, 7), ack: RC.ack || null };
 }
 function rcBroadcast(force) {
   if (!RC.conns.length) return;
@@ -7144,10 +7163,11 @@ function rcBroadcast(force) {
 setInterval(() => rcBroadcast(false), 500);
 try { if (sessionStorage.getItem('km-rc-host') === '1') setTimeout(rcHostStart, 800); } catch {}   // nach Neuladen der Tafel weiter erreichbar
 function rcShow(v) {   // Ansicht an der Tafel umschalten (Vollbild bleibt erhalten)
+  if (ui.vPresent && v !== 'tt' && v !== 'cal') { ui.keepFs = true; setVPresent(false); ui.keepFs = false; if (v === 'exit') { if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); return; } }
   if (v === 'board') { if (ui.present) { ui.keepFs = true; setPresent(false); setView('board'); bdPresent(true); ui.keepFs = false; } else { if (ui.view !== 'board') setView('board'); if (!ui.bdPresent) bdPresent(true); } }
   if (v === 'plan') { if (ui.bdPresent) { ui.keepFs = true; bdPresent(false); setView('plan'); setPresent(true); ui.keepFs = false; } else { if (ui.view !== 'plan') setView('plan'); if (!ui.present) setPresent(true); } }
   if (v === 'exit') { if (ui.bdPresent) bdPresent(false); if (ui.present) setPresent(false); }
-  if (v === 'tt' || v === 'cal') { ui.keepFs = true; if (ui.bdPresent) bdPresent(false); if (ui.present) setPresent(false); ui.keepFs = false; setView(v); }
+  if (v === 'tt' || v === 'cal') { ui.keepFs = true; if (ui.bdPresent) bdPresent(false); if (ui.present) setPresent(false); if (ui.view !== v) setView(v); setVPresent(true); ui.keepFs = false; }
 }
 function rcHandle(d) {
   if (!d || typeof d !== 'object') return;
@@ -7182,6 +7202,24 @@ function rcHandle(d) {
     const t = tmFullRef;
     if (t) { if (d.a === 'go') tmToggle(t); if (d.a === 'reset') tmReset(t); if (d.a === 'm') tmAdd(t, -60); if (d.a === 'p') tmAdd(t, 60); if (d.a === 'close') { t.running = false; tmFullClose(); } else renderTmFull(); }
   }
+  if (d.c === 'ttw') { ui.ttWeek = d.d ? (ui.ttWeek || 0) + d.d : 0; renderTimetable(); }
+  if (d.c === 'calm') { const cur = ui.calMon || todayStr().slice(0, 7); if (!d.d) ui.calMon = null; else { let [y, mo] = cur.split('-').map(Number); mo += d.d; if (mo < 1) { mo = 12; y--; } if (mo > 12) { mo = 1; y++; } ui.calMon = y + '-' + String(mo).padStart(2, '0'); } renderCal(); }
+  if (d.c === 'add') {   // Eintrag von der Fernbedienung
+    const title = String(d.title || '').trim().slice(0, 200), subj = String(d.subject || '').slice(0, 60);
+    if (d.kind === 'hw') {
+      if (!title) return;
+      const due = /^\d{4}-\d{2}-\d{2}$/.test(d.due || '') ? d.due : (subj ? nextLessonDate(subj) : '') || '';
+      change(() => { const c = cls(); c.checks = c.checks || []; c.checks.push({ id: newId('k'), kind: 'hw', title, subject: subj, given: todayStr(), due, note: '', status: {}, created: new Date().toISOString() }); }, { keepList: true });
+      RC.ack = { n: Date.now(), t: `📚 Hausaufgabe eingetragen${due ? ' – bis ' + fmtDW(due) : ''}` };
+      setResult('📡 Hausaufgabe über die Fernbedienung eingetragen.', 'ok');
+    } else {
+      const date = /^\d{4}-\d{2}-\d{2}$/.test(d.date || '') ? d.date : ''; if (!date) return;
+      const ev = d.kind === 'ev'; if (ev && !title) return;
+      change(() => { const c = cls(); c.exams = c.exams || []; const x = { id: newId('e'), date, subject: ev ? '' : subj, title: title || 'Probe', note: '' }; if (ev) Object.assign(x, { kind: 'ev', end: d.end && d.end > date ? d.end : '', time: String(d.time || '').slice(0, 20) }); c.exams.push(x); }, { keepList: true });
+      RC.ack = { n: Date.now(), t: (ev ? '📌 Termin' : '📝 Probe') + ' eingetragen – ' + fmtDW(date) };
+      setResult('📡 ' + (ev ? 'Termin' : 'Probe') + ' über die Fernbedienung eingetragen.', 'ok');
+    }
+  }
   if (d.c === 'clk') setClkShow(d.v === 'off' ? '' : d.v);
   if (d.c === 'phs') setPhShow(d.v === 'off' ? '' : d.v);
   if (d.c === 'flip') { ui.flipped = !ui.flipped; renderAll({ keepList: true }); syncPresentBar(); }
@@ -7198,6 +7236,19 @@ function rcHandle(d) {
     if (d.a === 'load' && d.id) { loadTeamSet(d.id); if (ui.present) { ui.showTeamList = true; renderRoom(); syncPresentBar(); } }
   }
 }
+// ⛶ Stundenplan und Kalender bildschirmfüllend (wie Tafel und Sitzplan)
+ui.vPresent = false;
+function setVPresent(on) {
+  if (on && ui.view !== 'tt' && ui.view !== 'cal') return;
+  ui.vPresent = on; document.body.classList.toggle('vpresent', on);
+  if (on) { if (!document.fullscreenElement && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {}); }
+  else if (document.fullscreenElement && !ui.keepFs && !ui.present && !ui.bdPresent) document.exitFullscreen().catch(() => {});
+  if (ui.view === 'tt') renderTimetable(); else renderCal();
+}
+$('ttPresent').addEventListener('click', () => setVPresent(true));
+$('vpBar').addEventListener('click', e => { const b = e.target.closest('[data-vp]'); if (!b) return; if (b.dataset.vp === 'exit') setVPresent(false); else rcShow(b.dataset.vp); });
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && ui.vPresent && !ui.keepFs) setVPresent(false); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && ui.vPresent && document.querySelector('.cdlg-back:not([hidden])') == null) setVPresent(false); });
 // 🕒 Uhr bildschirmfüllend · 🤫 Arbeitsphase dauerhaft eingeblendet (bis wieder abgeschaltet)
 ui.clkShow = ''; ui.phShow = '';
 function setClkShow(v) {
@@ -7264,7 +7315,7 @@ function rcConnect(code, keep) {
     const conn = r.conn = peer.connect(RC_PREFIX + code, { reliable: true });
     r.timer = setTimeout(() => { if (!conn.open) fail('blocked', 'Die Tafel ist erreichbar, aber das Netz lässt keine Verbindung zwischen den Geräten zu.'); }, 15000);
     conn.on('open', async () => { clearTimeout(r.timer); r.st = 'ok'; r.tries = 0; renderRc(); r.type = await rcConnType(conn); renderRc(); });
-    conn.on('data', d => { if (d && d.t === 'state') { r.state = d; renderRc(); } });
+    conn.on('data', d => { if (d && d.t === 'state') { const an = d.ack && d.ack.n; if (r.lastAck === undefined) r.lastAck = an; else if (an && an !== r.lastAck) { r.lastAck = an; r.ackAt = Date.now(); setTimeout(renderRc, 4100); } r.state = d; renderRc(); } });
     conn.on('close', () => { if (r.stop || RC.remote !== r) return; r.st = 'lost'; renderRc(); rcRetry(r); });
     conn.on('error', () => {});
   });
@@ -7301,44 +7352,67 @@ const rcSend = msg => { const r = RC.remote; if (r && r.conn && r.conn.open) r.c
 const RC_TEAMMODES = [['pairs', 0, 'Paare'], ['size', 3, 'je 3'], ['size', 4, 'je 4'], ['size', 5, 'je 5'], ['count', 4, '4 Gruppen'], ['count', 5, '5 Gruppen'], ['count', 6, '6 Gruppen']];
 function renderRc() {
   const r = RC.remote, el = $('rcPanel'); if (!r) return;
-  const s = r.state, typ = { lan: 'direkt im Schulnetz', internet: 'direkt über das Internet', relay: 'über eine Umleitung (verschlüsselt)' }[r.type] || '';
-  const stl = r.st === 'ok' ? `<span class="rc-pill ok">🟢 verbunden${typ ? ' · ' + typ : ''}</span>` : r.st === 'connecting' ? '<span class="rc-pill">⏳ verbinde …</span>' : r.st === 'lost' ? '<span class="rc-pill warn">🟠 Verbindung unterbrochen – verbinde neu …</span>' : `<span class="rc-pill bad">🔴 ${r.st === 'blocked' ? 'blockiert' : 'nicht verbunden'}</span>`;
-  const ae = document.activeElement; if (ae && ae.tagName === 'SELECT' && el.contains(ae)) { r.pend = true; return; }   // Auswahlliste offen: später neu zeichnen
+  const ae = document.activeElement; if (ae && /SELECT|INPUT|TEXTAREA/.test(ae.tagName) && el.contains(ae)) { r.pend = true; return; }   // gerade am Eintippen/Auswählen: später neu zeichnen
   r.pend = false;
   const keepY = el.scrollTop;
+  const s = r.state, typ = { lan: 'direkt im Schulnetz', internet: 'direkt über das Internet', relay: 'über eine Umleitung (verschlüsselt)' }[r.type] || '';
+  const stl = r.st === 'ok' ? `<span class="rc-pill ok">🟢 verbunden${typ ? ' · ' + typ : ''}</span>` : r.st === 'connecting' ? '<span class="rc-pill">⏳ verbinde …</span>' : r.st === 'lost' ? '<span class="rc-pill warn">🟠 Verbindung unterbrochen – verbinde neu …</span>' : `<span class="rc-pill bad">🔴 ${r.st === 'blocked' ? 'blockiert' : 'nicht verbunden'}</span>`;
   let h = `<div class="rc-head"><b>📡 Fernbedienung${s ? ' · ' + esc(s.cls) : ''}</b><span class="rc-code-s">Code ${esc(r.code)}</span>${stl}<span class="spacer"></span><button id="rcOff">✕ Trennen</button></div>`;
   if (r.why && r.st !== 'ok') h += `<div class="rc-why">${esc(r.why)}${r.st === 'blocked' ? '<br>Ausweichweg: Tafel direkt am PC bedienen oder das iPad spiegeln.' : ''}</div>`;
   if (s && r.st === 'ok') {
-    const on = c => c ? ' class="on"' : '';
+    const on = c => c ? ' class="on"' : '', cur = s.cur || '';
+    if (s.ack && Date.now() - (r.ackAt || 0) < 4000) h += `<div class="rc-ack">✓ ${esc(s.ack.t)}</div>`;
     // Anzeige
-    h += `<div class="rc-sec"><h3>Anzeige an der Tafel</h3><div class="rc-row rc-wrap"><button data-rv="board"${on(s.bdPresent)}>🖥 Tafelbild</button><button data-rv="plan"${on(s.present)}>🪑 Sitzplan</button><button data-rv="tt"${on(s.view === 'tt')}>🗓 Stundenplan</button><button data-rv="cal"${on(s.view === 'cal')}>📅 Kalender</button><button data-rv="exit">✕ Präsentation beenden</button></div></div>`;
-    // Arbeitsphase (immer)
+    h += `<div class="rc-sec"><h3>Anzeige an der Tafel</h3><div class="rc-row rc-wrap"><button data-rv="board"${on(cur === 'board')}>🖥 Tafelbild</button><button data-rv="plan"${on(cur === 'plan')}>🪑 Sitzplan</button><button data-rv="tt"${on(cur === 'tt')}>🗓 Stundenplan</button><button data-rv="cal"${on(cur === 'cal')}>📅 Kalender</button>${cur ? '<button data-rv="exit">✕ Präsentation beenden</button>' : ''}</div>${cur ? '' : '<p class="hint" style="margin:6px 0 0">Wähle, was die Tafel bildschirmfüllend zeigen soll – dann erscheinen hier die passenden Einstellungen.</p>'}</div>`;
+    // Ansicht: Tafelbild
+    if (cur === 'board') {
+      h += `<div class="rc-sec"><h3>Tafelbild</h3>${s.boards.length > 1 ? `<div class="rc-row rc-wrap">${s.boards.map(b => `<button data-rb="${b.id}"${on(b.id === s.board)}>🖼 ${esc(b.name)}</button>`).join('')}</div>` : ''}`;
+      h += s.items.length ? `<div class="rc-grid" style="margin-top:10px">${s.items.map(rcItemHtml).join('')}</div>` : '<p class="hint" style="margin:0">Auf diesem Tafelbild gibt es keine steuerbaren Bausteine.</p>';
+      h += '</div>';
+    }
+    // Ansicht: Sitzplan
+    if (cur === 'plan') {
+      const tm = s.teams;
+      h += `<div class="rc-sec"><h3>Sitzplan</h3>
+        <div class="rc-row rc-wrap"><button data-rlay="normal"${on(!s.gw)}>🪑 Normal</button><button data-rlay="gw"${on(s.gw)}>👥 Gruppenarbeit</button>${s.gw ? `<button data-rroom2="1"${on(s.room2)}>🚪 Gruppenraum</button>` : ''}<button data-rflip="1"${on(s.flip)}>👁 Schülersicht</button></div>
+        <div class="rc-sub">🎯 Wer ist dran?</div><div class="rc-row">${[1, 2, 3].map(n => `<button data-pn="${n}"${on(String(n) === String(s.pickN))}>${n}</button>`).join('')}<button class="primary" data-rpick="1">🎯 Ziehen</button>${s.pick ? `<span class="rc-pick">${esc(s.pick)}</span><button data-rpc="1" title="Ausblenden">✕</button>` : ''}</div>
+        <div class="rc-sub">👥 Gruppeneinteilung${tm ? ` – ${tm.n} ${tm.mode === 'pairs' ? 'Paare' : 'Gruppen'}${tm.name ? ' („' + esc(tm.name) + '“)' : ''}` : ''}</div>
+        <div class="rc-row rc-wrap">${RC_TEAMMODES.map(([m, n, l]) => `<button data-rtm="${m}" data-rtn="${n}"${on(s.tmode === m && (m === 'pairs' || String(n) === String(s.tn)))}>${l}</button>`).join('')}<button class="primary" data-rteam="make">🎲 Neu bilden</button></div>
+        ${tm ? `<div class="rc-row rc-wrap"><button data-rteam="list"${on(tm.list)}>📋 Liste neben dem Plan</button><button data-rteam="col"${on(tm.col)}>🎨 Farben im Plan</button><button data-rteam="big"${on(s.big)}>⛶ Groß anzeigen</button><button data-rteam="roles"${on(tm.roles)}>🎭 Rollen verteilen</button>${s.gw ? '<button data-rteam="seat">📍 An die Tische setzen</button>' : ''}<button data-rteam="clear">✕ Verwerfen</button></div>` : ''}
+        ${s.sets.length ? `<div class="rc-sub">📂 Gespeicherte Einteilungen</div><div class="rc-row rc-wrap">${s.sets.map(t => `<button data-rset="${t.id}"${on(tm && tm.name === t.name)}>${esc(t.name)}</button>`).join('')}</div>` : ''}
+        <div class="rc-sub">⏱ Timer im Sitzplan</div><div class="rc-row rc-wrap">${[1, 2, 3, 5, 10, 15, 20].map(m => `<button data-rts="${m}">${m} min</button>`).join('')}</div>${s.timer ? `<div class="rc-row"><b class="rc-time${s.timer.done ? ' done' : ''}">${esc(s.timer.txt)}</b><button data-rt="go">${s.timer.run ? '❚❚ Pause' : '▶ Start'}</button><button data-rt="reset">↺</button><button data-rt="close">✕</button></div>` : ''}
+      </div>`;
+    }
+    // Ansicht: Stundenplan / Kalender
+    if (cur === 'tt' || cur === 'cal') {
+      const nav = cur === 'tt'
+        ? `<div class="rc-row"><button data-rnav="-1">◀ Woche</button><button data-rnav="0"${on(!s.ttW)}>Diese Woche</button><button data-rnav="1">Woche ▶</button></div>`
+        : `<div class="rc-row"><button data-rnav="-1">◀ Monat</button><button data-rnav="0">${esc(rcMonth(s.calM))}</button><button data-rnav="1">Monat ▶</button></div>`;
+      h += `<div class="rc-sec"><h3>${cur === 'tt' ? '🗓 Stundenplan' : '📅 Kalender'}</h3>${nav}
+        <div class="rc-row rc-wrap" style="margin-top:8px"><button class="primary" data-rform="hw"${on(r.form === 'hw')}>＋ Hausaufgabe</button><button class="primary" data-rform="ex"${on(r.form === 'ex')}>＋ Probe/Termin</button></div>${rcFormHtml(r, s)}</div>`;
+    }
+    // immer verfügbar: Arbeitsphase und Vollbild
     h += `<div class="rc-sec"><h3>Arbeitsphase einblenden</h3><div class="rc-row rc-wrap">${Object.entries(PHASES).map(([k, ph]) => `<button data-rph="${k}" style="--pc:${ph[2]}" class="ph${s.phs === k ? ' on' : ''}">${ph[0]} ${esc(ph[1])}</button>`).join('')}<button data-rph="off"${on(!s.phs)}>aus</button></div></div>`;
-    // Vollbild: Timer und Uhr
     h += `<div class="rc-sec"><h3>Vollbild</h3><div class="rc-sub">⏱ Timer bildschirmfüllend</div><div class="rc-row rc-wrap">${[1, 2, 3, 5, 10, 15, 20, 30].map(m => `<button data-rft="${m}">${m} min</button>`).join('')}<button data-rft="up">⏱ Stoppuhr</button></div>` +
       (s.full ? `<div class="rc-row"><b class="rc-time${s.full.done ? ' done' : ''}">${esc(s.full.txt)}</b><button data-rfa="go">${s.full.run ? '❚❚ Pause' : '▶ Start'}</button><button data-rfa="reset">↺</button>${s.full.mode === 'down' ? '<button data-rfa="m">−1</button><button data-rfa="p">＋1</button>' : ''}<button data-rfa="close">✕ Schließen</button></div>` : '') +
       `<div class="rc-sub">🕒 Uhr bildschirmfüllend</div><div class="rc-row"><button data-rclk="digital"${on(s.clk === 'digital')}>🔢 digital</button><button data-rclk="analog"${on(s.clk === 'analog')}>🕒 analog</button><button data-rclk="off"${on(!s.clk)}>aus</button></div></div>`;
-    // Tafelbild
-    if (s.boards.length) {
-      h += `<div class="rc-sec"><h3>Tafelbild</h3><div class="rc-row rc-wrap">${s.boards.map(b => `<button data-rb="${b.id}"${b.id === s.board && s.bdPresent ? ' class="on"' : ''}>🖼 ${esc(b.name)}</button>`).join('')}</div>`;
-      const its = s.items;
-      if (its.length && s.bdPresent) h += `<div class="rc-grid" style="margin-top:10px">${its.map(rcItemHtml).join('')}</div>`;
-      else if (its.length) h += '<p class="hint" style="margin:6px 0 0">Bausteine lassen sich steuern, sobald das Tafelbild angezeigt wird.</p>';
-      h += '</div>';
-    }
-    // Sitzplan
-    const tm = s.teams;
-    h += `<div class="rc-sec"><h3>Sitzplan</h3>
-      <div class="rc-row rc-wrap"><button data-rlay="normal"${on(!s.gw)}>🪑 Normal</button><button data-rlay="gw"${on(s.gw)}>👥 Gruppenarbeit</button>${s.gw ? `<button data-rroom2="1"${on(s.room2)}>🚪 Gruppenraum</button>` : ''}<button data-rflip="1"${on(s.flip)}>👁 Schülersicht</button></div>
-      <div class="rc-sub">🎯 Wer ist dran?</div><div class="rc-row">${[1, 2, 3].map(n => `<button data-pn="${n}"${on(String(n) === String(s.pickN))}>${n}</button>`).join('')}<button class="primary" data-rpick="1">🎯 Ziehen</button>${s.pick ? `<span class="rc-pick">${esc(s.pick)}</span><button data-rpc="1" title="Ausblenden">✕</button>` : ''}</div>
-      <div class="rc-sub">👥 Gruppeneinteilung${tm ? ` – ${tm.n} ${tm.mode === 'pairs' ? 'Paare' : 'Gruppen'}${tm.name ? ' („' + esc(tm.name) + '“)' : ''}` : ''}</div>
-      <div class="rc-row rc-wrap">${RC_TEAMMODES.map(([m, n, l]) => `<button data-rtm="${m}" data-rtn="${n}"${on(s.tmode === m && (m === 'pairs' || String(n) === String(s.tn)))}>${l}</button>`).join('')}<button class="primary" data-rteam="make">🎲 Neu bilden</button></div>
-      ${tm ? `<div class="rc-row rc-wrap"><button data-rteam="list"${on(tm.list)}>📋 Liste neben dem Plan</button><button data-rteam="col"${on(tm.col)}>🎨 Farben im Plan</button><button data-rteam="big"${on(s.big)}>⛶ Groß anzeigen</button><button data-rteam="roles"${on(tm.roles)}>🎭 Rollen verteilen</button>${s.gw ? '<button data-rteam="seat">📍 An die Tische setzen</button>' : ''}<button data-rteam="clear">✕ Verwerfen</button></div>` : ''}
-      ${s.sets.length ? `<div class="rc-sub">📂 Gespeicherte Einteilungen</div><div class="rc-row rc-wrap">${s.sets.map(t => `<button data-rset="${t.id}"${on(tm && tm.name === t.name)}>${esc(t.name)}</button>`).join('')}</div>` : ''}
-      <div class="rc-sub">⏱ Timer im Sitzplan</div><div class="rc-row rc-wrap">${[1, 2, 3, 5, 10, 15, 20].map(m => `<button data-rts="${m}">${m} min</button>`).join('')}</div>${s.timer ? `<div class="rc-row"><b class="rc-time${s.timer.done ? ' done' : ''}">${esc(s.timer.txt)}</b><button data-rt="go">${s.timer.run ? '❚❚ Pause' : '▶ Start'}</button><button data-rt="reset">↺</button><button data-rt="close">✕</button></div>` : ''}
-    </div>`;
   } else if (r.st !== 'ok') h += `<div class="rc-sec"><div class="rc-row"><button class="primary" data-rretry="1">↻ Nochmal versuchen</button><button data-rnew="1">Anderen Code eingeben</button></div></div>`;
   el.innerHTML = h; el.scrollTop = keepY;
+}
+const rcMonth = m => { const [y, mo] = String(m || '').split('-').map(Number); return y ? MONTHS[mo - 1] + ' ' + y : ''; };
+// Eingabeformular (Hausaufgabe bzw. Probe/Termin) – Werte bleiben beim Neuzeichnen erhalten
+function rcFormHtml(r, s) {
+  if (!r.form) return '';
+  const v = r.fv = r.fv || {}, val = k => esc(v[k] || '');
+  const subj = (sel, k) => `<select data-fv="${k}"><option value="">${sel}</option>${(s.subj || []).map(n => `<option${v[k] === n ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select>`;
+  if (r.form === 'hw') return `<div class="rc-form"><label>Fach${subj('– Fach –', 'hsub')}</label><label class="w">Aufgabe<input data-fv="htit" value="${val('htit')}" placeholder="z. B. Buch S. 34 Nr. 2–5" enterkeyhint="done"></label>
+    <label>bis<input type="date" data-fv="hdue" value="${val('hdue')}"></label><p class="hint" style="margin:0">Ohne Datum: bis zur nächsten Stunde im Fach (laut Stundenplan).</p>
+    <div class="rc-row"><button class="primary" data-rsave="hw">✓ Eintragen</button><button data-rform="">Abbrechen</button></div></div>`;
+  const ev = v.ekind === 'ev';
+  return `<div class="rc-form"><div class="rc-row"><button data-fk="ex"${!ev ? ' class="on"' : ''}>📝 Probe</button><button data-fk="ev"${ev ? ' class="on"' : ''}>📌 Termin</button></div>
+    <label>Datum<input type="date" data-fv="edat" value="${val('edat')}"></label>${ev ? `<label>bis (mehrtägig)<input type="date" data-fv="eend" value="${val('eend')}"></label><label>Uhrzeit<input data-fv="etim" value="${val('etim')}" placeholder="z. B. 8:00"></label>` : `<label>Fach${subj('– Fach –', 'esub')}</label>`}
+    <label class="w">${ev ? 'Was?' : 'Thema / Art'}<input data-fv="etit" value="${val('etit')}" placeholder="${ev ? 'z. B. Wandertag, Elternabend' : 'z. B. Probe Bruchrechnen'}" enterkeyhint="done"></label>
+    <div class="rc-row"><button class="primary" data-rsave="ex">✓ Eintragen</button><button data-rform="">Abbrechen</button></div></div>`;
 }
 function rcItemHtml(i) {
   if (i.t === 'timer') return `<div class="rc-card"><b>⏱ Timer</b><div class="rc-time${i.done ? ' done' : ''}">${esc(i.txt)}</div><div class="rc-row"><button data-ri="${i.id}" data-a="go">${i.run ? '❚❚' : '▶'}</button><button data-ri="${i.id}" data-a="reset">↺</button>${i.mode === 'down' ? `<button data-ri="${i.id}" data-a="m">−1</button><button data-ri="${i.id}" data-a="p">＋1</button>` : ''}<button data-ri="${i.id}" data-a="full" title="Bildschirmfüllend">⛶</button></div>
@@ -7381,10 +7455,21 @@ $('rcPanel').addEventListener('click', e => {
   if (b.dataset.rtm) { st.tmode = b.dataset.rtm; st.tn = b.dataset.rtn; renderRc(); }
   if (b.dataset.rteam) rcSend({ c: 'teams', a: b.dataset.rteam, mode: st.tmode, n: st.tn });
   if (b.dataset.rset) rcSend({ c: 'teams', a: 'load', id: b.dataset.rset });
+  if (b.dataset.rnav != null) rcSend({ c: st.cur === 'cal' ? 'calm' : 'ttw', d: +b.dataset.rnav });
+  if (b.dataset.rform != null) { r.form = b.dataset.rform || null; r.fv = r.fv || {}; if (r.form === 'ex' && !r.fv.edat) r.fv.edat = addDays(todayStr(), 7); renderRc(); }
+  if (b.dataset.fk) { r.fv.ekind = b.dataset.fk; renderRc(); }
+  if (b.dataset.rsave) {
+    const v = r.fv || {};
+    if (b.dataset.rsave === 'hw') { if (!(v.htit || '').trim()) { const i = $('rcPanel').querySelector('[data-fv="htit"]'); if (i) i.focus(); return; } rcSend({ c: 'add', kind: 'hw', subject: v.hsub || '', title: v.htit, due: v.hdue || '' }); ['htit', 'hdue'].forEach(k => delete v[k]); }
+    else { const ev = v.ekind === 'ev'; if (!v.edat || (ev && !(v.etit || '').trim())) { const i = $('rcPanel').querySelector(!v.edat ? '[data-fv="edat"]' : '[data-fv="etit"]'); if (i) i.focus(); return; } rcSend({ c: 'add', kind: ev ? 'ev' : 'ex', date: v.edat, end: v.eend || '', time: v.etim || '', subject: ev ? '' : (v.esub || ''), title: v.etit || '' }); ['etit', 'eend', 'etim'].forEach(k => delete v[k]); }
+    r.form = null; renderRc();
+  }
 });
+$('rcPanel').addEventListener('input', e => { const k = e.target.dataset.fv, r = RC.remote; if (k && r) { r.fv = r.fv || {}; r.fv[k] = e.target.value; } });
 $('rcPanel').addEventListener('focusout', () => { const r = RC.remote; if (r && r.pend) setTimeout(renderRc, 50); });
 $('rcPanel').addEventListener('change', e => {
-  const s = e.target; e.target.blur();
+  const s = e.target; if (s.dataset.fv) { const r = RC.remote; if (r) { r.fv = r.fv || {}; r.fv[s.dataset.fv] = s.value; } return; }
+  e.target.blur();
   if (s.dataset.rcfg) rcSend({ c: 'item', id: s.dataset.rcfg, a: 'cfg', [s.dataset.k]: s.value });
   if (s.dataset.rdice) rcSend({ c: 'item', id: s.dataset.rdice, a: s.dataset.k, v: s.value });
 });
