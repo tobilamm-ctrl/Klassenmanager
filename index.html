@@ -759,7 +759,7 @@
   #bdMenu button { text-align: left; border-color: #e5e7eb; color: var(--ink); } #bdMenu button.cur { border-color: var(--accent); background: var(--accent-soft); }
   #bdMenu .mt { font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 2px 4px; }
   #bdMenu .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
-  #bdPhasePop { position: fixed; z-index: 3100; background: #fff; border-radius: 12px; box-shadow: 0 8px 26px rgba(0,0,0,.25); padding: 8px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  #bdPhasePop { position: fixed; z-index: 4200; background: #fff; border-radius: 12px; box-shadow: 0 8px 26px rgba(0,0,0,.25); padding: 8px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
   #bdPhasePop[hidden] { display: none; }
   #bdPhasePop button { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: .85rem; padding: 8px 14px; border: 2px solid var(--pc); color: var(--pc); background: #fff; }
   #bdPhasePop button span { font-size: 2rem; line-height: 1; }
@@ -908,6 +908,28 @@
   #rcPanel .rc-lampb.on { opacity: 1; box-shadow: 0 0 0 4px #fff, 0 0 0 6px #334155; }
   .rc-lamp { width: 26px; height: 26px; border-radius: 50%; display: inline-block; }
   .rc-team { border-left: 5px solid var(--tc); padding-left: 6px; font-weight: 700; min-width: 90px; }
+  .bw-clock.an { gap: 1cqh; padding: 3cqmin; } .bw-clock.an svg { flex: 1 1 0; min-height: 0; width: 100%; height: 100%; }
+  .aclk .fc { fill: #fff; stroke: #1f2937; stroke-width: 2; } .aclk line.h { stroke: #1f2937; stroke-width: 2; stroke-linecap: round; } .aclk line.m { stroke: #94a3b8; stroke-width: .8; }
+  .aclk text { font-size: 9px; text-anchor: middle; font-weight: 800; fill: #1f2937; font-family: inherit; }
+  .aclk .hh { stroke: #1f2937; stroke-width: 4.2; stroke-linecap: round; } .aclk .mh { stroke: #1f2937; stroke-width: 2.8; stroke-linecap: round; }
+  .aclk .sh line { stroke: #dc2626; stroke-width: 1.1; stroke-linecap: round; } .aclk .sh circle { fill: #dc2626; } .aclk .cc { fill: #fff; }
+  .aclk.nosec .sh { display: none; }
+  #clkFull { position: fixed; inset: 0; z-index: 3950; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; }
+  #clkFull[hidden] { display: none; }
+  #clkFull .cf-a svg { height: 74vh; width: 74vh; max-width: 92vw; }
+  #clkFull .cf-d { font-size: min(34vh, 24vw); font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; color: var(--ink); }
+  #clkFull.analog .cf-d { display: none; } #clkFull.digital .cf-a { display: none; }
+  #clkFull .cf-dt { font-size: clamp(18px, 3.4vh, 40px); color: var(--muted); font-weight: 700; }
+  #clkFull .cf-x { position: absolute; right: 12px; bottom: 12px; opacity: .5; } #clkFull .cf-x:hover { opacity: 1; }
+  #phFloat { position: fixed; left: 14px; top: 14px; z-index: 4100; display: flex; align-items: center; gap: .35em; border: 4px solid var(--pc); color: var(--pc); background: color-mix(in srgb, var(--pc) 10%, #fff); font-weight: 900; text-transform: uppercase; letter-spacing: .03em; padding: .2em .55em; border-radius: 16px; font-size: clamp(20px, 2.6vw, 50px); box-shadow: 0 6px 20px rgba(0,0,0,.18); cursor: grab; touch-action: none; user-select: none; }
+  #phFloat[hidden] { display: none; } #phFloat .ic { font-size: 1.5em; line-height: 1; }
+  #phFloat button { font-size: .4em; border: none; background: none; color: inherit; opacity: .35; padding: 0 0 0 .4em; align-self: flex-start; } #phFloat:hover button { opacity: 1; }
+  #rcBadge { position: fixed; left: 10px; bottom: 10px; z-index: 3800; border-radius: 999px; padding: 4px 12px; font-size: .8rem; font-weight: 700; background: #fff; border: 1.5px solid #cbd5e1; color: var(--muted); box-shadow: 0 2px 8px rgba(0,0,0,.12); opacity: .75; }
+  #rcBadge[hidden] { display: none; } #rcBadge.on { border-color: #16a34a; color: #166534; background: #f0fdf4; }
+  body.present #rcBadge, body.board-present #rcBadge { opacity: .45; } #rcBadge:hover { opacity: 1; }
+  .rc-sub { font-size: .8rem; font-weight: 800; color: var(--muted); margin: 10px 0 4px; }
+  .rc-small select { font: inherit; font-size: 1rem; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 8px; }
+  .rc-dv { font-size: 1.3rem; font-weight: 800; }
   /* Zeichnen */
   .bd-ink { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 30; pointer-events: none; }
   body.bd-drawing .bd-ink { pointer-events: auto; cursor: crosshair; touch-action: none; }
@@ -1161,7 +1183,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-12</p>
+          <p class="hint" style="margin:0">Version 2026-11-13</p>
         </div>
       </details>
 
@@ -1445,6 +1467,9 @@
   </div>
 </div>
 <div id="rcPanel" hidden></div>
+<button id="rcBadge" hidden title="Fernbedienung – antippen für Code und Einstellungen"></button>
+<div id="phFloat" hidden></div>
+<div id="clkFull" hidden><div class="cf-a"></div><div class="cf-d"></div><div class="cf-dt"></div><button data-cf="close" class="cf-x">✕ Schließen</button></div>
 <div id="ovMenu" hidden>
   <div class="tp-title">🧩 Einblenden</div>
   <label class="chk"><input type="checkbox" data-ovk="phase"> 🤫 Arbeitsphase</label>
@@ -6208,6 +6233,7 @@ const bdItem = id => { const b = curBoard(); return b ? b.items.find(i => i.id =
 /* ---------- Bausteine darstellen ---------- */
 function bwHtml(it) {
   const p = it.p || {};
+  if (it.t === 'clock' && p.analog) return `<div class="bw-clock an">${aClockSvg()}${p.date ? '<small data-live="date"></small>' : ''}</div>`;
   if (it.t === 'clock') return `<div class="bw-clock"><b data-live="time"></b>${p.date ? '<small data-live="date"></small>' : ''}</div>`;
   if (it.t === 'count') { const c = countdownInfo(p); return `<div class="bw-count${c.fe ? ' fe' : ''}" data-live="count">${c.top ? `<small>${esc(c.top)}</small>` : ''}<b${c.word ? ' style="font-size:min(26cqh,14cqw)"' : ''}>${esc(c.big)}</b><span>${esc(c.sub)}</span></div>`; }
   if (it.t === 'text') return `<div class="bw-text" style="background:${p.bg || '#fff'}">${p.title ? `<h4>${esc(p.title)}</h4>` : ''}<div class="tx">${esc(p.text || '') || '<span class="hint">Text eingeben (⚙)</span>'}</div></div>`;
@@ -6277,11 +6303,25 @@ function bdFitText() {
     const sc = bw.querySelector('.bw-score'); if (sc) { const n = Math.max(1, sc.children.length); bw.style.setProperty('--fs', Math.max(10, Math.min(H / n * 0.32, W * 0.07)) + 'px'); }
   });
 }
+// analoge Uhr (Zifferblatt mit Stunden-, Minuten- und Sekundenzeiger)
+function aClockSvg(big) {
+  let t = '';
+  for (let i = 0; i < 60; i++) { const a = i * 6 * Math.PI / 180, r0 = i % 5 ? 44 : 39, r1 = 47; t += `<line x1="${(50 + r0 * Math.sin(a)).toFixed(2)}" y1="${(50 - r0 * Math.cos(a)).toFixed(2)}" x2="${(50 + r1 * Math.sin(a)).toFixed(2)}" y2="${(50 - r1 * Math.cos(a)).toFixed(2)}" class="${i % 5 ? 'm' : 'h'}"/>`; }
+  for (let h = 1; h <= 12; h++) { const a = h * 30 * Math.PI / 180; t += `<text x="${(50 + 31 * Math.sin(a)).toFixed(2)}" y="${(50 - 31 * Math.cos(a) + 3.6).toFixed(2)}">${h}</text>`; }
+  return `<svg class="aclk${big ? ' big' : ''}" viewBox="0 0 100 100"><circle cx="50" cy="50" r="49" class="fc"/>${t}<line x1="50" y1="56" x2="50" y2="25" class="hh"/><line x1="50" y1="58" x2="50" y2="13" class="mh"/><g class="sh"><line x1="50" y1="62" x2="50" y2="10"/><circle cx="50" cy="50" r="2.6"/></g><circle cx="50" cy="50" r="1.4" class="cc"/></svg>`;
+}
+function aClockSet(svg, now) {
+  if (!svg) return;
+  const h = now.getHours() % 12, m = now.getMinutes(), sec = now.getSeconds();
+  const set = (sel, deg) => { const e = svg.querySelector(sel); if (e) e.setAttribute('transform', `rotate(${deg.toFixed(2)} 50 50)`); };
+  set('.hh', h * 30 + m * 0.5); set('.mh', m * 6 + sec * 0.1); set('.sh', sec * 6);
+}
 // Uhr und Countdown laufen lassen
 function bdLive() {
   if (ui.view !== 'board') return;
   const now = new Date();
   document.querySelectorAll('#bdStage [data-live="time"]').forEach(el => { const it = bdItem(el.closest('.bw').dataset.id); el.textContent = now.toLocaleTimeString('de-DE', it && it.p.sec ? { hour: '2-digit', minute: '2-digit', second: '2-digit' } : { hour: '2-digit', minute: '2-digit' }); });
+  document.querySelectorAll('#bdStage svg.aclk').forEach(sv => { const it = bdItem(sv.closest('.bw').dataset.id); sv.classList.toggle('nosec', !(it && it.p.sec)); aClockSet(sv, now); });
   document.querySelectorAll('#bdStage [data-live="date"]').forEach(el => { el.textContent = now.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' }); });
 }
 setInterval(bdLive, 1000);
@@ -6382,7 +6422,7 @@ function bdSettings(id) {
   const p = it.p, T = BD_TYPES[it.t];
   let f = '';
   const sel = (name, opts, v) => `<select data-k="${name}">${opts.map(([k, l]) => `<option value="${k}"${v === k ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
-  if (it.t === 'clock') f = `<label class="chk"><input type="checkbox" data-k="sec"${p.sec ? ' checked' : ''}> Sekunden anzeigen</label><label class="chk"><input type="checkbox" data-k="date"${p.date ? ' checked' : ''}> Datum anzeigen</label>`;
+  if (it.t === 'clock') f = `<label class="nc-name">Anzeige${sel('kind', [['d', '🔢 digital'], ['a', '🕒 analog (Zeiger)']], p.analog ? 'a' : 'd')}</label><label class="chk"><input type="checkbox" data-k="sec"${p.sec ? ' checked' : ''}> Sekunden anzeigen</label><label class="chk"><input type="checkbox" data-k="date"${p.date ? ' checked' : ''}> Datum anzeigen</label>`;
   if (it.t === 'count') f = `<label class="nc-name">Countdown bis${sel('mode', [['ferien', 'zu den nächsten Ferien (automatisch)'], ['date', 'zu einem eigenen Termin']], p.mode)}</label>
     <div class="row"><label class="nc-name" style="flex:1">Datum<input type="date" data-k="date" value="${esc(p.date || '')}"></label><label class="nc-name" style="flex:2">Bezeichnung<input data-k="label" value="${esc(p.label || '')}" placeholder="z. B. zum Wandertag"></label></div>
     <label class="nc-name">Zählen in${sel('unit', [['school', 'Schultagen (ohne Wochenende, Ferien, Feiertage)'], ['days', 'Tagen']], p.unit)}</label>`;
@@ -6439,7 +6479,7 @@ $('bdDlgOk').addEventListener('click', () => {
   const v = {}; $('bdForm').querySelectorAll('[data-k]').forEach(el => { const k = el.dataset.k; v[k] = el.classList.contains('bd-colors') ? (el.querySelector('.cur') || {}).dataset?.c : el.type === 'checkbox' ? el.checked : el.value; });
   change(() => {
     const p = it.p;
-    if (it.t === 'clock') { p.sec = v.sec; p.date = v.date; }
+    if (it.t === 'clock') { p.sec = v.sec; p.date = v.date; p.analog = v.kind === 'a'; }
     if (it.t === 'count') { p.mode = v.mode; p.date = v.date; p.label = v.label.trim(); p.unit = v.unit; if (p.mode === 'date' && !p.date) p.mode = 'ferien'; }
     if (it.t === 'text') { p.title = v.title.trim(); p.text = v.text; if (v.bg) p.bg = v.bg; }
     if (it.t === 'img') { if (bdImg) p.src = bdImg; p.cap = v.cap.trim(); }
@@ -7062,26 +7102,37 @@ function rcHostStop() {
   if (RC.host) RC.host.destroy();
   RC.host = null; RC.conns = []; RC.hostSt = ''; renderRcDlg(); syncRcBtns();
 }
-function syncRcBtns() { document.querySelectorAll('[data-b="rc"], [data-p="rc"], #bdRcBtn').forEach(b => b.classList.toggle('on', !!(RC.host && RC.conns.length))); }
+function syncRcBtns() {
+  const on = !!(RC.host && RC.conns.length);
+  document.querySelectorAll('[data-b="rc"], [data-p="rc"], #bdRcBtn').forEach(b => b.classList.toggle('on', on));
+  const bd = $('rcBadge'); bd.hidden = !RC.host; bd.classList.toggle('on', on);
+  bd.innerHTML = on ? `📡 Fernbedienung verbunden${RC.conns.length > 1 ? ' (' + RC.conns.length + ')' : ''}` : `📡 Code ${esc(RC.code)} – warte auf Fernbedienung`;
+}
+$('rcBadge').addEventListener('click', () => openRc());
 // Was die Fernbedienung anzeigt
 function rcItem(it) {
   const p = it.p || {};
-  if (it.t === 'timer') { const t = bdTm(it); return { id: it.id, t: 'timer', txt: tmText(t), run: t.running, mode: t.mode, done: t.done }; }
+  if (it.t === 'timer') { const t = bdTm(it); return { id: it.id, t: 'timer', txt: tmText(t), run: t.running, mode: t.mode, done: t.done, min: p.min ?? 5, vis: p.vis || 'ring' }; }
   if (it.t === 'phase') return { id: it.id, t: 'phase', ph: p.ph };
   if (it.t === 'light') return { id: it.id, t: 'light', s: p.mic ? micS(it.id) : p.s, mic: !!p.mic, meter: !!p.meter, db: p.mic && MIC.an ? Math.round(MIC.db) : null };
-  if (it.t === 'dice') { const d = ui.dice[it.id]; return { id: it.id, t: 'dice', n: p.n, sides: p.sides, vals: d ? d.vals : [] }; }
+  if (it.t === 'dice') { const d = ui.dice[it.id]; return { id: it.id, t: 'dice', n: p.n || 1, sides: p.sides || 6, vals: d ? d.vals : [] }; }
   if (it.t === 'score') return { id: it.id, t: 'score', teams: (p.teams || []).map(x => ({ n: x.n, c: x.c, s: x.s || 0 })) };
-  if (it.t === 'due') return { id: it.id, t: 'due' };
+  if (it.t === 'clock') return { id: it.id, t: 'clock', analog: !!p.analog };
   return null;
 }
 function rcState() {
-  const b = curBoard(), ban = $('pickBanner');
-  return { t: 'state', cls: cls().name, view: ui.view, present: !!ui.present, bdPresent: !!ui.bdPresent,
+  const b = curBoard(), ban = $('pickBanner'), c = cls(), ft = tmFullRef === timer;
+  return { t: 'state', cls: c.name, view: ui.view, present: !!ui.present, bdPresent: !!ui.bdPresent,
     boards: boardsVis().map(x => ({ id: x.id, name: x.name })), board: b ? b.id : null,
     items: b ? b.items.map(rcItem).filter(Boolean) : [],
-    timer: $('timerBox').hidden ? null : { txt: tmText(timer), run: timer.running, done: timer.done, mode: timer.mode },
+    timer: $('timerBox').hidden || ft ? null : { txt: tmText(timer), run: timer.running, done: timer.done, mode: timer.mode },
+    full: ft ? { txt: tmText(timer), run: timer.running, done: timer.done, mode: timer.mode } : null,
+    clk: ui.clkShow || '', phs: ui.phShow || '',
     pickN: $('pickN').value, pick: !ban.hidden && !ban.classList.contains('rolling') ? ban.querySelector('.pn') && ban.querySelector('.pn').textContent : '',
-    teams: !!ui.teams, ph: ui.ov.phase };
+    flip: !!ui.flipped, gw: GW(), room2: GW() && c.room2Off === false, big: !$('teamsDlg').hidden,
+    teams: ui.teams ? { n: ui.teams.list.length, mode: ui.teams.mode, list: !!ui.showTeamList, col: $('teamColor').checked, roles: Object.keys(ui.teams.roles || {}).length > 0, name: ui.teams.savedName || '' } : null,
+    tmode: $('teamMode').value, tn: $('teamN').value,
+    sets: (c.teamSets || []).map(t => ({ id: t.id, name: t.name })) };
 }
 function rcBroadcast(force) {
   if (!RC.conns.length) return;
@@ -7096,6 +7147,7 @@ function rcShow(v) {   // Ansicht an der Tafel umschalten (Vollbild bleibt erhal
   if (v === 'board') { if (ui.present) { ui.keepFs = true; setPresent(false); setView('board'); bdPresent(true); ui.keepFs = false; } else { if (ui.view !== 'board') setView('board'); if (!ui.bdPresent) bdPresent(true); } }
   if (v === 'plan') { if (ui.bdPresent) { ui.keepFs = true; bdPresent(false); setView('plan'); setPresent(true); ui.keepFs = false; } else { if (ui.view !== 'plan') setView('plan'); if (!ui.present) setPresent(true); } }
   if (v === 'exit') { if (ui.bdPresent) bdPresent(false); if (ui.present) setPresent(false); }
+  if (v === 'tt' || v === 'cal') { ui.keepFs = true; if (ui.bdPresent) bdPresent(false); if (ui.present) setPresent(false); ui.keepFs = false; setView(v); }
 }
 function rcHandle(d) {
   if (!d || typeof d !== 'object') return;
@@ -7105,12 +7157,16 @@ function rcHandle(d) {
   if (d.c === 'item') {
     const it = bdItem(d.id); if (!it) return;
     const bw = document.querySelector(`#bdStage .bw[data-id="${d.id}"]`);
-    if (it.t === 'timer') { const t = bdTm(it); if (d.a === 'go') tmToggle(t); if (d.a === 'reset') tmReset(t, (it.p.min || 0) * 60 + (it.p.sec || 0) || 300); if (d.a === 'm') tmAdd(t, -60); if (d.a === 'p') tmAdd(t, 60); if (bw) bw.querySelector('.bx').innerHTML = bwHtml(it); }
+    if (it.t === 'timer') {
+      if (d.a === 'cfg') { change(() => { if (d.mode) it.p.mode = d.mode; if (d.min) { it.p.min = +d.min; it.p.sec = 0; } if (d.vis) it.p.vis = d.vis; }, { keepList: true }); return; }
+      const t = bdTm(it); if (d.a === 'go') tmToggle(t); if (d.a === 'reset') tmReset(t, (it.p.min || 0) * 60 + (it.p.sec || 0) || 300); if (d.a === 'm') tmAdd(t, -60); if (d.a === 'p') tmAdd(t, 60); if (d.a === 'full') { tmFull(t); return; }
+      if (bw) bw.querySelector('.bx').innerHTML = bwHtml(it);
+    }
     if (it.t === 'phase' && PHASES[d.v]) change(() => { it.p.ph = d.v; }, { keepList: true });
     if (it.t === 'light' && !it.p.mic && ['r', 'y', 'g'].includes(d.v)) change(() => { it.p.s = d.v; }, { keepList: true });
-    if (it.t === 'dice' && bw) diceRoll(it.id, bw);
+    if (it.t === 'dice') { if (d.a === 'n') change(() => { it.p.n = clamp(+d.v || 1, 1, 6); }, { keepList: true }); else if (d.a === 'sides') change(() => { it.p.sides = +d.v || 6; }, { keepList: true }); else if (bw) diceRoll(it.id, bw); }
     if (it.t === 'score') change(() => { const tm = (it.p.teams || [])[d.i]; if (tm) tm.s = Math.max(0, (tm.s || 0) + (d.d > 0 ? 1 : -1)); }, { keepList: true });
-    if (it.t === 'due' && bw) { const b2 = bw.querySelector(`[data-due="${d.d > 0 ? 1 : -1}"]`); if (b2) bdCtl(it, b2, bw); }
+    if (it.t === 'clock') change(() => { it.p.analog = !!d.v; }, { keepList: true });
   }
   if (d.c === 'pick') { if (d.n) $('pickN').value = d.n; if (ui.view !== 'plan' || !ui.present) { rcShow('plan'); setTimeout(pickSomeone, 400); } else pickSomeone(); }
   if (d.c === 'pickN') $('pickN').value = d.v;
@@ -7121,8 +7177,56 @@ function rcHandle(d) {
     if (d.a === 'reset' && !$('timerBox').hidden) { tmReset(timer); tickTimer(); }
     if (d.a === 'close') { timer.running = false; $('timerBox').hidden = true; if (ui.present) layoutStage(); }
   }
-  if (d.c === 'ovph' && PHASES[d.v]) { ui.ov.phase = d.v; ovRefresh(); }
+  if (d.c === 'ft') {   // Vollbild-Timer
+    if (d.a === 'start') { if (tmFullRef && tmFullRef !== timer) tmFullClose(); Object.assign(timer, { mode: d.mode === 'up' ? 'up' : 'down', vis: d.mode === 'up' && TM_PREF.vis === 'sand' ? 'ring' : (TM_PREF.vis === 'bar' ? 'ring' : TM_PREF.vis), sound: TM_PREF.sound, vol: TM_PREF.vol || 5 }); tmReset(timer, d.sec || 0); $('timerBox').hidden = true; tmToggle(timer); tmFull(timer); }
+    const t = tmFullRef;
+    if (t) { if (d.a === 'go') tmToggle(t); if (d.a === 'reset') tmReset(t); if (d.a === 'm') tmAdd(t, -60); if (d.a === 'p') tmAdd(t, 60); if (d.a === 'close') { t.running = false; tmFullClose(); } else renderTmFull(); }
+  }
+  if (d.c === 'clk') setClkShow(d.v === 'off' ? '' : d.v);
+  if (d.c === 'phs') setPhShow(d.v === 'off' ? '' : d.v);
+  if (d.c === 'flip') { ui.flipped = !ui.flipped; renderAll({ keepList: true }); syncPresentBar(); }
+  if (d.c === 'layout') setLayout(d.v === 'gw' ? 'gw' : 'normal');
+  if (d.c === 'room2' && GW()) setRoom2(cls().room2Off !== false);
+  if (d.c === 'teams') {
+    if (d.a === 'make') { if (d.mode) $('teamMode').value = d.mode; if (d.n) $('teamN').value = d.n; $('pmTeamMode').value = $('teamMode').value; $('pmTeamN').value = $('teamN').value; makeTeams(); if (GW()) gwSync(true); ui.showTeamList = ui.present; renderRoom(); syncPresentBar(); }
+    if (d.a === 'list' && ui.teams) { ui.showTeamList = !ui.showTeamList; renderRoom(); syncPresentBar(); }
+    if (d.a === 'col' && ui.teams) { $('teamColor').checked = $('teamColor2').checked = !$('teamColor').checked; renderRoom(); syncPresentBar(); }
+    if (d.a === 'big' && ui.teams) { $('teamsDlg').hidden = !$('teamsDlg').hidden; if (!$('teamsDlg').hidden) renderTeams(); }
+    if (d.a === 'roles' && ui.teams) dealRoles();
+    if (d.a === 'seat' && ui.teams && GW()) { if (cls().gwMode !== 'manual') autoPlace(); gwSync(false); }
+    if (d.a === 'clear') { ui.teams = null; ui.showTeamList = false; $('teamsDlg').hidden = true; renderTeams(); renderRoom(); syncPresentBar(); }
+    if (d.a === 'load' && d.id) { loadTeamSet(d.id); if (ui.present) { ui.showTeamList = true; renderRoom(); syncPresentBar(); } }
+  }
 }
+// 🕒 Uhr bildschirmfüllend · 🤫 Arbeitsphase dauerhaft eingeblendet (bis wieder abgeschaltet)
+ui.clkShow = ''; ui.phShow = '';
+function setClkShow(v) {
+  ui.clkShow = v; const el = $('clkFull'); el.hidden = !v;
+  if (v) { el.className = v; el.querySelector('.cf-a').innerHTML = v === 'analog' ? aClockSvg(true) : ''; clkFullTick(); }
+}
+function clkFullTick() {
+  if (!ui.clkShow) return;
+  const el = $('clkFull'), now = new Date();
+  if (ui.clkShow === 'analog') aClockSet(el.querySelector('svg'), now);
+  else el.querySelector('.cf-d').textContent = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+  el.querySelector('.cf-dt').textContent = now.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' });
+}
+setInterval(clkFullTick, 1000);
+$('clkFull').addEventListener('click', e => { if (e.target.closest('[data-cf="close"]')) setClkShow(''); });
+function setPhShow(v) {
+  ui.phShow = PHASES[v] ? v : ''; if (ui.phShow) ui.ov.phase = ui.phShow;
+  const el = $('phFloat'); el.hidden = !ui.phShow;
+  if (ui.phShow) { const ph = PHASES[ui.phShow]; el.style.setProperty('--pc', ph[2]); el.innerHTML = `<span class="ic">${ph[0]}</span><span>${esc(ph[1])}</span><button data-pf="x" title="Ausblenden">✕</button>`; }
+  if (ui.present) ovRefresh();
+}
+$('phFloat').addEventListener('click', e => { if (phDrag && phDrag.moved) return; if (e.target.closest('[data-pf="x"]')) setPhShow(''); else { const el = $('phFloat'); bdPhasePop({ p: { ph: ui.phShow } }, el, k => setPhShow(k)); } });
+// Einblendung verschiebbar (Position wird gemerkt)
+let phDrag = null;
+(() => { try { const p = JSON.parse(localStorage.getItem('km-phpos') || 'null'); if (p) { $('phFloat').style.left = p.x + '%'; $('phFloat').style.top = p.y + '%'; } } catch {} })();
+$('phFloat').addEventListener('pointerdown', e => { if (e.target.closest('button')) return; const r = $('phFloat').getBoundingClientRect(); phDrag = { dx: e.clientX - r.left, dy: e.clientY - r.top, x0: e.clientX, y0: e.clientY, moved: false }; $('phFloat').setPointerCapture(e.pointerId); });
+$('phFloat').addEventListener('pointermove', e => { if (!phDrag) return; if (Math.hypot(e.clientX - phDrag.x0, e.clientY - phDrag.y0) > 5) phDrag.moved = true; if (!phDrag.moved) return; const el = $('phFloat'); el.style.left = clamp((e.clientX - phDrag.dx) / innerWidth * 100, 0, 95) + '%'; el.style.top = clamp((e.clientY - phDrag.dy) / innerHeight * 100, 0, 95) + '%'; });
+$('phFloat').addEventListener('pointerup', () => { if (phDrag && phDrag.moved) { try { localStorage.setItem('km-phpos', JSON.stringify({ x: parseFloat($('phFloat').style.left), y: parseFloat($('phFloat').style.top) })); } catch {} setTimeout(() => { phDrag = null; }, 0); } else phDrag = null; });
+window.addEventListener('keydown', e => { if (e.key === 'Escape' && ui.clkShow) { e.stopImmediatePropagation(); setClkShow(''); } }, true);
 
 /* ---------- Dialog (Tafel: Code zeigen · iPad: Code eingeben) ---------- */
 function openRc() { renderRcDlg(); $('rcDlg').hidden = false; }
@@ -7194,35 +7298,63 @@ async function rcConnType(conn) {
   } catch { return ''; }
 }
 const rcSend = msg => { const r = RC.remote; if (r && r.conn && r.conn.open) r.conn.send(msg); };
+const RC_TEAMMODES = [['pairs', 0, 'Paare'], ['size', 3, 'je 3'], ['size', 4, 'je 4'], ['size', 5, 'je 5'], ['count', 4, '4 Gruppen'], ['count', 5, '5 Gruppen'], ['count', 6, '6 Gruppen']];
 function renderRc() {
   const r = RC.remote, el = $('rcPanel'); if (!r) return;
   const s = r.state, typ = { lan: 'direkt im Schulnetz', internet: 'direkt über das Internet', relay: 'über eine Umleitung (verschlüsselt)' }[r.type] || '';
   const stl = r.st === 'ok' ? `<span class="rc-pill ok">🟢 verbunden${typ ? ' · ' + typ : ''}</span>` : r.st === 'connecting' ? '<span class="rc-pill">⏳ verbinde …</span>' : r.st === 'lost' ? '<span class="rc-pill warn">🟠 Verbindung unterbrochen – verbinde neu …</span>' : `<span class="rc-pill bad">🔴 ${r.st === 'blocked' ? 'blockiert' : 'nicht verbunden'}</span>`;
+  const ae = document.activeElement; if (ae && ae.tagName === 'SELECT' && el.contains(ae)) { r.pend = true; return; }   // Auswahlliste offen: später neu zeichnen
+  r.pend = false;
+  const keepY = el.scrollTop;
   let h = `<div class="rc-head"><b>📡 Fernbedienung${s ? ' · ' + esc(s.cls) : ''}</b><span class="rc-code-s">Code ${esc(r.code)}</span>${stl}<span class="spacer"></span><button id="rcOff">✕ Trennen</button></div>`;
   if (r.why && r.st !== 'ok') h += `<div class="rc-why">${esc(r.why)}${r.st === 'blocked' ? '<br>Ausweichweg: Tafel direkt am PC bedienen oder das iPad spiegeln.' : ''}</div>`;
   if (s && r.st === 'ok') {
-    const on = v => (v === 'board' && s.bdPresent) || (v === 'plan' && s.present) ? ' class="on"' : '';
-    h += `<div class="rc-sec"><h3>Anzeige an der Tafel</h3><div class="rc-row"><button data-rv="board"${on('board')}>🖥 Tafelbild</button><button data-rv="plan"${on('plan')}>🪑 Sitzplan</button><button data-rv="exit">✕ Präsentation beenden</button></div></div>`;
-    if (s.boards.length) h += `<div class="rc-sec"><h3>Tafelbild</h3><div class="rc-row rc-wrap">${s.boards.map(b => `<button data-rb="${b.id}"${b.id === s.board ? ' class="on"' : ''}>🖼 ${esc(b.name)}</button>`).join('')}</div></div>`;
-    const its = s.items.filter(i => i.t !== 'due');
-    if (its.length && s.bdPresent) h += `<div class="rc-sec"><h3>Bausteine</h3><div class="rc-grid">${its.map(rcItemHtml).join('')}</div></div>`;
-    h += `<div class="rc-sec"><h3>🎯 Wer ist dran?</h3><div class="rc-row">${[1, 2, 3].map(n => `<button data-pn="${n}"${String(n) === String(s.pickN) ? ' class="on"' : ''}>${n}</button>`).join('')}<button class="primary" data-rpick="1">🎯 Ziehen</button>${s.pick ? `<span class="rc-pick">${esc(s.pick)}</span><button data-rpc="1" title="Ausblenden">✕</button>` : ''}</div></div>`;
-    h += `<div class="rc-sec"><h3>⏱ Timer im Sitzplan</h3><div class="rc-row rc-wrap">${[1, 2, 3, 5, 10, 15, 20].map(m => `<button data-rts="${m}">${m} min</button>`).join('')}</div>${s.timer ? `<div class="rc-row"><b class="rc-time${s.timer.done ? ' done' : ''}">${esc(s.timer.txt)}</b><button data-rt="go">${s.timer.run ? '❚❚ Pause' : '▶ Start'}</button><button data-rt="reset">↺</button><button data-rt="close">✕</button></div>` : ''}</div>`;
-    if (s.present) h += `<div class="rc-sec"><h3>Arbeitsphase (Einblendung)</h3><div class="rc-row rc-wrap">${Object.entries(PHASES).map(([k, ph]) => `<button data-rph="${k}" style="--pc:${ph[2]}"${s.ph === k ? ' class="on ph"' : ' class="ph"'}>${ph[0]} ${esc(ph[1])}</button>`).join('')}</div></div>`;
+    const on = c => c ? ' class="on"' : '';
+    // Anzeige
+    h += `<div class="rc-sec"><h3>Anzeige an der Tafel</h3><div class="rc-row rc-wrap"><button data-rv="board"${on(s.bdPresent)}>🖥 Tafelbild</button><button data-rv="plan"${on(s.present)}>🪑 Sitzplan</button><button data-rv="tt"${on(s.view === 'tt')}>🗓 Stundenplan</button><button data-rv="cal"${on(s.view === 'cal')}>📅 Kalender</button><button data-rv="exit">✕ Präsentation beenden</button></div></div>`;
+    // Arbeitsphase (immer)
+    h += `<div class="rc-sec"><h3>Arbeitsphase einblenden</h3><div class="rc-row rc-wrap">${Object.entries(PHASES).map(([k, ph]) => `<button data-rph="${k}" style="--pc:${ph[2]}" class="ph${s.phs === k ? ' on' : ''}">${ph[0]} ${esc(ph[1])}</button>`).join('')}<button data-rph="off"${on(!s.phs)}>aus</button></div></div>`;
+    // Vollbild: Timer und Uhr
+    h += `<div class="rc-sec"><h3>Vollbild</h3><div class="rc-sub">⏱ Timer bildschirmfüllend</div><div class="rc-row rc-wrap">${[1, 2, 3, 5, 10, 15, 20, 30].map(m => `<button data-rft="${m}">${m} min</button>`).join('')}<button data-rft="up">⏱ Stoppuhr</button></div>` +
+      (s.full ? `<div class="rc-row"><b class="rc-time${s.full.done ? ' done' : ''}">${esc(s.full.txt)}</b><button data-rfa="go">${s.full.run ? '❚❚ Pause' : '▶ Start'}</button><button data-rfa="reset">↺</button>${s.full.mode === 'down' ? '<button data-rfa="m">−1</button><button data-rfa="p">＋1</button>' : ''}<button data-rfa="close">✕ Schließen</button></div>` : '') +
+      `<div class="rc-sub">🕒 Uhr bildschirmfüllend</div><div class="rc-row"><button data-rclk="digital"${on(s.clk === 'digital')}>🔢 digital</button><button data-rclk="analog"${on(s.clk === 'analog')}>🕒 analog</button><button data-rclk="off"${on(!s.clk)}>aus</button></div></div>`;
+    // Tafelbild
+    if (s.boards.length) {
+      h += `<div class="rc-sec"><h3>Tafelbild</h3><div class="rc-row rc-wrap">${s.boards.map(b => `<button data-rb="${b.id}"${b.id === s.board && s.bdPresent ? ' class="on"' : ''}>🖼 ${esc(b.name)}</button>`).join('')}</div>`;
+      const its = s.items;
+      if (its.length && s.bdPresent) h += `<div class="rc-grid" style="margin-top:10px">${its.map(rcItemHtml).join('')}</div>`;
+      else if (its.length) h += '<p class="hint" style="margin:6px 0 0">Bausteine lassen sich steuern, sobald das Tafelbild angezeigt wird.</p>';
+      h += '</div>';
+    }
+    // Sitzplan
+    const tm = s.teams;
+    h += `<div class="rc-sec"><h3>Sitzplan</h3>
+      <div class="rc-row rc-wrap"><button data-rlay="normal"${on(!s.gw)}>🪑 Normal</button><button data-rlay="gw"${on(s.gw)}>👥 Gruppenarbeit</button>${s.gw ? `<button data-rroom2="1"${on(s.room2)}>🚪 Gruppenraum</button>` : ''}<button data-rflip="1"${on(s.flip)}>👁 Schülersicht</button></div>
+      <div class="rc-sub">🎯 Wer ist dran?</div><div class="rc-row">${[1, 2, 3].map(n => `<button data-pn="${n}"${on(String(n) === String(s.pickN))}>${n}</button>`).join('')}<button class="primary" data-rpick="1">🎯 Ziehen</button>${s.pick ? `<span class="rc-pick">${esc(s.pick)}</span><button data-rpc="1" title="Ausblenden">✕</button>` : ''}</div>
+      <div class="rc-sub">👥 Gruppeneinteilung${tm ? ` – ${tm.n} ${tm.mode === 'pairs' ? 'Paare' : 'Gruppen'}${tm.name ? ' („' + esc(tm.name) + '“)' : ''}` : ''}</div>
+      <div class="rc-row rc-wrap">${RC_TEAMMODES.map(([m, n, l]) => `<button data-rtm="${m}" data-rtn="${n}"${on(s.tmode === m && (m === 'pairs' || String(n) === String(s.tn)))}>${l}</button>`).join('')}<button class="primary" data-rteam="make">🎲 Neu bilden</button></div>
+      ${tm ? `<div class="rc-row rc-wrap"><button data-rteam="list"${on(tm.list)}>📋 Liste neben dem Plan</button><button data-rteam="col"${on(tm.col)}>🎨 Farben im Plan</button><button data-rteam="big"${on(s.big)}>⛶ Groß anzeigen</button><button data-rteam="roles"${on(tm.roles)}>🎭 Rollen verteilen</button>${s.gw ? '<button data-rteam="seat">📍 An die Tische setzen</button>' : ''}<button data-rteam="clear">✕ Verwerfen</button></div>` : ''}
+      ${s.sets.length ? `<div class="rc-sub">📂 Gespeicherte Einteilungen</div><div class="rc-row rc-wrap">${s.sets.map(t => `<button data-rset="${t.id}"${on(tm && tm.name === t.name)}>${esc(t.name)}</button>`).join('')}</div>` : ''}
+      <div class="rc-sub">⏱ Timer im Sitzplan</div><div class="rc-row rc-wrap">${[1, 2, 3, 5, 10, 15, 20].map(m => `<button data-rts="${m}">${m} min</button>`).join('')}</div>${s.timer ? `<div class="rc-row"><b class="rc-time${s.timer.done ? ' done' : ''}">${esc(s.timer.txt)}</b><button data-rt="go">${s.timer.run ? '❚❚ Pause' : '▶ Start'}</button><button data-rt="reset">↺</button><button data-rt="close">✕</button></div>` : ''}
+    </div>`;
   } else if (r.st !== 'ok') h += `<div class="rc-sec"><div class="rc-row"><button class="primary" data-rretry="1">↻ Nochmal versuchen</button><button data-rnew="1">Anderen Code eingeben</button></div></div>`;
-  el.innerHTML = h;
+  el.innerHTML = h; el.scrollTop = keepY;
 }
 function rcItemHtml(i) {
-  if (i.t === 'timer') return `<div class="rc-card"><b>⏱ Timer</b><div class="rc-time${i.done ? ' done' : ''}">${esc(i.txt)}</div><div class="rc-row"><button data-ri="${i.id}" data-a="go">${i.run ? '❚❚' : '▶'}</button><button data-ri="${i.id}" data-a="reset">↺</button>${i.mode === 'down' ? `<button data-ri="${i.id}" data-a="m">−1</button><button data-ri="${i.id}" data-a="p">＋1</button>` : ''}</div></div>`;
-  if (i.t === 'phase') return `<div class="rc-card"><b>Arbeitsphase</b><div class="rc-row rc-wrap">${Object.entries(PHASES).map(([k, ph]) => `<button class="ph${i.ph === k ? ' on' : ''}" style="--pc:${ph[2]}" data-ri="${i.id}" data-v="${k}">${ph[0]} ${esc(ph[1])}</button>`).join('')}</div></div>`;
+  if (i.t === 'timer') return `<div class="rc-card"><b>⏱ Timer</b><div class="rc-time${i.done ? ' done' : ''}">${esc(i.txt)}</div><div class="rc-row"><button data-ri="${i.id}" data-a="go">${i.run ? '❚❚' : '▶'}</button><button data-ri="${i.id}" data-a="reset">↺</button>${i.mode === 'down' ? `<button data-ri="${i.id}" data-a="m">−1</button><button data-ri="${i.id}" data-a="p">＋1</button>` : ''}<button data-ri="${i.id}" data-a="full" title="Bildschirmfüllend">⛶</button></div>
+    <div class="rc-row rc-small"><select data-rcfg="${i.id}" data-k="mode"><option value="down"${i.mode === 'down' ? ' selected' : ''}>⏳ Countdown</option><option value="up"${i.mode === 'up' ? ' selected' : ''}>⏱ Stoppuhr</option></select>${i.mode === 'down' ? `<select data-rcfg="${i.id}" data-k="min">${[1, 2, 3, 5, 10, 15, 20, 30, 45].map(m => `<option value="${m}"${+i.min === m ? ' selected' : ''}>${m} min</option>`).join('')}</select>` : ''}<select data-rcfg="${i.id}" data-k="vis"><option value="ring"${i.vis === 'ring' ? ' selected' : ''}>◔ Kreis</option>${i.mode === 'down' ? `<option value="sand"${i.vis === 'sand' ? ' selected' : ''}>⌛ Sanduhr</option>` : ''}<option value="bar"${i.vis === 'bar' ? ' selected' : ''}>▬ Balken</option></select></div></div>`;
+  if (i.t === 'phase') return `<div class="rc-card"><b>Arbeitsphase (Baustein)</b><div class="rc-row rc-wrap">${Object.entries(PHASES).map(([k, ph]) => `<button class="ph${i.ph === k ? ' on' : ''}" style="--pc:${ph[2]}" data-ri="${i.id}" data-v="${k}">${ph[0]} ${esc(ph[1])}</button>`).join('')}</div></div>`;
   if (i.t === 'light') return `<div class="rc-card"><b>${i.meter ? '🎚 Schallpegel' : '🚦 Ampel'}</b>${i.mic ? `<div class="rc-row"><span class="rc-lamp ${i.s}"></span><span>${i.db != null ? 'ca. ' + i.db + ' dB' : 'Mikrofon'}</span></div>` : `<div class="rc-row">${['r', 'y', 'g'].map(k => `<button class="rc-lampb ${k}${i.s === k ? ' on' : ''}" data-ri="${i.id}" data-v="${k}"></button>`).join('')}</div>`}</div>`;
-  if (i.t === 'dice') return `<div class="rc-card"><b>🎲 Würfel</b><div class="rc-row"><button class="primary" data-ri="${i.id}" data-a="roll">🎲 Würfeln</button><span>${(i.vals || []).join(' · ')}</span></div></div>`;
+  if (i.t === 'dice') return `<div class="rc-card"><b>🎲 Würfel</b><div class="rc-row"><button class="primary" data-ri="${i.id}" data-a="roll">🎲 Würfeln</button><span class="rc-dv">${(i.vals || []).join(' · ')}</span></div>
+    <div class="rc-row rc-small"><select data-rdice="${i.id}" data-k="n">${[1, 2, 3, 4, 5, 6].map(n => `<option value="${n}"${+i.n === n ? ' selected' : ''}>${n} Würfel</option>`).join('')}</select><select data-rdice="${i.id}" data-k="sides">${DICE_SIDES.map(n => `<option value="${n}"${+i.sides === n ? ' selected' : ''}>W${n}</option>`).join('')}</select></div></div>`;
   if (i.t === 'score') return `<div class="rc-card"><b>🏆 Punktestand</b>${i.teams.map((t, k) => `<div class="rc-row"><span class="rc-team" style="--tc:${t.c}">${esc(t.n)}</span><button data-ri="${i.id}" data-i="${k}" data-d="-1">−</button><b>${t.s}</b><button data-ri="${i.id}" data-i="${k}" data-d="1">＋</button></div>`).join('')}</div>`;
+  if (i.t === 'clock') return `<div class="rc-card"><b>🕒 Uhr</b><div class="rc-row"><button data-ri="${i.id}" data-a="clk" data-v=""${i.analog ? '' : ' class="on"'}>🔢 digital</button><button data-ri="${i.id}" data-a="clk" data-v="1"${i.analog ? ' class="on"' : ''}>🕒 analog</button></div></div>`;
   return '';
 }
 $('rcPanel').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const r = RC.remote; if (!r) return;
+  const st = r.state || {};
   if (b.id === 'rcOff') { rcDisconnect(false); return; }
   if (b.dataset.rretry) { rcConnect(r.code); return; }
   if (b.dataset.rnew) { rcDisconnect(false); openRc(); return; }
@@ -7230,16 +7362,33 @@ $('rcPanel').addEventListener('click', e => {
   if (b.dataset.rb) rcSend({ c: 'board', id: b.dataset.rb });
   if (b.dataset.ri) {
     const m = { c: 'item', id: b.dataset.ri };
-    if (b.dataset.a) m.a = b.dataset.a; if (b.dataset.v) m.v = b.dataset.v; if (b.dataset.i != null) { m.i = +b.dataset.i; m.d = +b.dataset.d; }
+    if (b.dataset.a) m.a = b.dataset.a; if (b.dataset.v != null) m.v = b.dataset.v; if (b.dataset.i != null) { m.i = +b.dataset.i; m.d = +b.dataset.d; }
+    if (m.a === 'clk') m.v = !!b.dataset.v;
     rcSend(m);
   }
-  if (b.dataset.pn) { rcSend({ c: 'pickN', v: b.dataset.pn }); if (r.state) { r.state.pickN = b.dataset.pn; renderRc(); } }
-  if (b.dataset.rpick) rcSend({ c: 'pick', n: r.state && r.state.pickN });
+  if (b.dataset.pn) { rcSend({ c: 'pickN', v: b.dataset.pn }); st.pickN = b.dataset.pn; renderRc(); }
+  if (b.dataset.rpick) rcSend({ c: 'pick', n: st.pickN });
   if (b.dataset.rpc) rcSend({ c: 'pickClose' });
   if (b.dataset.rts) rcSend({ c: 'timer', a: 'start', sec: +b.dataset.rts * 60 });
   if (b.dataset.rt) rcSend({ c: 'timer', a: b.dataset.rt });
-  if (b.dataset.rph) rcSend({ c: 'ovph', v: b.dataset.rph });
+  if (b.dataset.rft) rcSend(b.dataset.rft === 'up' ? { c: 'ft', a: 'start', mode: 'up', sec: 0 } : { c: 'ft', a: 'start', mode: 'down', sec: +b.dataset.rft * 60 });
+  if (b.dataset.rfa) rcSend({ c: 'ft', a: b.dataset.rfa });
+  if (b.dataset.rclk) rcSend({ c: 'clk', v: b.dataset.rclk });
+  if (b.dataset.rph) rcSend({ c: 'phs', v: b.dataset.rph });
+  if (b.dataset.rlay) rcSend({ c: 'layout', v: b.dataset.rlay });
+  if (b.dataset.rroom2) rcSend({ c: 'room2' });
+  if (b.dataset.rflip) rcSend({ c: 'flip' });
+  if (b.dataset.rtm) { st.tmode = b.dataset.rtm; st.tn = b.dataset.rtn; renderRc(); }
+  if (b.dataset.rteam) rcSend({ c: 'teams', a: b.dataset.rteam, mode: st.tmode, n: st.tn });
+  if (b.dataset.rset) rcSend({ c: 'teams', a: 'load', id: b.dataset.rset });
 });
+$('rcPanel').addEventListener('focusout', () => { const r = RC.remote; if (r && r.pend) setTimeout(renderRc, 50); });
+$('rcPanel').addEventListener('change', e => {
+  const s = e.target; e.target.blur();
+  if (s.dataset.rcfg) rcSend({ c: 'item', id: s.dataset.rcfg, a: 'cfg', [s.dataset.k]: s.value });
+  if (s.dataset.rdice) rcSend({ c: 'item', id: s.dataset.rdice, a: s.dataset.k, v: s.value });
+});
+
 document.addEventListener('visibilitychange', () => { const r = RC.remote; if (document.visibilityState === 'visible' && r && !r.stop && (!r.conn || !r.conn.open) && r.st !== 'connecting') rcConnect(r.code); });
 
 /* ---------- Start ---------- */
