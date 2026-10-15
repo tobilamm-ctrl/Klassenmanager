@@ -944,6 +944,20 @@
   .rc-form input, .rc-form select { font: inherit; font-size: 1.05rem; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 8px; color: var(--ink); }
   .rc-form .rc-row { flex-basis: 100%; }
   .rc-ack { position: sticky; top: 40px; z-index: 3; background: #dcfce7; border: 1.5px solid #16a34a; color: #166534; border-radius: 10px; padding: 8px 12px; font-weight: 800; margin-top: 6px; }
+  .rc-ink { aspect-ratio: 16 / 9; width: 100%; border: 2px solid #cbd5e1; border-radius: 10px; background: #fff; margin-top: 8px; overflow: hidden; touch-action: none; }
+  .rc-ink canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+  #rcPanel .rc-pc { width: 40px; height: 40px; min-height: 0; padding: 0; border-radius: 50%; background: var(--c) !important; border: 2px solid #cbd5e1; } #rcPanel .rc-pc.on { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--accent); }
+  #rcPanel .rc-pw { width: 44px; padding: 0; display: flex; align-items: center; justify-content: center; } .rc-pw i { background: #111827; border-radius: 50%; display: block; }
+  body.vpresent main { display: flex; flex-direction: column; }
+  body.vpresent.view-tt #ttView { flex: 1; min-height: 0; display: flex !important; flex-direction: column; }
+  body.vpresent #ttView .tt-wrap { flex: 1; min-height: 0; align-items: stretch; }
+  body.vpresent #ttView .tt-main { align-items: stretch; height: 100%; }
+  body.vpresent #ttView .tt-grid { height: 100%; } body.vpresent #ttView table.tt { height: 100%; }
+  body.vpresent #ttView table.tt tr:first-child { height: 1px; } body.vpresent #ttView table.tt td { font-size: 1.05em; }
+  body.vpresent #ttView .tt-main .agenda { max-height: none; }
+  body.vpresent.view-cal #calView { flex: 1; min-height: 0; display: flex !important; flex-direction: column; }
+  body.vpresent .cal { flex: 1; min-height: 0; grid-template-rows: auto; grid-auto-rows: 1fr; }
+  body.vpresent .cal .cd { min-height: 0; overflow: hidden; }
   /* Zeichnen */
   .bd-ink { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 30; pointer-events: none; }
   body.bd-drawing .bd-ink { pointer-events: auto; cursor: crosshair; touch-action: none; }
@@ -1197,7 +1211,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-14</p>
+          <p class="hint" style="margin:0">Version 2026-11-15</p>
         </div>
       </details>
 
@@ -2426,7 +2440,7 @@ function renderRoom(animate) {
 
   let nr = 0;
   const islTeam = new Map();   // Tisch → Gruppe (Tischordnung Gruppenarbeit)
-  if (GW() && ui.teams && ui.teams.place) { const isl = new Map(islands().map(x => [x.key, x])); Object.entries(ui.teams.place).forEach(([t, key]) => { const x = isl.get(key); if (x) x.desks.forEach(d => islTeam.set(d.id, +t)); }); }
+  if (GW() && ui.teams && ui.teams.place && $('teamColor').checked) { const isl = new Map(islands().map(x => [x.key, x])); Object.entries(ui.teams.place).forEach(([t, key]) => { const x = isl.get(key); if (x) x.desks.forEach(d => islTeam.set(d.id, +t)); }); }
   const groupShown = new Set();   // Gruppenname nur am ersten Tisch einer Gruppe anzeigen
   let nr2 = 0;
   items.forEach(it => {
@@ -6931,7 +6945,7 @@ function inkDraw() {
   const W = cv.parentElement.clientWidth, H = cv.parentElement.clientHeight, dpr = window.devicePixelRatio || 1;
   if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
   const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
-  const strokes = ((b && b.ink) || []).filter(s => !(inkErase && inkErase.has(s))).concat(inkCur ? [inkCur] : []);
+  const strokes = ((b && b.ink) || []).filter(s => !(inkErase && inkErase.has(s))).concat(inkCur ? [inkCur] : [], typeof rcInkLive !== 'undefined' && rcInkLive ? [rcInkLive] : []);
   g.lineCap = g.lineJoin = 'round';
   strokes.forEach(s => {
     const p = s.p; if (!p || p.length < 2) return;
@@ -7108,7 +7122,7 @@ function rcHostStart() {
   peer.on('disconnected', () => { if (!peer.destroyed) setTimeout(() => { if (!peer.destroyed) peer.reconnect(); }, 2000); });
   peer.on('connection', conn => {
     conn.on('open', () => { RC.conns.push(conn); RC.last = ''; setResult('📡 Fernbedienung verbunden.', 'ok'); renderRcDlg(); syncRcBtns(); rcBroadcast(true); });
-    conn.on('data', d => { try { rcHandle(d); } catch (err) { console.warn(err); } setTimeout(() => rcBroadcast(true), 60); });
+    conn.on('data', d => { const before = $('result').textContent; try { if (d && d.c === 'ink') rcInkHost(d); else rcHandle(d); } catch (err) { console.warn(err); } const after = $('result').textContent; if (d && d.c !== 'add' && d.c !== 'ink' && after && after !== before) RC.ack = { n: Date.now(), t: after.replace(/^✓\s*/, '') }; setTimeout(() => rcBroadcast(true), 60); });
     conn.on('close', () => { RC.conns = RC.conns.filter(c => c !== conn); renderRcDlg(); syncRcBtns(); });
     conn.on('error', () => {});
   });
@@ -7151,6 +7165,7 @@ function rcState() {
     tmode: $('teamMode').value, tn: $('teamN').value,
     sets: (c.teamSets || []).map(t => ({ id: t.id, name: t.name })),
     cur: ui.bdPresent ? 'board' : ui.present ? 'plan' : ui.vPresent ? ui.view : '',
+    layout: ui.bdPresent && b ? b.items.map(i => [i.x, i.y, i.w, i.h, (BD_TYPES[i.t] || {}).i || '']) : null, ink: ui.bdPresent && b ? (b.ink || []) : null,
     subj: ((c.tt && c.tt.subjects) || []).map(x => x.name), ttW: ui.ttWeek || 0, calM: ui.calMon || todayStr().slice(0, 7), ack: RC.ack || null };
 }
 function rcBroadcast(force) {
@@ -7228,10 +7243,14 @@ function rcHandle(d) {
   if (d.c === 'teams') {
     if (d.a === 'make') { if (d.mode) $('teamMode').value = d.mode; if (d.n) $('teamN').value = d.n; $('pmTeamMode').value = $('teamMode').value; $('pmTeamN').value = $('teamN').value; makeTeams(); if (GW()) gwSync(true); ui.showTeamList = ui.present; renderRoom(); syncPresentBar(); }
     if (d.a === 'list' && ui.teams) { ui.showTeamList = !ui.showTeamList; renderRoom(); syncPresentBar(); }
-    if (d.a === 'col' && ui.teams) { $('teamColor').checked = $('teamColor2').checked = !$('teamColor').checked; renderRoom(); syncPresentBar(); }
+    if (d.a === 'col' && ui.teams) { $('teamColor').checked = $('teamColor2').checked = !$('teamColor').checked; renderRoom(); syncPresentBar(); setResult($('teamColor').checked ? '🎨 Gruppenfarben im Plan an.' : '🎨 Gruppenfarben im Plan aus.', 'ok'); }
     if (d.a === 'big' && ui.teams) { $('teamsDlg').hidden = !$('teamsDlg').hidden; if (!$('teamsDlg').hidden) renderTeams(); }
     if (d.a === 'roles' && ui.teams) dealRoles();
-    if (d.a === 'seat' && ui.teams && GW()) { if (cls().gwMode !== 'manual') autoPlace(); gwSync(false); }
+    if (d.a === 'seat' && ui.teams && GW()) {   // Gruppen zufällig neu auf die Tischinseln verteilen
+      const isl = shuffle(islands()), used = new Set(), place = {};
+      ui.teams.list.map((t, i) => ({ i, n: t.length })).sort((a, b) => b.n - a.n).forEach(({ i, n }) => { const free = isl.filter(x => !used.has(x.key)); const best = free.find(x => x.cap >= n) || free.sort((a, b) => b.cap - a.cap)[0]; if (best) { place[i] = best.key; used.add(best.key); } });
+      ui.teams.place = place; gwSync(false); setResult('📍 Gruppen neu an die Tische gesetzt.', 'ok');
+    }
     if (d.a === 'clear') { ui.teams = null; ui.showTeamList = false; $('teamsDlg').hidden = true; renderTeams(); renderRoom(); syncPresentBar(); }
     if (d.a === 'load' && d.id) { loadTeamSet(d.id); if (ui.present) { ui.showTeamList = true; renderRoom(); syncPresentBar(); } }
   }
@@ -7278,6 +7297,78 @@ $('phFloat').addEventListener('pointerdown', e => { if (e.target.closest('button
 $('phFloat').addEventListener('pointermove', e => { if (!phDrag) return; if (Math.hypot(e.clientX - phDrag.x0, e.clientY - phDrag.y0) > 5) phDrag.moved = true; if (!phDrag.moved) return; const el = $('phFloat'); el.style.left = clamp((e.clientX - phDrag.dx) / innerWidth * 100, 0, 95) + '%'; el.style.top = clamp((e.clientY - phDrag.dy) / innerHeight * 100, 0, 95) + '%'; });
 $('phFloat').addEventListener('pointerup', () => { if (phDrag && phDrag.moved) { try { localStorage.setItem('km-phpos', JSON.stringify({ x: parseFloat($('phFloat').style.left), y: parseFloat($('phFloat').style.top) })); } catch {} setTimeout(() => { phDrag = null; }, 0); } else phDrag = null; });
 window.addEventListener('keydown', e => { if (e.key === 'Escape' && ui.clkShow) { e.stopImmediatePropagation(); setClkShow(''); } }, true);
+
+/* ---------- 🖊 Zeichnen über die Fernbedienung ---------- */
+let rcInkLive = null;   // gerade am iPad gezeichneter Strich (Vorschau an der Tafel)
+function rcInkHost(d) {
+  const b = curBoard(); if (!b) return;
+  if (d.a === 'live') { rcInkLive = d.s && Array.isArray(d.s.p) ? d.s : null; inkDraw(); return; }
+  if (d.a === 'add' && d.s && Array.isArray(d.s.p) && d.s.p.length >= 2) { rcInkLive = null; const s = { c: String(d.s.c || '#111827').slice(0, 9), w: clamp(+d.s.w || 0.5, 0.1, 3), p: d.s.p.slice(0, 4000).map(v => clamp(+v || 0, 0, 100)) }; change(() => { b.ink = (b.ink || []).concat([s]); }, { keepList: true }); }
+  if (d.a === 'del' && Array.isArray(d.idx)) { const del = new Set(d.idx.map(Number)); change(() => { b.ink = (b.ink || []).filter((_, i) => !del.has(i)); }, { keepList: true }); }
+  if (d.a === 'undo' && b.ink && b.ink.length) change(() => { b.ink = b.ink.slice(0, -1); }, { keepList: true });
+  if (d.a === 'clear' && b.ink && b.ink.length) change(() => { b.ink = []; }, { keepList: true });
+}
+// Fernbedienung: Zeichenfläche im Seitenverhältnis der Tafel, Bausteine als Umrisse
+const RCPEN = { c: '#dc2626', w: 1, er: false };
+let rcInkCur = null, rcInkErase = null, rcInkT = 0;
+function rcInkHtml(s) {
+  return `<div class="rc-sec"><h3>🖊 Zeichnen auf dem Tafelbild</h3>
+    <div class="rc-row rc-wrap">${PEN_COL.map(c => `<button class="rc-pc${!RCPEN.er && RCPEN.c === c ? ' on' : ''}" data-rpcol="${c}" style="--c:${c}"></button>`).join('')}
+      ${PEN_W.map((w, i) => `<button class="rc-pw${!RCPEN.er && RCPEN.w === i ? ' on' : ''}" data-rpw="${i}"><i style="width:${5 + i * 6}px;height:${5 + i * 6}px"></i></button>`).join('')}
+      <button data-rpe="1"${RCPEN.er ? ' class="on"' : ''}>🧽 Radierer</button><button data-rink="undo">↶ Strich</button><button data-rink="clear">🗑 Alles</button></div>
+    <div class="rc-ink"><canvas id="rcInk"></canvas></div><p class="hint" style="margin:4px 0 0">Mit dem Finger oder Stift zeichnen – erscheint sofort an der Tafel. Graue Kästen = Bausteine.</p></div>`;
+}
+function rcInkDraw() {
+  const cv = $('rcInk'), r = RC.remote; if (!cv || !r || !r.state) return;
+  const s = r.state, W = cv.clientWidth, H = cv.clientHeight, dpr = window.devicePixelRatio || 1;
+  if (!W) return;
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+  g.fillStyle = '#f1f5f9'; g.strokeStyle = '#cbd5e1'; g.lineWidth = 1; g.font = `${Math.max(12, W / 40)}px sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+  (s.layout || []).forEach(([x, y, w, h, ic]) => { const X = x / 100 * W, Y = y / 100 * H, ww = w / 100 * W, hh = h / 100 * H; g.fillRect(X, Y, ww, hh); g.strokeRect(X, Y, ww, hh); g.fillStyle = '#94a3b8'; g.fillText(ic || '', X + ww / 2, Y + hh / 2); g.fillStyle = '#f1f5f9'; });
+  g.lineCap = g.lineJoin = 'round';
+  (s.ink || []).filter((_, i) => !(rcInkErase && rcInkErase.has(i))).concat(rcInkCur ? [rcInkCur] : []).forEach(st => {
+    const p = st.p; if (!p || p.length < 2) return;
+    g.strokeStyle = st.c; g.lineWidth = Math.max(1.5, st.w / 100 * W);
+    g.beginPath(); g.moveTo(p[0] / 100 * W, p[1] / 100 * H); if (p.length === 2) g.lineTo(p[0] / 100 * W + .1, p[1] / 100 * H);
+    for (let i = 2; i < p.length; i += 2) g.lineTo(p[i] / 100 * W, p[i + 1] / 100 * H);
+    g.stroke();
+  });
+}
+const rcInkPos = e => { const R = $('rcInk').getBoundingClientRect(); return [clamp((e.clientX - R.left) / R.width * 100, 0, 100), clamp((e.clientY - R.top) / R.height * 100, 0, 100), R]; };
+function rcInkHit(x, y, R) {
+  const s = RC.remote.state, px = x / 100 * R.width, py = y / 100 * R.height;
+  (s.ink || []).forEach((st, i) => {
+    if (rcInkErase.has(i)) return;
+    const P = st.p; for (let k = 0; k < P.length; k += 2) if (Math.hypot(P[k] / 100 * R.width - px, P[k + 1] / 100 * R.height - py) < 16) { rcInkErase.add(i); return; }
+  });
+}
+$('rcPanel').addEventListener('pointerdown', e => {
+  if (e.target.id !== 'rcInk') return;
+  e.preventDefault(); e.target.setPointerCapture(e.pointerId);
+  const [x, y, R] = rcInkPos(e);
+  if (RCPEN.er) { rcInkErase = new Set(); rcInkHit(x, y, R); } else rcInkCur = { c: RCPEN.c, w: PEN_W[RCPEN.w] || 0.5, p: [+x.toFixed(1), +y.toFixed(1)] };
+  RC.remote.drawing = true; rcInkDraw();
+});
+$('rcPanel').addEventListener('pointermove', e => {
+  if (e.target.id !== 'rcInk' || (!rcInkCur && !rcInkErase)) return;
+  (e.getCoalescedEvents ? e.getCoalescedEvents() : [e]).forEach(ev => {
+    const [x, y, R] = rcInkPos(ev);
+    if (rcInkErase) { rcInkHit(x, y, R); return; }
+    const p = rcInkCur.p; if (Math.hypot((x - p[p.length - 2]) / 100 * R.width, (y - p[p.length - 1]) / 100 * R.height) >= 2) p.push(+x.toFixed(1), +y.toFixed(1));
+  });
+  rcInkDraw();
+  if (rcInkCur && Date.now() - rcInkT > 120) { rcInkT = Date.now(); rcSend({ c: 'ink', a: 'live', s: rcInkCur }); }
+});
+function rcInkEnd() {
+  const r = RC.remote; if (!r || (!rcInkCur && !rcInkErase)) return;
+  if (rcInkCur) { rcSend({ c: 'ink', a: 'add', s: rcInkCur }); r.state.ink = (r.state.ink || []).concat([rcInkCur]); }
+  if (rcInkErase && rcInkErase.size) { const idx = [...rcInkErase]; rcSend({ c: 'ink', a: 'del', idx }); r.state.ink = (r.state.ink || []).filter((_, i) => !rcInkErase.has(i)); }
+  rcInkCur = null; rcInkErase = null; r.drawing = false; rcInkDraw();
+  if (r.pend) setTimeout(renderRc, 30);
+}
+$('rcPanel').addEventListener('pointerup', rcInkEnd);
+$('rcPanel').addEventListener('pointercancel', rcInkEnd);
 
 /* ---------- Dialog (Tafel: Code zeigen · iPad: Code eingeben) ---------- */
 function openRc() { renderRcDlg(); $('rcDlg').hidden = false; }
@@ -7352,6 +7443,7 @@ const rcSend = msg => { const r = RC.remote; if (r && r.conn && r.conn.open) r.c
 const RC_TEAMMODES = [['pairs', 0, 'Paare'], ['size', 3, 'je 3'], ['size', 4, 'je 4'], ['size', 5, 'je 5'], ['count', 4, '4 Gruppen'], ['count', 5, '5 Gruppen'], ['count', 6, '6 Gruppen']];
 function renderRc() {
   const r = RC.remote, el = $('rcPanel'); if (!r) return;
+  if (r.drawing) { r.pend = true; return; }
   const ae = document.activeElement; if (ae && /SELECT|INPUT|TEXTAREA/.test(ae.tagName) && el.contains(ae)) { r.pend = true; return; }   // gerade am Eintippen/Auswählen: später neu zeichnen
   r.pend = false;
   const keepY = el.scrollTop;
@@ -7368,7 +7460,7 @@ function renderRc() {
     if (cur === 'board') {
       h += `<div class="rc-sec"><h3>Tafelbild</h3>${s.boards.length > 1 ? `<div class="rc-row rc-wrap">${s.boards.map(b => `<button data-rb="${b.id}"${on(b.id === s.board)}>🖼 ${esc(b.name)}</button>`).join('')}</div>` : ''}`;
       h += s.items.length ? `<div class="rc-grid" style="margin-top:10px">${s.items.map(rcItemHtml).join('')}</div>` : '<p class="hint" style="margin:0">Auf diesem Tafelbild gibt es keine steuerbaren Bausteine.</p>';
-      h += '</div>';
+      h += '</div>' + rcInkHtml(s);
     }
     // Ansicht: Sitzplan
     if (cur === 'plan') {
@@ -7378,7 +7470,7 @@ function renderRc() {
         <div class="rc-sub">🎯 Wer ist dran?</div><div class="rc-row">${[1, 2, 3].map(n => `<button data-pn="${n}"${on(String(n) === String(s.pickN))}>${n}</button>`).join('')}<button class="primary" data-rpick="1">🎯 Ziehen</button>${s.pick ? `<span class="rc-pick">${esc(s.pick)}</span><button data-rpc="1" title="Ausblenden">✕</button>` : ''}</div>
         <div class="rc-sub">👥 Gruppeneinteilung${tm ? ` – ${tm.n} ${tm.mode === 'pairs' ? 'Paare' : 'Gruppen'}${tm.name ? ' („' + esc(tm.name) + '“)' : ''}` : ''}</div>
         <div class="rc-row rc-wrap">${RC_TEAMMODES.map(([m, n, l]) => `<button data-rtm="${m}" data-rtn="${n}"${on(s.tmode === m && (m === 'pairs' || String(n) === String(s.tn)))}>${l}</button>`).join('')}<button class="primary" data-rteam="make">🎲 Neu bilden</button></div>
-        ${tm ? `<div class="rc-row rc-wrap"><button data-rteam="list"${on(tm.list)}>📋 Liste neben dem Plan</button><button data-rteam="col"${on(tm.col)}>🎨 Farben im Plan</button><button data-rteam="big"${on(s.big)}>⛶ Groß anzeigen</button><button data-rteam="roles"${on(tm.roles)}>🎭 Rollen verteilen</button>${s.gw ? '<button data-rteam="seat">📍 An die Tische setzen</button>' : ''}<button data-rteam="clear">✕ Verwerfen</button></div>` : ''}
+        ${tm ? `<div class="rc-row rc-wrap"><button data-rteam="list"${on(tm.list)}>📋 Liste neben dem Plan</button><button data-rteam="col"${on(tm.col)}>🎨 Farben im Plan</button><button data-rteam="big"${on(s.big)}>⛶ Groß anzeigen</button><button data-rteam="roles"${on(tm.roles)}>🎭 Rollen verteilen</button>${s.gw ? '<button data-rteam="seat">📍 Tische neu verteilen</button>' : ''}<button data-rteam="clear">✕ Verwerfen</button></div>` : ''}
         ${s.sets.length ? `<div class="rc-sub">📂 Gespeicherte Einteilungen</div><div class="rc-row rc-wrap">${s.sets.map(t => `<button data-rset="${t.id}"${on(tm && tm.name === t.name)}>${esc(t.name)}</button>`).join('')}</div>` : ''}
         <div class="rc-sub">⏱ Timer im Sitzplan</div><div class="rc-row rc-wrap">${[1, 2, 3, 5, 10, 15, 20].map(m => `<button data-rts="${m}">${m} min</button>`).join('')}</div>${s.timer ? `<div class="rc-row"><b class="rc-time${s.timer.done ? ' done' : ''}">${esc(s.timer.txt)}</b><button data-rt="go">${s.timer.run ? '❚❚ Pause' : '▶ Start'}</button><button data-rt="reset">↺</button><button data-rt="close">✕</button></div>` : ''}
       </div>`;
@@ -7398,6 +7490,7 @@ function renderRc() {
       `<div class="rc-sub">🕒 Uhr bildschirmfüllend</div><div class="rc-row"><button data-rclk="digital"${on(s.clk === 'digital')}>🔢 digital</button><button data-rclk="analog"${on(s.clk === 'analog')}>🕒 analog</button><button data-rclk="off"${on(!s.clk)}>aus</button></div></div>`;
   } else if (r.st !== 'ok') h += `<div class="rc-sec"><div class="rc-row"><button class="primary" data-rretry="1">↻ Nochmal versuchen</button><button data-rnew="1">Anderen Code eingeben</button></div></div>`;
   el.innerHTML = h; el.scrollTop = keepY;
+  rcInkDraw();
 }
 const rcMonth = m => { const [y, mo] = String(m || '').split('-').map(Number); return y ? MONTHS[mo - 1] + ' ' + y : ''; };
 // Eingabeformular (Hausaufgabe bzw. Probe/Termin) – Werte bleiben beim Neuzeichnen erhalten
@@ -7458,6 +7551,10 @@ $('rcPanel').addEventListener('click', e => {
   if (b.dataset.rnav != null) rcSend({ c: st.cur === 'cal' ? 'calm' : 'ttw', d: +b.dataset.rnav });
   if (b.dataset.rform != null) { r.form = b.dataset.rform || null; r.fv = r.fv || {}; if (r.form === 'ex' && !r.fv.edat) r.fv.edat = addDays(todayStr(), 7); renderRc(); }
   if (b.dataset.fk) { r.fv.ekind = b.dataset.fk; renderRc(); }
+  if (b.dataset.rpcol) { RCPEN.c = b.dataset.rpcol; RCPEN.er = false; renderRc(); }
+  if (b.dataset.rpw) { RCPEN.w = +b.dataset.rpw; RCPEN.er = false; renderRc(); }
+  if (b.dataset.rpe) { RCPEN.er = !RCPEN.er; renderRc(); }
+  if (b.dataset.rink) { if (b.dataset.rink === 'clear' && !window.confirm('Alles Gezeichnete auf diesem Tafelbild löschen?')) return; rcSend({ c: 'ink', a: b.dataset.rink }); }
   if (b.dataset.rsave) {
     const v = r.fv || {};
     if (b.dataset.rsave === 'hw') { if (!(v.htit || '').trim()) { const i = $('rcPanel').querySelector('[data-fv="htit"]'); if (i) i.focus(); return; } rcSend({ c: 'add', kind: 'hw', subject: v.hsub || '', title: v.htit, due: v.hdue || '' }); ['htit', 'hdue'].forEach(k => delete v[k]); }
@@ -7474,6 +7571,7 @@ $('rcPanel').addEventListener('change', e => {
   if (s.dataset.rdice) rcSend({ c: 'item', id: s.dataset.rdice, a: s.dataset.k, v: s.value });
 });
 
+window.addEventListener('resize', () => { if (RC.remote) rcInkDraw(); });
 document.addEventListener('visibilitychange', () => { const r = RC.remote; if (document.visibilityState === 'visible' && r && !r.stop && (!r.conn || !r.conn.open) && r.st !== 'connecting') rcConnect(r.code); });
 
 /* ---------- Start ---------- */
