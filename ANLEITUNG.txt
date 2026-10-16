@@ -376,3 +376,41 @@ NEU in Version 2026-11-17: 📊 Abstimmung und 🌐 Klasse über GitHub (ohne An
   abstimmen.
 - „Verbindung beenden“ löscht die Datei aus dem Repository. Die OneDrive-Verbindung kann
   parallel bestehen bleiben.
+
+NEU in Version 2026-11-18: 📊 Abstimmungsrunden, eigene Antworten, Kreisdiagramm · 🌐 Zugang in der Klassendatei
+---------------------------------------------------------------------------------------------------------
+📊 Abstimmung:
+- Neue Art „📝 Eigene Antworten“: bis zu 12 Antworten, eine pro Zeile (z. B. die Kandidaten der
+  Klassensprecherwahl). „Stimmen pro Kind“: 1, 2 oder 3. Die Kinder sehen die Antworten als Liste
+  zum Antippen und können bis zum Ende umentscheiden.
+- „🏆 Rangfolge“ sortiert nach Stimmen und zeigt die Plätze (gleich viele Stimmen = gleicher Platz).
+  Bei „Eigene Antworten“ ist die Rangfolge von Anfang an eingeschaltet.
+- „◔ Kreis“ / „▤ Balken“: Ergebnis als Kreisdiagramm (mit Prozenten und Legende) oder als Balken.
+- Abstimmungsrunde: Die Kinder tippen die drei Symbole nur noch einmal an und bleiben verbunden.
+  Nach „⏹ Beenden“ → „＋ Nächste Frage“ (oder „✕ Schließen“ und wieder „📊 Abstimmung“) erscheint die
+  nächste Frage bei allen sofort – auch wenn sie das Fenster geschlossen hatten.
+  Unten rechts zeigt die Tafel „📊 Abstimmungsrunde … verbunden“. Die Runde endet mit
+  „⏹ Runde beenden“ (im Abstimmungs-Fenster oder an der Fernbedienung) oder automatisch nach
+  10 Minuten ohne offene Frage. Die Kinder können mit „Abstimmung verlassen“ selbst gehen.
+- Die Fernbedienung kann all das ebenfalls: eigene Antworten eingeben, Stimmen pro Kind, Kreis/Balken,
+  Rangfolge, nächste Frage, Runde beenden.
+
+🌐 GitHub-Zugang in der Klassendatei:
+- Beim Einrichten (bzw. „⚙ GitHub-Zugang“) gibt es das Häkchen „Zugang in der Klassendatei speichern“.
+  Ist es gesetzt, steht der Zugang (mit Token) in deiner Klassendatei. Jedes Gerät, das diese Datei
+  öffnet (z. B. über OneDrive), überträgt dann automatisch – ohne eigene Einrichtung.
+- Nur verwenden, wenn die Klassendatei nur bei dir liegt (nicht in einem geteilten Ordner, nicht auf
+  einem gemeinsam genutzten Stick oder Rechner). In QR-Codes und in der Datei für die Kinder ist der
+  Zugang nie enthalten. Häkchen entfernen und speichern = Zugang wieder aus der Datei nehmen.
+- „Zugang löschen“ entfernt ihn vom Gerät und aus der Klassendatei. Im Notfall den Token auf GitHub
+  sperren (Settings → Developer settings → Personal access tokens → Token → Delete).
+
+NEU in Version 2026-11-19: 📲 „An Schüler“ mit Reitern
+- Oben für alle Wege gleich: Was soll gesendet werden? (Stundenplan, Hausaufgaben, Proben & Termine,
+  Mitteilungen). Darunter drei Reiter:
+  📷 Direkt – die wechselnden QR-Codes zum Scannen (wie bisher).
+  ☁️ OneDrive – Verbindung über OneDrive einrichten/verwalten; ist sie eingerichtet, steht der
+     Verbindungs-Code gleich darunter.
+  🌐 GitHub – Zugang, Webclip-Adresse und Verbindungs-Code.
+- Ein ✓ am Reiter zeigt, dass die Klasse über diesen Weg verbunden ist. Der zuletzt benutzte Reiter
+  wird beim nächsten Öffnen wieder gezeigt. „⛶ Groß anzeigen“ zeigt den Code des gewählten Reiters.

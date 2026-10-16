@@ -183,6 +183,24 @@
   .ghbox .gh-form label.w { grid-column: 1 / -1; }
   .ghbox input { font: inherit; font-weight: 400; padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 8px; min-width: 0; }
   .ghbox .gh-url .row { flex-wrap: nowrap; } .ghbox .gh-url input { flex: 1; font-family: ui-monospace, monospace; font-size: .8rem; }
+
+  #voteFull .vt-row:has(.vt-rk) { grid-template-columns: 2.6em minmax(9vh, 26vh) 1fr minmax(12vw, 22vh); }
+  #voteFull .vt-row .vt-rk { font-size: clamp(18px, 3.6vh, 44px); }
+  #voteBadge { position: fixed; right: 10px; bottom: 10px; z-index: 3800; border-radius: 999px; padding: 4px 12px; font-size: .8rem; font-weight: 700; background: #fff; border: 1.5px solid #93c5fd; color: #1d4ed8; box-shadow: 0 2px 8px rgba(0,0,0,.12); cursor: pointer; }
+  #voteBadge[hidden] { display: none; } #voteBadge .rb-s { letter-spacing: .1em; }
+  #voteFull .vt-sub { font-size: 2.4vh; color: #64748b; margin-top: .4vh; }
+  .vt-bar button.on { background: rgba(255,255,255,.4); }
+  .vt-row .vt-rk, .vt-li .vt-rk { font-weight: 900; color: #64748b; min-width: 2.2em; text-align: right; }
+  .vt-pie { display: flex; align-items: center; justify-content: center; gap: 4vw; flex-wrap: wrap; height: 100%; }
+  .vt-pie svg { height: min(56vh, 46vw); width: auto; }
+  .vt-leg { display: flex; flex-direction: column; gap: 1.2vh; font-size: clamp(16px, 3vh, 34px); max-height: 60vh; overflow: auto; }
+  .vt-li { display: flex; align-items: center; gap: .5em; } .vt-li i { width: 1em; height: 1em; border-radius: 4px; flex: none; }
+  .vt-li span { min-width: 4em; } .vt-li b { min-width: 1.5em; text-align: right; } .vt-li small { color: #64748b; min-width: 3em; } .vt-li.dim { opacity: .45; }
+  #voteSetup textarea { width: 100%; box-sizing: border-box; font: inherit; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 8px; resize: vertical; }
+  #voteSetup .vt-ln { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: .85rem; color: #64748b; margin-top: 4px; }
+  #voteSetup .vt-round { display: flex; align-items: center; gap: 10px; justify-content: space-between; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 6px 10px; font-size: .85rem; margin-top: 8px; }
+  .rc-panel textarea, #rcPanel textarea { font: inherit; width: 100%; box-sizing: border-box; }
+  .ghbox .gh-chk span { display: flex; gap: 6px; align-items: flex-start; font-weight: 400; } .ghbox .gh-chk input { margin-top: 3px; }
 </style>
 <style>
   :root {
@@ -765,7 +783,8 @@
   #pdfBusy { position: fixed; inset: 0; z-index: 4000; background: rgba(255,255,255,.9); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--accent); font-size: 1.1rem; }
   #pdfBusy[hidden] { display: none; } #pdfBusy .spin { display: inline-block; width: 18px; height: 18px; border: 3px solid var(--accent-soft, #cfe3dc); border-top-color: var(--accent); border-radius: 50%; margin-right: 10px; vertical-align: -3px; animation: pdfspin .8s linear infinite; }
   @keyframes pdfspin { to { transform: rotate(360deg); } } #examDlg [hidden] { display: none !important; }
-  .qr-dlg { width: 560px; } #qrBox { display: flex; justify-content: center; } #qrBox svg { width: min(420px, 70vh); height: auto; display: block; }
+  .qr-dlg { width: 600px; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; } #qrDlg:not(.big) { align-items: flex-start; } #qrDlg:not(.big) .qr-dlg { margin: auto 0; } #qrBox { display: flex; justify-content: center; } #qrBox svg { width: min(420px, 55vh); height: auto; display: block; }
+  #qrDlg.big .qr-dlg { max-height: none; overflow: hidden; } #qrDlg.big .pubbox { display: none; }
   .qr-nav { justify-content: center; } #qrNav[hidden] { display: none; }
   #qrDlg.big { padding: 0; background: #fff; } #qrDlg.big .qr-dlg { width: 100%; height: 100%; border-radius: 0; box-shadow: none; display: flex; flex-direction: column; }
   #qrDlg.big .nc-body { flex: 1; } #qrDlg.big #qrBox { flex: 1; align-items: center; } #qrDlg.big #qrBox svg { width: auto; height: calc(100vh - 230px); max-width: 100%; }
@@ -1198,6 +1217,12 @@
   .cal .add button { font-size: .7rem; padding: 1px 5px; border-radius: 6px; }
   .cal-leg { display: flex; flex-wrap: wrap; gap: 6px 16px; color: var(--muted); font-size: .8rem; margin-top: 8px; }
   @media (hover: none) { .cal .add { display: flex; opacity: .55; } }
+  .snd-h { font-size: .8rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  .snd-tabs { display: flex; gap: 4px; border-bottom: 2px solid #e2e8f0; margin-top: 4px; }
+  .snd-tabs button { white-space: nowrap; border: 0; border-bottom: 3px solid transparent; border-radius: 8px 8px 0 0; background: none; padding: 7px 12px; font-weight: 700; color: var(--muted); margin-bottom: -2px; cursor: pointer; }
+  .snd-tabs button.on { color: var(--accent, #2563eb); border-bottom-color: currentColor; background: #f1f5f9; }
+  #qrArea[hidden] { display: none; }
+  #qrDlg.big .snd-tabs, #qrDlg.big .snd-h, #qrDlg.big #odOff { display: none; }
 </style>
 </head>
 <body class="mode-room">
@@ -1394,7 +1419,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-17</p>
+          <p class="hint" style="margin:0">Version 2026-11-19</p>
         </div>
       </details>
 
@@ -1680,6 +1705,7 @@
   </div>
 </div>
 <div id="voteFull" hidden></div>
+<button id="voteBadge" hidden title="Abstimmungsrunde – antippen für die nächste Frage"></button>
 
 <div id="voteSetup" class="cdlg-back" hidden>
   <div class="cdlg nc" role="dialog" aria-modal="true" aria-labelledby="voteSetupT">
@@ -1692,6 +1718,7 @@
         <button type="button" class="vt-type" data-vt="type" data-type="yn"><span class="vt-ico">✔</span>Ja/Nein</button>
         <button type="button" class="vt-type" data-vt="type" data-type="scale5"><span class="vt-ico">5</span>1–5 Skala</button>
         <button type="button" class="vt-type" data-vt="type" data-type="grade6"><span class="vt-ico">6</span>1–6 Noten</button>
+        <button type="button" class="vt-type" data-vt="type" data-type="list"><span class="vt-ico">📝</span>Eigene Antworten</button>
         <button type="button" class="vt-type" data-vt="type" data-type="words"><span class="vt-ico">☁</span>Wortwolke</button>
       </div>
       <label class="vt-field">Frage (optional)
@@ -1710,6 +1737,14 @@
           <select id="voteCorr"><option value="">keine</option></select>
         </label>
       </div>
+      <div id="voteList" class="vt-field" hidden>
+        <label>Antworten – eine pro Zeile (2–12), z. B. die Kandidaten bei der Klassensprecherwahl
+          <textarea id="voteListIn" rows="6" maxlength="900" placeholder="Anna&#10;Ben&#10;Can&#10;Dilara"></textarea>
+        </label>
+        <div class="vt-ln"><span id="voteListN"></span>
+          <label>Stimmen pro Kind <select id="voteMax"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option></select></label></div>
+      </div>
+      <div id="voteRound" class="vt-round" hidden><span id="voteRoundT"></span><button type="button" data-vt="stop">⏹ Runde beenden</button></div>
       <div class="vt-foot">
         <button type="button" data-vt="cancel">Abbrechen</button>
         <button type="button" class="vt-go" data-vt="go">▶ Starten</button>
@@ -1913,13 +1948,18 @@
   <div class="cdlg qr-dlg">
     <div class="cdlg-title">📲 An die Schüler-iPads senden</div>
     <div class="nc-body">
+      <div class="snd-h">Was soll gesendet werden?</div>
       <div class="row"><label class="chk"><input type="checkbox" id="qrTT"> Stundenplan</label><label class="chk"><input type="checkbox" id="qrHW"> Hausaufgaben (offen)</label><label class="chk"><input type="checkbox" id="qrEX"> Proben &amp; Termine</label><label class="chk"><input type="checkbox" id="qrMS"> Mitteilungen</label></div>
-      <div class="hint" id="qrInfo"></div>
-      <div id="qrBox"></div>
-      <div class="row qr-nav" id="qrNav" hidden><button id="qrPrev">◀</button><span id="qrPartTxt" class="hint"></span><button id="qrNext">▶</button></div>
+      <div class="snd-tabs" id="sndTabs" role="tablist"><button data-stab="qr" role="tab" title="Wechselnde QR-Codes direkt scannen">📷 Direkt</button><button data-stab="od" role="tab">☁️ OneDrive</button><button data-stab="gh" role="tab">🌐 GitHub</button></div>
       <div class="pubbox" id="pubBox" hidden></div>
+      <div class="hint" id="odOff" hidden>OneDrive geht nur in der installierten App bzw. über die Internetadresse (https://…), nicht beim direkten Öffnen der Datei.</div>
       <div class="pubbox ghbox" id="ghBox"></div>
-      <div class="hint">Die Schüler tippen in der App <b>„Hausaufgabenheft“</b> auf <b>„📷 Empfangen“</b> und halten das iPad auf den Code. Bei mehreren Codes einfach weiter draufhalten, bis alle empfangen sind.</div>
+      <div id="qrArea">
+        <div class="hint" id="qrInfo"></div>
+        <div id="qrBox"></div>
+        <div class="row qr-nav" id="qrNav" hidden><button id="qrPrev">◀</button><span id="qrPartTxt" class="hint"></span><button id="qrNext">▶</button></div>
+        <div class="hint" id="qrHow">Die Schüler tippen in der App <b>„Hausaufgabenheft“</b> auf <b>„📷 Empfangen“</b> und halten das iPad auf den Code. Bei mehreren Codes einfach weiter draufhalten, bis alle empfangen sind.</div>
+      </div>
       <div class="row" style="justify-content:flex-end"><button id="qrBig">⛶ Groß anzeigen</button><button class="primary" id="qrClose">Schließen</button></div>
     </div>
   </div>
@@ -5870,7 +5910,7 @@ document.addEventListener('keydown', e => {
 // liest auch ältere Dateien (Version 1 und 2) ein
 function migrate(data) {
   const fill = c => Object.assign({ plans: [], duties: [], dutyCount: {}, picked: [], showDuties: false, subNote: '', groups: [], checks: [], exams: [], msgs: [] }, c);
-  if (Array.isArray(data.classes) && data.classes.length) return { classes: data.classes.map(fill), current: data.current || data.classes[0].id, seq: data.seq || 10000, boards: Array.isArray(data.boards) ? data.boards : [], boardStart: data.boardStart || {} };
+  if (Array.isArray(data.classes) && data.classes.length) return { classes: data.classes.map(fill), current: data.current || data.classes[0].id, seq: data.seq || 10000, boards: Array.isArray(data.boards) ? data.boards : [], boardStart: data.boardStart || {}, ...(data.gh && data.gh.repo && data.gh.token ? { gh: data.gh } : {}) };
   const fresh = { classes: [], current: null, seq: 0 };
   state = fresh;   // damit newId() fortlaufend zählt
   const c = makeClass('Klasse 1', []);
@@ -6251,16 +6291,18 @@ async function odPubTick() {
 }
 setInterval(odPubTick, 5000);   // Änderungen für die Kinder spätestens nach wenigen Sekunden übertragen
 function renderPubBox() {
+  try {
   const box = $('pubBox'); if (!box) return;
   box.hidden = !OD_OK; if (!OD_OK) return;
   const c = cls(), t = pubTime[c.id];
   box.innerHTML = c.pub && c.pub.id
     ? `<div><b>☁️ Über OneDrive verbunden</b> – Änderungen kommen automatisch bei den Kindern an (beim Öffnen der App oder mit „🔄 Aktualisieren“).${t ? ` Zuletzt übertragen: ${new Date(t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}.` : ''}${pubErr ? ` <span class="unsaved">Fehler: ${esc(pubErr)}</span>` : ''}</div>
-       <div class="row"><button id="pubQr" class="primary">🔗 Verbindungs-Code zeigen</button><button id="pubNow">🔄 Jetzt übertragen</button><button id="pubOff" class="danger">Verbindung beenden</button></div>
+       <div class="row"><button id="pubNow">🔄 Jetzt übertragen</button><button id="pubOff" class="danger">Verbindung beenden</button></div>
        <div class="hint">Neue Kinder (oder ein neues iPad) scannen einmal den Verbindungs-Code. Die Kinder melden sich dabei mit ihrem Schulkonto an.</div>`
     : `<div><b>☁️ Ohne QR-Codes: Klasse über OneDrive verbinden</b></div>
        <div class="hint">Der Klassenmanager legt eine Datei in deinem OneDrive (Ordner „Klassenmanager“) ab und teilt sie zum Lesen mit Personen deiner Schule. Die Kinder scannen einmal den Verbindungs-Code – danach holt sich das Hausaufgabenheft Änderungen selbst. Inhalt wie oben ausgewählt, ohne Schülernamen.</div>
        <div class="row"><button id="pubOn" class="primary">☁️ Über OneDrive veröffentlichen</button></div>`;
+  } finally { sndVis(); }
 }
 function showLinkQr() {
   const c = cls(); if (!c.pub) return;
@@ -6271,7 +6313,7 @@ function showLinkQr() {
 }
 async function pubStart() {
   const c = cls();
-  try { setResult('☁️ Wird veröffentlicht …', 'ok'); await odPublish(c, true); renderPubBox(); showLinkQr(); setResult(`☁️ Klasse ${c.name} ist über OneDrive verbunden. Die Kinder scannen jetzt einmal den Verbindungs-Code.`, 'ok'); }
+  try { setResult('☁️ Wird veröffentlicht …', 'ok'); await odPublish(c, true); renderPubBox(); showLinkQr(); renderSend(); setResult(`☁️ Klasse ${c.name} ist über OneDrive verbunden. Die Kinder scannen jetzt einmal den Verbindungs-Code.`, 'ok'); }
   catch (e) { if (e.message !== 'login') { pubErr = e.message; renderPubBox(); setResult('☁️ Veröffentlichen hat nicht geklappt: ' + e.message, 'warn'); } }
 }
 $('pubBox').addEventListener('click', async e => {
@@ -6292,7 +6334,8 @@ $('pubBox').addEventListener('click', async e => {
    Die Datei klassen/<schlüssel>.json liegt in einem öffentlichen Repository. Das Hausaufgabenheft holt sie über
    raw.githubusercontent.com. Der Zugangsschlüssel (Token) bleibt nur auf diesem Gerät (localStorage km-gh). */
 const GH_API = 'https://api.github.com';
-const ghCfg = () => lsGet('km-gh', null);
+const ghCfg = () => (state && state.gh && state.gh.token ? state.gh : lsGet('km-gh', null));   // Zugang aus der Klassendatei (alle eigenen Geräte) – sonst nur dieses Gerät
+const ghInFile = () => !!(state && state.gh && state.gh.token);
 const ghOk = () => { const g = ghCfg(); return !!(g && g.repo && g.token); };
 const ghBr = () => (ghCfg() || {}).branch || 'main';
 let ghSent = lsGet('km-gh-sent', {}), ghTime = {}, ghErr = '', ghBusy = false, ghSha = {}, ghEdit = false, ghCopied = 0;
@@ -6340,17 +6383,20 @@ async function ghTick(force) {
 }
 setInterval(() => ghTick(false), 10000);
 function renderGhBox() {
+  try {
   const box = $('ghBox'); if (!box) return;
   const c = cls(), g = ghCfg() || {}, t = c.gh && ghTime[c.id];
   if (!ghOk() || ghEdit) {
     box.innerHTML = `<div><b>🌐 Ohne Anmeldung der Kinder: Klasse über GitHub veröffentlichen</b></div>
       <div class="hint">Gut für iPads, die ihren Speicher löschen (z. B. Wechsel Schul-/Privatmodus): Die Klasse steckt in der App-Adresse (Webclip) und ist bei jedem Start sofort wieder da. Die Datei ist <b>öffentlich lesbar</b> für jeden, der die Adresse kennt – sie enthält keine Schülernamen; bitte auch in Mitteilungen keine Namen verwenden.</div>
-      <ol class="hint gh-steps"><li>Auf github.com ein neues <b>öffentliches</b> Repository anlegen, z. B. „klassendaten“ (Häkchen „Add a README“).</li><li>Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → „Generate new token“: nur dieses Repository, Berechtigung <b>Contents: Read and write</b>.</li><li>Hier eintragen – der Schlüssel bleibt nur auf diesem Gerät.</li></ol>
+      <ol class="hint gh-steps" ${ghOk() ? 'hidden' : ''}><li>Auf github.com ein neues <b>öffentliches</b> Repository anlegen, z. B. „klassendaten“ (Häkchen „Add a README“).</li><li>Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → „Generate new token“: nur dieses Repository, Berechtigung <b>Contents: Read and write</b>.</li><li>Hier eintragen – der Schlüssel bleibt nur auf diesem Gerät.</li></ol>
       <div class="gh-form"><label>Repository<input id="ghRepo" value="${esc(g.repo || '')}" placeholder="benutzername/klassendaten" autocomplete="off" spellcheck="false"></label>
       <label>Zweig<input id="ghBranch" value="${esc(g.branch || '')}" placeholder="main" autocomplete="off" spellcheck="false"></label>
       <label class="w">Zugangsschlüssel (Token)<input id="ghToken" type="password" value="${esc(g.token || '')}" placeholder="github_pat_…" autocomplete="off"></label>
-      <label class="w">Adresse des Hausaufgabenhefts<input id="ghHH" value="${esc(g.hh || '')}" placeholder="https://benutzername.github.io/hausaufgabenheft/" autocomplete="off" spellcheck="false"></label></div>
-      <div class="row"><button id="ghSave" class="primary">✓ Speichern &amp; prüfen</button>${ghOk() ? '<button id="ghCancel">Abbrechen</button><button id="ghForget" class="danger">Zugang von diesem Gerät löschen</button>' : ''}</div>${ghErr ? `<div class="unsaved">Fehler: ${esc(ghErr)}</div>` : ''}`;
+      <label class="w">Adresse des Hausaufgabenhefts<input id="ghHH" value="${esc(g.hh || '')}" placeholder="https://benutzername.github.io/hausaufgabenheft/" autocomplete="off" spellcheck="false"></label>
+      <label class="w gh-chk"><span><input type="checkbox" id="ghInFile"${ghInFile() || !ghOk() ? ' checked' : ''}> Zugang in der Klassendatei speichern – dann ist er auf allen Geräten da, die diese Datei öffnen</span></label></div>
+      <div class="hint">Nur ankreuzen, wenn die Klassendatei nur bei dir liegt (nicht in einem geteilten Ordner, nicht auf einem gemeinsam genutzten Stick oder Rechner). In QR-Codes und in der Datei für die Kinder ist der Zugang nie enthalten.</div>
+      <div class="row"><button id="ghSave" class="primary">✓ Speichern &amp; prüfen</button>${ghOk() ? '<button id="ghCancel">Abbrechen</button><button id="ghForget" class="danger">Zugang löschen</button>' : ''}</div>${ghErr ? `<div class="unsaved">Fehler: ${esc(ghErr)}</div>` : ''}`;
     return;
   }
   if (!c.gh) {
@@ -6360,10 +6406,11 @@ function renderGhBox() {
     return;
   }
   const u = ghUrl(c);
-  box.innerHTML = `<div><b>🌐 Über GitHub verbunden</b> – Änderungen kommen ohne Anmeldung bei den Kindern an (beim Öffnen der App, sonst nach wenigen Minuten).${t ? ` Zuletzt übertragen: ${new Date(t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}.` : ''}${ghErr ? ` <span class="unsaved">Fehler: ${esc(ghErr)}</span>` : ''}</div>
+  box.innerHTML = `<div><b>🌐 Über GitHub verbunden</b>${ghInFile() ? ' <small class="hint">(Zugang in der Klassendatei)</small>' : ''} – Änderungen kommen ohne Anmeldung bei den Kindern an (beim Öffnen der App, sonst nach wenigen Minuten).${t ? ` Zuletzt übertragen: ${new Date(t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}.` : ''}${ghErr ? ` <span class="unsaved">Fehler: ${esc(ghErr)}</span>` : ''}</div>
     ${u ? `<label class="gh-url">App-Adresse für den Webclip (Jamf)<span class="row"><input id="ghUrlIn" readonly value="${esc(u)}"><button id="ghCopy">${Date.now() - ghCopied < 3000 ? '✓ Kopiert' : '📋 Kopieren'}</button></span></label>` : '<div class="hint">Für die Webclip-Adresse unter „⚙ GitHub-Zugang“ die Adresse des Hausaufgabenhefts eintragen.</div>'}
-    <div class="row"><button id="ghQr" class="primary">🔗 Verbindungs-Code zeigen</button><button id="ghNow">🔄 Jetzt übertragen</button><button id="ghOff" class="danger">Verbindung beenden</button><button id="ghCfgBtn">⚙ GitHub-Zugang</button></div>
+    <div class="row"><button id="ghNow">🔄 Jetzt übertragen</button><button id="ghOff" class="danger">Verbindung beenden</button><button id="ghCfgBtn">⚙ GitHub-Zugang</button></div>
     <div class="hint">Webclip mit dieser Adresse: Die Klasse ist bei jedem Start da – auch nach dem Löschen des Speichers. Alternativ scannen die Kinder einmal den Verbindungs-Code.</div>`;
+  } finally { sndVis(); }
 }
 function ghShowQr() {
   const c = cls(); if (!c.gh || !ghOk()) return;
@@ -6379,13 +6426,15 @@ async function ghSaveCfg() {
   if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { ghErr = 'Repository bitte als „benutzername/name“ eintragen'; renderGhBox(); return; }
   if (!g.token) { ghErr = 'Zugangsschlüssel fehlt'; renderGhBox(); return; }
   if (g.hh && !/^https:\/\//i.test(g.hh)) { ghErr = 'Die Adresse des Hausaufgabenhefts muss mit https:// beginnen'; renderGhBox(); return; }
+  const inFile = $('ghInFile').checked;
   lsSet('km-gh', g);
+  if (inFile) change(() => { state.gh = { ...g }; }, { keepList: true }); else if (state.gh) change(() => { delete state.gh; }, { keepList: true });
   try {
     const r = await ghFetch('/repos/' + repo);
     if (!r.ok) throw await ghE(r);
     const j = await r.json();
     if (j.private) throw new Error('Das Repository ist privat – die iPads können die Datei dann nicht lesen. Auf GitHub unter Settings → „Change visibility“ auf Public stellen.');
-    if (!g.branch) { g.branch = j.default_branch || 'main'; lsSet('km-gh', g); }
+    if (!g.branch) { g.branch = j.default_branch || 'main'; lsSet('km-gh', g); if (inFile) change(() => { state.gh = { ...g }; }, { keepList: true }); }
     ghErr = ''; ghEdit = false; ghSha = {}; setResult('🌐 GitHub-Zugang gespeichert.', 'ok');
   } catch (e) { ghErr = e.message; ghEdit = true; }
   renderGhBox();
@@ -6396,11 +6445,11 @@ $('ghBox').addEventListener('click', async e => {
   if (b.id === 'ghSave') ghSaveCfg();
   if (b.id === 'ghCancel') { ghEdit = false; ghErr = ''; renderGhBox(); }
   if (b.id === 'ghCfgBtn') { ghEdit = true; ghErr = ''; renderGhBox(); }
-  if (b.id === 'ghForget') { if (!window.confirm('GitHub-Zugang (Token) von diesem Gerät löschen? Die veröffentlichten Klassen bleiben bestehen, werden von hier aus aber nicht mehr aktualisiert.')) return; lsSet('km-gh', null); ghEdit = false; ghErr = ''; renderGhBox(); }
+  if (b.id === 'ghForget') { if (!window.confirm('GitHub-Zugang (Token) löschen – auf diesem Gerät und aus der Klassendatei? Die veröffentlichten Klassen bleiben bestehen, werden aber nicht mehr aktualisiert, bis du den Zugang wieder einträgst.')) return; lsSet('km-gh', null); if (state.gh) change(() => { delete state.gh; }, { keepList: true }); ghEdit = false; ghErr = ''; renderGhBox(); }
   if (b.id === 'ghOn') {
     change(() => { c.gh = { key: ghNewKey(), opt: { ...(ui.qrOpts || { tt: true, hw: true, ex: true, ms: true }) } }; }, { keepList: true });
     setResult('🌐 Wird veröffentlicht …', 'ok');
-    try { await ghPublish(c); renderGhBox(); ghShowQr(); setResult(`🌐 Klasse ${c.name} ist über GitHub veröffentlicht. Webclip-Adresse kopieren oder Verbindungs-Code scannen lassen.`, 'ok'); }
+    try { await ghPublish(c); renderGhBox(); ghShowQr(); renderSend(); setResult(`🌐 Klasse ${c.name} ist über GitHub veröffentlicht. Webclip-Adresse kopieren oder Verbindungs-Code scannen lassen.`, 'ok'); }
     catch (er) { ghErr = er.message; change(() => { delete c.gh; }, { keepList: true }); renderGhBox(); setResult('🌐 Veröffentlichen hat nicht geklappt: ' + er.message, 'warn'); }
   }
   if (b.id === 'ghQr') ghShowQr();
@@ -8003,7 +8052,9 @@ $('rcPanel').addEventListener('click', e => {
   if (b.dataset.rvt) { r.vf = Object.assign(r.vf || {}, { type: b.dataset.rvt }); renderRc(); }
   if (b.dataset.rvn) { r.vf.n = +b.dataset.rvn; if (+r.vf.corr >= r.vf.n) r.vf.corr = ''; renderRc(); }
   if (b.dataset.rvc != null) { r.vf.corr = b.dataset.rvc; renderRc(); }
-  if (b.dataset.rvote) { const f = r.vf || {}; rcSend(b.dataset.rvote === 'start' ? { c: 'vote', a: 'start', type: f.type || 'thumbs', q: (r.fv || {}).vq || '', n: f.n || 4, corr: f.corr || '' } : { c: 'vote', a: b.dataset.rvote }); if (b.dataset.rvote === 'start' && r.fv) delete r.fv.vq; }
+  if (b.dataset.rvm) { r.vf.max = +b.dataset.rvm; renderRc(); }
+  if (b.dataset.rvote === 'stop' && !window.confirm('Abstimmungsrunde beenden? Die Kinder werden getrennt und müssen für die nächste Abstimmung die Symbole neu antippen.')) return;
+  if (b.dataset.rvote) { const f = r.vf || {}; rcSend(b.dataset.rvote === 'start' ? { c: 'vote', a: 'start', type: f.type || 'thumbs', q: (r.fv || {}).vq || '', n: f.n || 4, corr: f.corr || '', list: (r.fv || {}).vopts || '', max: f.max || 1 } : { c: 'vote', a: b.dataset.rvote }); if (b.dataset.rvote === 'start' && r.fv) delete r.fv.vq; }
   if (b.dataset.rvok || b.dataset.rvno) rcSend({ c: 'vote', a: b.dataset.rvok ? 'ok' : 'no', id: b.dataset.rvok || b.dataset.rvno });
   if (b.dataset.rsave) {
     const v = r.fv || {};
@@ -8024,11 +8075,12 @@ $('rcPanel').addEventListener('change', e => {
 window.addEventListener('resize', () => { if (RC.remote) rcInkDraw(); });
 document.addEventListener('visibilitychange', () => { const r = RC.remote; if (document.visibilityState === 'visible' && r && !r.stop && (!r.conn || !r.conn.open) && r.st !== 'connecting') rcConnect(r.code); });
 
-/* ---------- 📊 Live-Abstimmung (Tafel) ---------- */
-/* Tafel-Seite der Live-Abstimmung (Klassenmanager).
-   Nutzt Host-Funktionen: $, esc, setResult, clamp, loadPeer, rcOpts, RC_SYM, RC_SYMN, present. */
-
-var VOTE = null;
+/* ---------- 📊 Live-Abstimmung (Tafel) ----------
+   Abstimmungsrunde (VS): eine Verbindung mit drei Symbolen für mehrere Fragen hintereinander.
+   Die Kinder bleiben verbunden; neue Fragen erscheinen bei ihnen sofort. Ohne offene Frage endet
+   die Runde nach 10 Minuten von selbst. Einzelne Frage (VOTE): Art, Antworten, Stimmen. */
+var VS = null, VOTE = null;
+var VT_IDLE = 10 * 60 * 1000;
 var VT_TYPES = {
   thumbs: { n: 'Daumen', o: ['👍', '👌', '👎'] },
   mood:   { n: 'Blitzlicht', o: ['😀', '🙂', '😐', '🙁'] },
@@ -8036,99 +8088,117 @@ var VT_TYPES = {
   scale5: { n: 'Skala 1–5', o: ['1', '2', '3', '4', '5'] },
   grade6: { n: 'Noten 1–6', o: ['1', '2', '3', '4', '5', '6'] },
   abcd:   { n: 'Antwort A–D', o: null },
+  list:   { n: 'Eigene Antworten', o: null },
   words:  { n: 'Wortwolke', o: [] }
 };
 var VT_LETTERS = 'ABCD';
-var vtInited = false, vtPopOpen = false, vtSetT = 'thumbs', vtTimer = 0, vtLast = 0;
+var VT_COL = ['#2563eb', '#f59e0b', '#16a34a', '#dc2626', '#7c3aed', '#0891b2', '#db2777', '#65a30d', '#ea580c', '#475569', '#0d9488', '#a16207'];
+var vtInited = false, vtPopOpen = false, vtSetT = 'thumbs', vtTimer = 0, vtLast = 0, vtDisp = 'bars';
 
 function vtRand() { return Math.random().toString(36).slice(2, 10); }
 function vtNorm(s) { return String(s).trim().toLowerCase(); }
-function vtExpect() {
-  try { return typeof present === 'function' ? present().length : 0; } catch (e) { return 0; }
-}
-function vtLabels(type, n, texts) {
+function vtExpect() { try { return typeof present === 'function' ? present().length : 0; } catch (e) { return 0; } }
+function vtListOpts(t) { return String(t || '').split(/\r?\n/).map(function (s) { return s.trim().slice(0, 60); }).filter(Boolean).slice(0, 12); }
+function vtLabels(cfg) {
+  var type = cfg.type;
+  if (type === 'list') return vtListOpts(cfg.list);
   if (type !== 'abcd') return VT_TYPES[type].o.slice();
-  n = clamp(parseInt(n, 10) || 4, 2, 4);
-  var out = [];
-  for (var i = 0; i < n; i++) {
-    var t = texts && texts[i] ? String(texts[i]).trim() : '';
-    out.push(VT_LETTERS[i] + (t ? ' – ' + t : ''));
-  }
+  var n = clamp(parseInt(cfg.n, 10) || 4, 2, 4), texts = cfg.texts || [], out = [];
+  for (var i = 0; i < n; i++) { var t = texts[i] ? String(texts[i]).trim() : ''; out.push(VT_LETTERS[i] + (t ? ' – ' + t : '')); }
   return out;
 }
 function vtReply(conn, msg) { try { conn.send(msg); } catch (e) {} }
-function vtSend(msg) {
-  if (!VOTE) return;
-  VOTE.conns.forEach(function (c) { try { if (c.open) c.send(msg); } catch (e) {} });
-}
+function vtSend(msg) { if (VS) VS.conns.forEach(function (c) { try { if (c.open) c.send(msg); } catch (e) {} }); }
 function vtMy(dev) {
   if (VOTE.type === 'words') return VOTE.words.get(dev) || [];
   return VOTE.votes.has(dev) ? VOTE.votes.get(dev) : null;
 }
+function vtPollMsg(dev) { var v = VOTE; return { t: 'poll', pid: v.pid, type: v.type, q: v.q, opts: v.opts, max: v.max, open: v.open, my: vtMy(dev) }; }
+function vtLeft() { return VS && VS.idleAt ? Math.max(0, Math.ceil((VS.idleAt + VT_IDLE - Date.now()) / 60000)) : null; }
 
-/* ---- Verbindungen ---- */
-function vtOnData(v, conn, m) {
-  if (VOTE !== v || !m || typeof m !== 'object') return;
+/* ---- Abstimmungsrunde (Verbindung) ---- */
+function vtIdle(on) {
+  if (!VS) return;
+  clearTimeout(VS.idleT); VS.idleT = 0; VS.idleAt = 0;
+  if (on) { VS.idleAt = Date.now(); VS.idleT = setTimeout(function () { voteStop(true); }, VT_IDLE); }
+  vtBadge();
+}
+function vtOnData(s, conn, m) {
+  if (VS !== s || !m || typeof m !== 'object') return;
   var dev = typeof m.dev === 'string' ? m.dev.slice(0, 64) : '';
   if (!dev) return;
   if (m.c === 'join') {
     conn.dev = dev;
-    v.conns.forEach(function (c) { if (c !== conn && c.dev === dev) { try { c.close(); } catch (e) {} } });
-    v.conns = v.conns.filter(function (c) { return c !== conn && c.dev !== dev; });
-    v.conns.push(conn);
-    vtReply(conn, { t: 'poll', pid: v.pid, type: v.type, q: v.q, opts: v.opts, open: v.open, my: vtMy(dev) });
+    s.conns.forEach(function (c) { if (c !== conn && c.dev === dev) { try { c.close(); } catch (e) {} } });
+    s.conns = s.conns.filter(function (c) { return c !== conn && c.dev !== dev; });
+    s.conns.push(conn);
+    vtReply(conn, VOTE ? vtPollMsg(dev) : { t: 'wait' });
+    vtBadge(); renderVote();
     return;
   }
-  if (m.pid !== v.pid) return;
+  var v = VOTE;
+  if (!v || m.pid !== v.pid) return;
   if (!v.open) { vtReply(conn, { t: 'closed' }); return; }
   if (m.c === 'ans' && v.type !== 'words') {
-    if (!Number.isInteger(m.v) || m.v < 0 || m.v >= v.opts.length) return;
-    v.votes.set(dev, m.v);
+    if (v.max > 1) {
+      if (!Array.isArray(m.v)) return;
+      var a = []; m.v.forEach(function (x) { if (Number.isInteger(x) && x >= 0 && x < v.opts.length && a.indexOf(x) < 0) a.push(x); });
+      a = a.slice(0, v.max);
+      if (a.length) v.votes.set(dev, a); else v.votes.delete(dev);
+    } else {
+      if (!Number.isInteger(m.v) || m.v < 0 || m.v >= v.opts.length) return;
+      v.votes.set(dev, m.v);
+    }
     vtReply(conn, { t: 'ok' });
   } else if (m.c === 'word' && v.type === 'words') {
     var text = String(m.text == null ? '' : m.text).replace(/\s+/g, ' ').trim().slice(0, 20).trim();
     if (!text) return;
-    var n = vtNorm(text);
-    var list = v.words.get(dev) || [];
-    if (list.some(function (s) { return vtNorm(s) === n; })) { vtReply(conn, { t: 'ok' }); return; }
+    var n = vtNorm(text), list = v.words.get(dev) || [];
+    if (list.some(function (x) { return vtNorm(x) === n; })) { vtReply(conn, { t: 'ok' }); return; }
     if (list.length >= 3) { vtReply(conn, { t: 'max' }); return; }
-    list.push(text);
-    v.words.set(dev, list);
+    list.push(text); v.words.set(dev, list);
     if (!v.ok.has(n) && !v.pending.some(function (p) { return vtNorm(p.text) === n; })) v.pending.push({ id: vtRand(), text: text, dev: dev });
     vtReply(conn, { t: 'ok' });
-  } else {
-    return;
-  }
+  } else return;
   renderVote();
 }
-function vtDrop(v, conn) {
-  if (VOTE === v) v.conns = v.conns.filter(function (c) { return c !== conn; });
-}
-function vtOpenPeer(v) {
+function vtDrop(s, conn) { if (VS === s) { s.conns = s.conns.filter(function (c) { return c !== conn; }); vtBadge(); } }
+function vtOpenSession() {
   var code = '';
   for (var i = 0; i < 3; i++) code += Math.floor(Math.random() * 10);
   var peer;
   try { peer = new (loadPeer())('jpw-theres-klassenmanager-v-' + code, rcOpts()); }
-  catch (e) { setResult('Abstimmung konnte nicht gestartet werden', 'warn'); return; }
-  v.code = code;
-  v.peer = peer;
+  catch (e) { setResult('Abstimmung konnte nicht gestartet werden', 'warn'); return false; }
+  var s = VS = { code: code, peer: peer, conns: [], idleT: 0, idleAt: 0 };
   peer.on('connection', function (conn) {
-    conn.on('data', function (m) { vtOnData(v, conn, m); });
-    conn.on('close', function () { vtDrop(v, conn); });
-    conn.on('error', function () { vtDrop(v, conn); });
+    conn.on('data', function (m) { vtOnData(s, conn, m); });
+    conn.on('close', function () { vtDrop(s, conn); });
+    conn.on('error', function () { vtDrop(s, conn); });
   });
   peer.on('error', function (e) {
-    if (VOTE !== v) return;
-    if (e && e.type === 'unavailable-id') { try { peer.destroy(); } catch (x) {} vtOpenPeer(v); }
-    else setResult('Abstimmung: Verbindungsfehler (' + ((e && e.type) || '?') + ')', 'warn');
+    if (VS !== s) return;
+    if (e && e.type === 'unavailable-id') { try { peer.destroy(); } catch (x) {} VS = null; vtOpenSession(); renderVote(); }
+    else if (e && e.type !== 'peer-unavailable') setResult('Abstimmung: Verbindungsfehler (' + (e.type || '?') + ')', 'warn');
   });
-  renderVote();
+  peer.on('disconnected', function () { if (VS === s && !peer.destroyed) setTimeout(function () { if (VS === s && !peer.destroyed) peer.reconnect(); }, 2000); });
+  return true;
+}
+// Runde beenden: Kinder werden getrennt (nach 10 Minuten ohne Frage automatisch)
+function voteStop(auto) {
+  var s = VS;
+  if (VOTE) voteClose();
+  if (!s) return;
+  vtSend({ t: 'bye' });
+  clearTimeout(s.idleT); VS = null;
+  setTimeout(function () { try { s.peer.destroy(); } catch (e) {} }, 400);
+  vtBadge();
+  if (auto) setResult('📊 Abstimmungsrunde nach 10 Minuten ohne Frage beendet.', 'ok');
 }
 
 /* ---- Auswertung ---- */
 function vtCounts(v) {
   var c = v.opts.map(function () { return 0; });
-  v.votes.forEach(function (i) { c[i]++; });
+  v.votes.forEach(function (x) { (Array.isArray(x) ? x : [x]).forEach(function (i) { if (i < c.length) c[i]++; }); });
   return c;
 }
 function vtAvg(v, c) {
@@ -8145,61 +8215,66 @@ function vtCloud(v) {
       var n = vtNorm(s);
       if (!v.ok.has(n) || seen.has(n)) return;
       seen.add(n);
-      var e = m.get(n) || { t: s, n: 0 };
-      e.n++;
-      m.set(n, e);
+      var e = m.get(n) || { t: s, n: 0 }; e.n++; m.set(n, e);
     });
   });
   return Array.from(m.values()).sort(function (a, b) { return b.n - a.n || a.t.localeCompare(b.t, 'de'); });
 }
 function vtHue(s) { var h = 0; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 360; return h; }
+// Reihenfolge der Antworten: wie eingegeben oder nach Stimmen (Rangfolge)
+function vtOrder(v, c) {
+  var idx = v.opts.map(function (_, i) { return i; });
+  if (v.sort) idx.sort(function (a, b) { return c[b] - c[a] || a - b; });
+  return idx;
+}
+// Platz 1, 2, 2, 4 … (gleiche Stimmenzahl = gleicher Platz)
+function vtRanks(v, c) {
+  var r = {}, ord = vtOrder(Object.assign({}, v, { sort: true }), c);
+  ord.forEach(function (i, k) { r[i] = k && c[i] === c[ord[k - 1]] ? r[ord[k - 1]] : k + 1; });
+  return r;
+}
 
 /* ---- Öffentliche API ---- */
 function voteStart(cfg) {
   cfg = cfg || {};
-  voteClose();
   var type = VT_TYPES[cfg.type] ? cfg.type : 'thumbs';
-  var opts = vtLabels(type, cfg.n, cfg.texts);
+  var opts = vtLabels(Object.assign({}, cfg, { type: type }));
+  if (type === 'list' && opts.length < 2) { setResult('📊 Bitte mindestens zwei Antworten eingeben (eine pro Zeile).', 'warn'); return false; }
+  if (!VS && !vtOpenSession()) return false;
   var c = cfg.correct;
   VOTE = {
     pid: vtRand(), type: type, q: String(cfg.q || '').trim().slice(0, 200), opts: opts,
+    max: type === 'list' ? clamp(parseInt(cfg.max, 10) || 1, 1, Math.min(3, opts.length - 1)) : 1,
     correct: type === 'abcd' && Number.isInteger(c) && c >= 0 && c < opts.length ? c : null,
-    open: true, show: false, revealed: false, code: '', peer: null,
-    conns: [], votes: new Map(), words: new Map(), pending: [], ok: new Set()
+    open: true, show: false, revealed: false, sort: type === 'list', disp: vtDisp,
+    votes: new Map(), words: new Map(), pending: [], ok: new Set()
   };
+  vtIdle(false);
   vtInit();
   vtPopOpen = false;
   $('voteFull').hidden = false;
-  vtOpenPeer(VOTE);
-}
-function voteShow(on) {
-  if (!VOTE) return;
-  VOTE.show = on === undefined ? !VOTE.show : !!on;
+  VS.conns.forEach(function (cn) { vtReply(cn, vtPollMsg(cn.dev)); });   // schon verbundene Kinder sehen die Frage sofort
   renderVote();
+  return true;
 }
-function voteReveal() {
-  if (!VOTE || VOTE.correct == null) return;
-  VOTE.revealed = true;
-  VOTE.show = true;
-  renderVote();
-}
+function voteShow(on) { if (!VOTE) return; VOTE.show = on === undefined ? !VOTE.show : !!on; renderVote(); }
+function voteReveal() { if (!VOTE || VOTE.correct == null) return; VOTE.revealed = true; VOTE.show = true; renderVote(); }
+function voteDisp(d) { if (!VOTE) return; VOTE.disp = vtDisp = d === 'pie' ? 'pie' : 'bars'; renderVote(); }
+function voteSort(on) { if (!VOTE) return; VOTE.sort = on === undefined ? !VOTE.sort : !!on; renderVote(); }
 function voteEnd() {
   if (!VOTE) return;
   VOTE.open = false;
   vtSend({ t: 'closed' });
+  vtIdle(true);
   renderVote();
 }
+// Frage schließen – die Runde (Verbindung der Kinder) bleibt für die nächste Frage bestehen
 function voteClose() {
-  var v = VOTE;
-  if (v) {
-    v.open = false;
-    vtSend({ t: 'closed' });
-    VOTE = null;
-    try { if (v.peer) v.peer.destroy(); } catch (e) {}
-  }
+  if (VOTE) { if (VOTE.open) vtSend({ t: 'closed' }); VOTE = null; vtSend({ t: 'wait' }); vtIdle(true); }
   vtPopOpen = false;
   var f = $('voteFull');
   if (f) { f.hidden = true; f.innerHTML = ''; }
+  vtBadge();
 }
 function voteApprove(id, yes) {
   if (!VOTE) return;
@@ -8211,12 +8286,12 @@ function voteApprove(id, yes) {
   renderVote();
 }
 function voteState() {
-  var v = VOTE;
-  if (!v) return { on: false };
+  var v = VOTE, round = VS ? { code: VS.code, n: VS.conns.length, left: vtLeft() } : null;
+  if (!v) return { on: false, round: round };
   var c = v.type === 'words' ? [] : vtCounts(v);
   return {
-    on: true, type: v.type, q: v.q, opts: v.opts, open: v.open, show: v.show,
-    revealed: v.revealed, correct: v.correct, code: v.code,
+    on: true, round: round, type: v.type, q: v.q, opts: v.opts, open: v.open, show: v.show, max: v.max,
+    revealed: v.revealed, correct: v.correct, code: VS ? VS.code : '', sort: v.sort, disp: v.disp,
     count: v.type === 'words' ? v.words.size : v.votes.size,
     expect: vtExpect(), counts: c, avg: vtAvg(v, c),
     words: vtCloud(v).map(function (w) { return { t: w.t, n: w.n }; }),
@@ -8227,22 +8302,20 @@ function voteState() {
 /* ---- Zeichnen ---- */
 function renderVote() {
   var wait = 200 - (Date.now() - vtLast);
-  if (wait <= 0) {
-    clearTimeout(vtTimer);
-    vtTimer = 0;
-    vtLast = Date.now();
-    vtDraw();
-  } else if (!vtTimer) {
-    vtTimer = setTimeout(function () { vtTimer = 0; renderVote(); }, wait);
-  }
+  if (wait <= 0) { clearTimeout(vtTimer); vtTimer = 0; vtLast = Date.now(); vtDraw(); vtBadge(); }
+  else if (!vtTimer) vtTimer = setTimeout(function () { vtTimer = 0; renderVote(); }, wait);
+}
+function vtColor(v, i) {
+  if (v.revealed && v.correct != null) return i === v.correct ? '#16a34a' : '#cbd5e1';
+  return VT_COL[i % VT_COL.length];
 }
 function vtBarsHtml(v, c, tot) {
-  var h = '<div class="vt-bars">';
-  v.opts.forEach(function (o, i) {
+  var rk = vtRanks(v, c), h = '<div class="vt-bars">';
+  vtOrder(v, c).forEach(function (i) {
     var p = tot ? Math.round(c[i] / tot * 100) : 0;
     var cls = 'vt-fill';
     if (v.revealed && v.correct != null) cls += i === v.correct ? ' ok' : ' dim';
-    h += '<div class="vt-row"><div class="vt-lab">' + esc(o) + '</div>' +
+    h += '<div class="vt-row">' + (v.sort ? '<div class="vt-rk">' + rk[i] + '.</div>' : '') + '<div class="vt-lab">' + esc(v.opts[i]) + '</div>' +
       '<div class="vt-track"><div class="' + cls + '" style="width:' + p + '%"></div></div>' +
       '<div class="vt-num">' + c[i] + ' <small>(' + p + '%)</small></div></div>';
   });
@@ -8250,6 +8323,35 @@ function vtBarsHtml(v, c, tot) {
   var avg = vtAvg(v, c);
   if (avg != null) h += '<div class="vt-avg">Durchschnitt: ' + avg.toFixed(1).replace('.', ',') + '</div>';
   return h;
+}
+function vtPieHtml(v, c, tot) {
+  var R = 100, cx = 110, cy = 110, a0 = -Math.PI / 2, svg = '';
+  var ord = vtOrder(v, c), rk = vtRanks(v, c);
+  if (!tot) svg = '<circle cx="' + cx + '" cy="' + cy + '" r="' + R + '" fill="#e5e7eb"/>';
+  ord.forEach(function (i) {
+    if (!c[i]) return;
+    var f = c[i] / tot, a1 = a0 + f * Math.PI * 2, col = vtColor(v, i);
+    if (f >= 0.9999) svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + R + '" fill="' + col + '"/>';
+    else {
+      var x0 = cx + R * Math.cos(a0), y0 = cy + R * Math.sin(a0), x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
+      svg += '<path d="M' + cx + ' ' + cy + 'L' + x0.toFixed(2) + ' ' + y0.toFixed(2) + 'A' + R + ' ' + R + ' 0 ' + (f > 0.5 ? 1 : 0) + ' 1 ' + x1.toFixed(2) + ' ' + y1.toFixed(2) + 'Z" fill="' + col + '" stroke="#fff" stroke-width="2"/>';
+    }
+    if (f >= 0.06) {
+      var am = (a0 + a1) / 2, tx = cx + R * 0.62 * Math.cos(am), ty = cy + R * 0.62 * Math.sin(am);
+      svg += '<text x="' + tx.toFixed(1) + '" y="' + ty.toFixed(1) + '" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="800" fill="#fff">' + Math.round(f * 100) + '%</text>';
+    }
+    a0 = a1;
+  });
+  var leg = '<div class="vt-leg">';
+  ord.forEach(function (i) {
+    var p = tot ? Math.round(c[i] / tot * 100) : 0;
+    leg += '<div class="vt-li' + (v.revealed && v.correct != null && i !== v.correct ? ' dim' : '') + '"><i style="background:' + vtColor(v, i) + '"></i>' +
+      (v.sort ? '<b class="vt-rk">' + rk[i] + '.</b>' : '') + '<span>' + esc(v.opts[i]) + '</span><b>' + c[i] + '</b><small>' + p + '%</small></div>';
+  });
+  leg += '</div>';
+  var avg = vtAvg(v, c);
+  return '<div class="vt-pie"><svg viewBox="0 0 220 220">' + svg + '</svg>' + leg + '</div>' +
+    (avg != null ? '<div class="vt-avg">Durchschnitt: ' + avg.toFixed(1).replace('.', ',') + '</div>' : '');
 }
 function vtCloudHtml(v) {
   var cl = vtCloud(v), mx = cl.length ? cl[0].n : 1;
@@ -8264,39 +8366,45 @@ function vtCloudHtml(v) {
   if (pend) h += '<div class="vt-pend">' + (pend === 1 ? '1 Wort wartet' : pend + ' Wörter warten') + ' auf Freigabe</div>';
   return h;
 }
+function vtSymHtml() {
+  return VS ? VS.code.split('').map(function (d) { return '<span title="' + esc(RC_SYMN[+d]) + '">' + RC_SYM[+d] + '</span>'; }).join('') : '';
+}
 function vtDraw() {
   var f = $('voteFull');
   if (!f || !VOTE) return;
   var v = VOTE, isW = v.type === 'words', c = isW ? [] : vtCounts(v);
   var tot = c.reduce(function (a, b) { return a + b; }, 0);
-  var cnt = isW ? v.words.size : v.votes.size, exp = vtExpect();
-  var h = '<div class="vt-top"><div class="vt-q">' + esc(v.q || VT_TYPES[v.type].n) + '</div></div>';
+  var cnt = isW ? v.words.size : v.votes.size, exp = vtExpect(), con = VS ? VS.conns.length : 0;
+  var h = '<div class="vt-top"><div class="vt-q">' + esc(v.q || VT_TYPES[v.type].n) + '</div>' +
+    (v.max > 1 ? '<div class="vt-sub">Jedes Kind hat bis zu ' + v.max + ' Stimmen</div>' : '') + '</div>';
   if (v.open) {
     h += '<div class="vt-join"><div class="vt-jt">Mitmachen: Hausaufgabenheft → 🗳 → </div>' +
-      '<div class="vt-sym">' + v.code.split('').map(function (d) {
-        return '<span title="' + esc(RC_SYMN[+d]) + '">' + RC_SYM[+d] + '</span>';
-      }).join('') + '</div>' +
-      '<div class="vt-cnt">' + cnt + (exp ? ' von ' + exp : '') + (cnt === 1 && !exp ? ' Stimme' : ' Stimmen') + '</div></div>';
+      '<div class="vt-sym">' + vtSymHtml() + '</div>' +
+      '<div class="vt-cnt">' + cnt + (exp ? ' von ' + exp : '') + (cnt === 1 && !exp ? ' hat abgestimmt' : ' haben abgestimmt') + (con ? ' · ' + con + ' verbunden' : '') + '</div></div>';
   } else {
-    h += '<div class="vt-join vt-done">Abstimmung beendet · ' + cnt + ' Stimmen</div>';
+    h += '<div class="vt-join vt-done">Abstimmung beendet · ' + cnt + (cnt === 1 ? ' hat' : ' haben') + ' abgestimmt</div>';
   }
   h += '<div class="vt-body">';
   if (isW) h += vtCloudHtml(v);
-  else if (!v.show) h += '<div class="vt-hid">Ergebnis verdeckt<br><small>' + tot + ' Stimmen</small></div>';
-  else h += vtBarsHtml(v, c, tot);
+  else if (!v.show) h += '<div class="vt-hid">Ergebnis verdeckt<br><small>' + cnt + (cnt === 1 ? ' Stimme' : ' Stimmen') + '</small></div>';
+  else h += v.disp === 'pie' ? vtPieHtml(v, c, tot) : vtBarsHtml(v, c, tot);
   h += '</div>';
 
   var bar = '';
-  if (!isW) bar += '<button data-act="show">👁 Ergebnis ' + (v.show ? 'verbergen' : 'zeigen') + '</button>';
+  if (!isW) {
+    bar += '<button data-act="show">👁 Ergebnis ' + (v.show ? 'verbergen' : 'zeigen') + '</button>';
+    bar += '<button data-act="disp">' + (v.disp === 'pie' ? '▤ Balken' : '◔ Kreis') + '</button>';
+    bar += '<button data-act="sort"' + (v.sort ? ' class="on"' : '') + '>🏆 Rangfolge</button>';
+  }
   if (v.type === 'abcd' && v.correct != null) bar += '<button data-act="reveal"' + (v.revealed ? ' disabled' : '') + '>✓ Auflösen</button>';
   if (isW) bar += '<button data-act="pop">🛂 Freigeben (' + v.pending.length + ')</button>';
   if (v.open) bar += '<button data-act="end">⏹ Beenden</button>';
+  else bar += '<button data-act="next">＋ Nächste Frage</button>';
   bar += '<button data-act="close">✕ Schließen</button>';
 
   var pop = '';
   if (isW && vtPopOpen) {
-    pop = '<div class="vt-pop"><div class="vt-pop-h">Wörter freigeben' +
-      '<button data-act="pop" class="vt-x" title="Schließen">✕</button></div>' +
+    pop = '<div class="vt-pop"><div class="vt-pop-h">Wörter freigeben<button data-act="pop" class="vt-x" title="Schließen">✕</button></div>' +
       (v.pending.length ? '' : '<div class="vt-hid">Keine offenen Wörter</div>');
     v.pending.forEach(function (p) {
       pop += '<div class="vt-pi"><span>' + esc(p.text) + '</span>' +
@@ -8308,14 +8416,22 @@ function vtDraw() {
   h += '<div class="vt-ctl">' + pop + '<div class="vt-bar">' + bar + '</div></div>';
   f.innerHTML = h;
 }
+// Anzeige unten rechts, solange die Runde läuft
+function vtBadge() {
+  var b = $('voteBadge'); if (!b) return;
+  b.hidden = !VS || !!VOTE;
+  if (!VS) return;
+  var l = vtLeft();
+  b.innerHTML = '📊 Abstimmungsrunde <span class="rb-s">' + vtSymHtml() + '</span> · ' + VS.conns.length + ' verbunden' + (l != null ? ' · endet in ' + l + ' min' : '');
+}
+setInterval(function () { if (VS && !VOTE) vtBadge(); }, 20000);
 
 /* ---- Einrichtungsdialog ---- */
 function vtSetType(t) {
   vtSetT = t;
-  document.querySelectorAll('#voteSetup [data-type]').forEach(function (b) {
-    b.classList.toggle('on', b.dataset.type === t);
-  });
+  document.querySelectorAll('#voteSetup [data-type]').forEach(function (b) { b.classList.toggle('on', b.dataset.type === t); });
   $('voteAbcd').hidden = t !== 'abcd';
+  $('voteList').hidden = t !== 'list';
 }
 function vtAbcdFields() {
   var n = clamp(parseInt($('voteN').value, 10) || 4, 2, 4);
@@ -8324,24 +8440,24 @@ function vtAbcdFields() {
   box.innerHTML = '';
   for (var i = 0; i < n; i++) {
     var l = document.createElement('label'), s = document.createElement('span'), inp = document.createElement('input');
-    l.className = 'vt-tx';
-    s.textContent = VT_LETTERS[i];
-    inp.maxLength = 60;
-    inp.placeholder = 'Text (optional)';
-    inp.value = keep[i] || '';
-    l.appendChild(s);
-    l.appendChild(inp);
-    box.appendChild(l);
+    l.className = 'vt-tx'; s.textContent = VT_LETTERS[i];
+    inp.maxLength = 60; inp.placeholder = 'Text (optional)'; inp.value = keep[i] || '';
+    l.appendChild(s); l.appendChild(inp); box.appendChild(l);
   }
   var sel = '<option value="">keine</option>';
   for (i = 0; i < n; i++) sel += '<option value="' + i + '">' + VT_LETTERS[i] + '</option>';
   $('voteCorr').innerHTML = sel;
 }
+function vtListInfo() {
+  var n = vtListOpts($('voteListIn').value).length;
+  $('voteListN').textContent = n + (n === 1 ? ' Antwort' : ' Antworten') + (n > 12 ? ' (höchstens 12)' : '');
+}
 function vtGo() {
   var texts = [].map.call(document.querySelectorAll('#voteTexts input'), function (i) { return i.value; });
   var k = $('voteCorr').value;
-  voteStart({ type: vtSetT, q: $('voteQ').value, n: $('voteN').value, texts: texts, correct: k === '' ? null : +k });
+  if (!voteStart({ type: vtSetT, q: $('voteQ').value, n: $('voteN').value, texts: texts, correct: k === '' ? null : +k, list: $('voteListIn').value, max: $('voteMax').value })) return;
   $('voteSetup').hidden = true;
+  $('voteQ').value = '';
   setResult('Abstimmung gestartet', 'ok');
 }
 function openVoteSetup() {
@@ -8349,6 +8465,8 @@ function openVoteSetup() {
   var s = $('voteSetup');
   if (!s) return;
   vtSetType(vtSetT);
+  $('voteRound').hidden = !VS;
+  if (VS) $('voteRoundT').innerHTML = 'Abstimmungsrunde läuft: <b>' + vtSymHtml() + '</b> · ' + VS.conns.length + ' verbunden – die nächste Frage erscheint bei den Kindern sofort.';
   s.hidden = false;
   $('voteQ').focus();
 }
@@ -8361,8 +8479,11 @@ function vtInit() {
     var a = b.dataset.act;
     if (a === 'show') voteShow();
     else if (a === 'reveal') voteReveal();
+    else if (a === 'disp') voteDisp(VOTE.disp === 'pie' ? 'bars' : 'pie');
+    else if (a === 'sort') voteSort();
     else if (a === 'pop') { vtPopOpen = !vtPopOpen; renderVote(); }
     else if (a === 'end') voteEnd();
+    else if (a === 'next') { voteClose(); openVoteSetup(); }
     else if (a === 'close') voteClose();
     else if (a === 'ok' || a === 'no') voteApprove(b.dataset.id, a === 'ok');
   });
@@ -8375,45 +8496,60 @@ function vtInit() {
     if (a === 'type') vtSetType(b.dataset.type);
     else if (a === 'go') vtGo();
     else if (a === 'cancel') s.hidden = true;
+    else if (a === 'stop') { voteStop(false); s.hidden = true; setResult('📊 Abstimmungsrunde beendet.', 'ok'); }
   });
   $('voteN').addEventListener('change', vtAbcdFields);
-  vtAbcdFields();
+  $('voteListIn').addEventListener('input', vtListInfo);
+  vtAbcdFields(); vtListInfo();
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     if (vtPopOpen && VOTE) { vtPopOpen = false; renderVote(); e.preventDefault(); }
     else if (!s.hidden) { s.hidden = true; e.preventDefault(); }
   });
 }
+$('voteBadge').addEventListener('click', function () { openVoteSetup(); });
+window.addEventListener('beforeunload', function () { if (VS) vtSend({ t: 'bye' }); });
 
 function rcVoteHtml(r, s) {
-  const v = s.vote || {}, on = c => c ? ' class="on"' : '';
+  const v = s.vote || {}, on = c => c ? ' class="on"' : '', rd = v.round;
   let h = '<div class="rc-sec"><h3>📊 Abstimmung</h3>';
+  if (rd && !v.on) h += `<div class="rc-row rc-wrap"><span class="rc-vsym">${rcSyms(rd.code)}</span><b>Runde läuft · ${rd.n} verbunden${rd.left != null ? ' · endet in ' + rd.left + ' min' : ''}</b><button data-rvote="stop">⏹ Runde beenden</button></div>`;
   if (!v.on) {
-    const f = r.vf = r.vf || { type: 'thumbs', n: 4, corr: '' };
+    const f = r.vf = r.vf || { type: 'thumbs', n: 4, corr: '', max: 1 }, fv = r.fv || {};
     h += `<div class="rc-row rc-wrap rc-vt">${Object.entries(VT_TYPES).map(([k, t]) => `<button data-rvt="${k}"${on(f.type === k)}>${esc(t.n)}</button>`).join('')}</div>
-      <div class="rc-form"><label class="w">Frage (optional)<input data-fv="vq" value="${esc((r.fv || {}).vq || '')}" maxlength="200" placeholder="z. B. Hast du es verstanden?" enterkeyhint="done"></label>
+      <div class="rc-form"><label class="w">Frage (optional)<input data-fv="vq" value="${esc(fv.vq || '')}" maxlength="200" placeholder="z. B. Hast du es verstanden?" enterkeyhint="done"></label>
       ${f.type === 'abcd' ? `<div class="rc-sub">Anzahl Antworten</div><div class="rc-row">${[2, 3, 4].map(n => `<button data-rvn="${n}"${on(+f.n === n)}>${n}</button>`).join('')}</div>
         <div class="rc-sub">Richtige Antwort (optional)</div><div class="rc-row"><button data-rvc=""${on(f.corr === '')}>keine</button>${'ABCD'.slice(0, f.n).split('').map((L, i) => `<button data-rvc="${i}"${on(f.corr === String(i))}>${L}</button>`).join('')}</div>` : ''}
-      <div class="rc-row"><button class="primary" data-rvote="start">▶ Abstimmung starten</button></div></div>`;
+      ${f.type === 'list' ? `<label class="w">Antworten – eine pro Zeile (2–12)<textarea data-fv="vopts" rows="5" placeholder="z. B.&#10;Anna&#10;Ben&#10;Can">${esc(fv.vopts || '')}</textarea></label>
+        <div class="rc-sub">Stimmen pro Kind</div><div class="rc-row">${[1, 2, 3].map(n => `<button data-rvm="${n}"${on(+f.max === n)}>${n}</button>`).join('')}</div>` : ''}
+      <div class="rc-row"><button class="primary" data-rvote="start">▶ ${rd ? 'Nächste Frage starten' : 'Abstimmung starten'}</button></div></div>`;
   } else {
-    const tot = (v.counts || []).reduce((a, b) => a + b, 0);
-    h += `<div class="rc-row rc-wrap"><b>${esc(v.q || VT_TYPES[v.type].n)}</b></div>
-      <div class="rc-row">${v.open ? `<span class="rc-vsym">${rcSyms(v.code)}</span>` : '<span class="rc-pill">⏹ beendet</span>'}<b>${v.count}${v.expect ? ' von ' + v.expect : ''} ${v.count === 1 && !v.expect ? 'Stimme' : 'Stimmen'}</b></div>`;
-    if (v.type !== 'words') h += (v.counts || []).map((n, i) => `<div class="rc-vbar"><span>${esc(v.opts[i])}</span><i${v.correct === i ? ' class="ok"' : ''} style="width:${tot ? Math.round(n / tot * 100) : 0}%"></i><b>${n}</b></div>`).join('') + (v.avg != null ? `<div class="rc-sub">Durchschnitt: ${String(v.avg).replace('.', ',')}</div>` : '');
+    const tot = (v.counts || []).reduce((a, b) => a + b, 0), idx = v.opts.map((_, i) => i);
+    if (v.sort) idx.sort((a, b) => v.counts[b] - v.counts[a] || a - b);
+    h += `<div class="rc-row rc-wrap"><b>${esc(v.q || VT_TYPES[v.type].n)}</b>${v.max > 1 ? ` <small>(bis zu ${v.max} Stimmen)</small>` : ''}</div>
+      <div class="rc-row">${v.open ? `<span class="rc-vsym">${rcSyms(v.code)}</span>` : '<span class="rc-pill">⏹ beendet</span>'}<b>${v.count}${v.expect ? ' von ' + v.expect : ''} ${v.count === 1 && !v.expect ? 'hat' : 'haben'} abgestimmt</b>${rd ? ` · ${rd.n} verbunden` : ''}</div>`;
+    if (v.type !== 'words') h += idx.map(i => `<div class="rc-vbar"><span>${esc(v.opts[i])}</span><i${v.correct === i ? ' class="ok"' : ''} style="width:${tot ? Math.round(v.counts[i] / tot * 100) : 0}%"></i><b>${v.counts[i]}</b></div>`).join('') + (v.avg != null ? `<div class="rc-sub">Durchschnitt: ${String(v.avg).replace('.', ',')}</div>` : '');
     else {
       h += v.words.length ? `<div class="rc-row rc-wrap">${v.words.map(w => `<span class="rc-vw">${esc(w.t)} <b>${w.n}</b></span>`).join('')}</div>` : '';
       if (v.pending.length) h += `<div class="rc-sub">Wörter freigeben (${v.pending.length})</div><div class="rc-row rc-wrap">${v.pending.map(p => `<span class="rc-vw">${esc(p.t)}<button data-rvok="${p.id}" title="Freigeben">✓</button><button data-rvno="${p.id}" title="Ablehnen">✕</button></span>`).join('')}</div>`;
     }
-    h += `<div class="rc-row rc-wrap" style="margin-top:8px">${v.type !== 'words' ? `<button data-rvote="show"${on(v.show)}>👁 Ergebnis an der Tafel ${v.show ? 'verbergen' : 'zeigen'}</button>` : ''}${v.type === 'abcd' && v.correct != null ? `<button data-rvote="reveal"${on(v.revealed)}>✓ Auflösen</button>` : ''}${v.open ? '<button data-rvote="end">⏹ Beenden</button>' : ''}<button data-rvote="close">✕ Schließen</button></div>`;
+    h += `<div class="rc-row rc-wrap" style="margin-top:8px">${v.type !== 'words' ? `<button data-rvote="show"${on(v.show)}>👁 Ergebnis an der Tafel ${v.show ? 'verbergen' : 'zeigen'}</button><button data-rvote="disp">${v.disp === 'pie' ? '▤ Balken' : '◔ Kreis'}</button><button data-rvote="sort"${on(v.sort)}>🏆 Rangfolge</button>` : ''}${v.type === 'abcd' && v.correct != null ? `<button data-rvote="reveal"${on(v.revealed)}>✓ Auflösen</button>` : ''}${v.open ? '<button data-rvote="end">⏹ Beenden</button>' : ''}<button data-rvote="close">${v.open ? '✕ Schließen' : '＋ Nächste Frage'}</button><button data-rvote="stop">⏹ Runde beenden</button></div>`;
   }
   return h + '</div>';
 }
 function rcVoteCmd(d) {
-  if (d.a === 'start') { $('voteSetup') && ($('voteSetup').hidden = true); voteStart({ type: d.type, q: d.q, n: d.n, correct: d.corr === '' || d.corr == null ? null : +d.corr }); RC.ack = { n: Date.now(), t: '📊 Abstimmung gestartet' }; }
+  if (d.a === 'start') {
+    if ($('voteSetup')) $('voteSetup').hidden = true;
+    if (voteStart({ type: d.type, q: d.q, n: d.n, list: d.list, max: d.max, correct: d.corr === '' || d.corr == null ? null : +d.corr })) RC.ack = { n: Date.now(), t: '📊 Abstimmung gestartet' };
+    else RC.ack = { n: Date.now(), t: 'Bitte mindestens zwei Antworten eingeben (eine pro Zeile).' };
+  }
   if (d.a === 'show') voteShow();
   if (d.a === 'reveal') voteReveal();
+  if (d.a === 'disp') voteDisp(VOTE && VOTE.disp === 'pie' ? 'bars' : 'pie');
+  if (d.a === 'sort') voteSort();
   if (d.a === 'end') voteEnd();
   if (d.a === 'close') voteClose();
+  if (d.a === 'stop') voteStop(false);
   if (d.a === 'ok' || d.a === 'no') voteApprove(d.id, d.a === 'ok');
 }
 
@@ -8457,7 +8593,12 @@ let qrState = { parts: [], i: 0, timer: null };
 function openSend() {
   const o = ui.qrOpts || (ui.qrOpts = { tt: true, hw: true, ex: true, ms: true });
   $('qrTT').checked = o.tt; $('qrHW').checked = o.hw; $('qrEX').checked = o.ex; $('qrMS').checked = o.ms !== false;
-  $('qrDlg').hidden = false; $('qrDlg').focus(); renderSend();
+  $('qrDlg').hidden = false; $('qrDlg').focus();
+  if (!ui.sendTab) {
+    let s = null; try { s = localStorage.getItem('km-send-tab'); } catch {}
+    ui.sendTab = ['qr', 'od', 'gh'].includes(s) ? s : (cls().gh ? 'gh' : cls().pub ? 'od' : 'qr');
+  }
+  renderSend();
 }
 function renderSend() {
   const o = ui.qrOpts = { tt: $('qrTT').checked, hw: $('qrHW').checked, ex: $('qrEX').checked, ms: $('qrMS').checked };
@@ -8466,18 +8607,50 @@ function renderSend() {
   if (typeof renderPubBox === 'function') renderPubBox();
   if (typeof renderGhBox === 'function') renderGhBox();
   clearInterval(qrState.timer);
-  const P = buildPayload(o), info = [];
+  const tab = ui.sendTab || 'qr', P = buildPayload(o), info = [], none = !o.tt && !o.hw && !o.ex && !o.ms;
   if (o.tt) info.push(P.tt ? 'Stundenplan' : 'kein Stundenplan angelegt');
   if (o.hw) info.push((P.hw.length || 'keine') + (P.hw.length === 1 ? ' Hausaufgabe' : ' Hausaufgaben'));
   if (o.ex) info.push((P.ex.length || 'keine') + ' Proben/Termine');
   if (o.ms) info.push((P.m.length || 'keine') + (P.m.length === 1 ? ' Mitteilung' : ' Mitteilungen'));
   $('qrInfo').textContent = (info.join(' · ') || 'Nichts ausgewählt') + ' – Klasse ' + cls().name + ' (ohne Schülernamen)';
-  if (!o.tt && !o.hw && !o.ex && !o.ms) { $('qrBox').innerHTML = ''; $('qrNav').hidden = true; return; }
-  qrState.parts = payloadParts(P); qrState.i = 0;
-  drawQr();
-  $('qrNav').hidden = qrState.parts.length < 2;
-  if (qrState.parts.length > 1) qrState.timer = setInterval(() => { if ($('qrDlg').hidden) return clearInterval(qrState.timer); qrState.i = (qrState.i + 1) % qrState.parts.length; drawQr(); }, 2000);
+  // Reiterleiste: Auswahl und Status (✓) aktualisieren
+  const tabs = $('sndTabs');
+  tabs.querySelectorAll('button[data-stab]').forEach(b => { const on = b.dataset.stab === tab; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
+  tabs.querySelector('[data-stab="od"]').textContent = '☁️ OneDrive' + (cls().pub && cls().pub.id ? ' ✓' : '');
+  tabs.querySelector('[data-stab="gh"]').textContent = '🌐 GitHub' + (cls().gh ? ' ✓' : '');
+  $('qrBox').innerHTML = ''; $('qrNav').hidden = true;
+  if (tab === 'od' || tab === 'gh') {
+    const ok = tab === 'od' ? !!(cls().pub && cls().pub.link) : !!(cls().gh && ghOk());
+    $('qrArea').hidden = !ok;
+    $('qrHow').textContent = tab === 'od'
+      ? 'Die Schüler scannen diesen Verbindungs-Code einmal mit „📷 Empfangen“ und melden sich mit ihrem Schulkonto an – danach kommen Änderungen von selbst.'
+      : 'Statt Scannen geht auch die App-Adresse oben als Webclip. Gescannt wird einmal mit „📷 Empfangen“ – ohne Anmeldung.';
+    if (ok) { if (tab === 'od') showLinkQr(); else ghShowQr(); }
+  } else {
+    $('qrArea').hidden = false;
+    $('qrHow').innerHTML = 'Die Schüler tippen in der App <b>„Hausaufgabenheft“</b> auf <b>„📷 Empfangen“</b> und halten das iPad auf den Code. Bei mehreren Codes einfach weiter draufhalten, bis alle empfangen sind.';
+    if (!none) {
+      qrState.parts = payloadParts(P); qrState.i = 0;
+      drawQr();
+      $('qrNav').hidden = qrState.parts.length < 2;
+      if (qrState.parts.length > 1) qrState.timer = setInterval(() => { if ($('qrDlg').hidden) return clearInterval(qrState.timer); qrState.i = (qrState.i + 1) % qrState.parts.length; drawQr(); }, 2000);
+    }
+  }
+  sndVis();
 }
+// Sichtbarkeit der Kästen nach dem gewählten Reiter (wird auch aus renderPubBox/renderGhBox aufgerufen)
+function sndVis() {
+  const t = ui.sendTab || 'qr', pb = $('pubBox'), gb = $('ghBox'), oo = $('odOff');
+  if (pb) pb.hidden = t !== 'od' || !OD_OK;
+  if (gb) gb.hidden = t !== 'gh';
+  if (oo) oo.hidden = !(t === 'od' && !OD_OK);
+}
+$('sndTabs').addEventListener('click', e => {
+  const b = e.target.closest('button[data-stab]'); if (!b) return;
+  ui.sendTab = b.dataset.stab;
+  try { localStorage.setItem('km-send-tab', ui.sendTab); } catch {}
+  renderSend();
+});
 function drawQr() {
   const q = qrcode(0, 'L'); q.addData(qrState.parts[qrState.i], 'Byte'); q.make();
   $('qrBox').innerHTML = q.createSvgTag({ cellSize: 4, margin: 4, scalable: true });
