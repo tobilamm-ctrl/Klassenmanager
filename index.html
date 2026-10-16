@@ -958,6 +958,17 @@
   body.vpresent.view-cal #calView { flex: 1; min-height: 0; display: flex !important; flex-direction: column; }
   body.vpresent .cal { flex: 1; min-height: 0; grid-template-rows: auto; grid-auto-rows: 1fr; }
   body.vpresent .cal .cd { min-height: 0; overflow: hidden; }
+  .rc-code span { font-size: 3rem; width: 1.6em; padding: .1em 0; }
+  #rcBadge .rb-s { letter-spacing: .15em; }
+  .rc-slots { display: flex; gap: 8px; align-items: center; } .rc-slots span { width: 54px; height: 54px; border: 2px dashed #cbd5e1; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; background: #f8fafc; }
+  .rc-slots button { font-size: 1.3rem; padding: 6px 14px; }
+  .rc-symgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; } .rc-symgrid button { font-size: 2.1rem; padding: 10px 0; background: #fff; }
+  .rc-known { display: flex; flex-direction: column; gap: 6px; } .rc-known span { display: flex; gap: 6px; } .rc-known span > button:first-child { flex: 1; text-align: left; font-size: 1.05rem; padding: 10px 12px; } .rc-known small { margin-left: 8px; letter-spacing: .1em; }
+  .rc-trust { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: .85rem; } .rc-trust span { background: #f1f5f9; border-radius: 999px; padding: 2px 4px 2px 10px; display: inline-flex; align-items: center; gap: 4px; } .rc-trust button { border: none; background: none; padding: 0 4px; }
+  #rcAsk { position: fixed; inset: 0; z-index: 4500; background: rgba(15,23,42,.45); display: flex; align-items: center; justify-content: center; }
+  #rcAsk[hidden] { display: none; }
+  #rcAsk .ra-box { background: #fff; border-radius: 16px; padding: 18px 22px; max-width: 420px; box-shadow: 0 12px 40px rgba(0,0,0,.35); display: flex; flex-direction: column; gap: 10px; font-size: 1.05rem; }
+  #rcAsk .ra-t { font-weight: 900; font-size: 1.25rem; } #rcAsk p { margin: 0; } #rcAsk .row button { font-size: 1.05rem; padding: 10px 18px; }
   /* Zeichnen */
   .bd-ink { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 30; pointer-events: none; }
   body.bd-drawing .bd-ink { pointer-events: auto; cursor: crosshair; touch-action: none; }
@@ -1211,7 +1222,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-15</p>
+          <p class="hint" style="margin:0">Version 2026-11-16</p>
         </div>
       </details>
 
@@ -1496,7 +1507,8 @@
 </div>
 <div id="rcPanel" hidden></div>
 <div id="vpBar"><button data-vp="board" title="Zur Tafel">🖥 Tafel</button><button data-vp="plan" title="Zum Sitzplan">🪑 Sitzplan</button><button data-vp="exit" class="primary" title="Präsentation beenden (Esc)">✕ Beenden</button></div>
-<button id="rcBadge" hidden title="Fernbedienung – antippen für Code und Einstellungen"></button>
+<button id="rcBadge" hidden title="Fernbedienung – antippen für Symbole und Einstellungen"></button>
+<div id="rcAsk" hidden></div>
 <div id="phFloat" hidden></div>
 <div id="clkFull" hidden><div class="cf-a"></div><div class="cf-d"></div><div class="cf-dt"></div><button data-cf="close" class="cf-x">✕ Schließen</button></div>
 <div id="ovMenu" hidden>
@@ -7105,41 +7117,100 @@ function loadPeer() {
 }
 const RC = { host: null, code: '', conns: [], hostSt: '', remote: null, last: '' };
 
+/* ---------- Kopplung: 3 Symbole · Bestätigung an der Tafel · Verbindung merken ---------- */
+const lsGetKm = k => { try { return localStorage.getItem(k) || ''; } catch { return ''; } };
+const RC_SYM = ['🍎', '🚀', '⭐', '🐟', '🌻', '🎈', '🐢', '⚽', '🔔', '🌙'];
+const RC_SYMN = ['Apfel', 'Rakete', 'Stern', 'Fisch', 'Sonnenblume', 'Ballon', 'Schildkröte', 'Ball', 'Glocke', 'Mond'];
+const rcSyms = code => String(code || '').split('').map(d => RC_SYM[+d] || '?').join(' ');
+const rcPid = code => RC_PREFIX + 's3-' + code;
+const lsJ = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
+const lsS = (k, v) => { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v)); } catch {} };
+const rcRoom = () => lsGetKm('km-rc-room') || 'Tafel';
+const rcOk = () => RC.conns.filter(c => c.ok);
+const rcDevGuess = () => { const u = navigator.userAgent; return /iPad/.test(u) || (/Macintosh/.test(u) && navigator.maxTouchPoints > 1) ? 'iPad' : /iPhone/.test(u) ? 'iPhone' : /Android/.test(u) ? 'Android-Gerät' : /Windows/.test(u) ? 'Windows-PC' : /Macintosh/.test(u) ? 'Mac' : 'Gerät'; };
+const rcDev = () => { let id = lsGetKm('km-rc-dev'); if (!id) { id = 'd' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36); lsS('km-rc-dev', id); } return { id, name: lsGetKm('km-rc-devname') || rcDevGuess() }; };
+RC.asks = [];
+
 /* ---------- Tafel (Gastgeber) ---------- */
-function rcHostStart() {
-  if (RC.host && !RC.host.destroyed) return;
+function rcHostStart(newCode) {
+  if (RC.host && !RC.host.destroyed && !newCode) return;
+  if (RC.host) { RC.host.destroy(); RC.host = null; RC.conns = []; }
   let P; try { P = loadPeer(); } catch (e) { RC.hostSt = 'err'; renderRcDlg(); return; }
-  try { RC.code = sessionStorage.getItem('km-rc-code') || ''; } catch {}
-  if (!/^\d{4}$/.test(RC.code)) RC.code = String(1000 + Math.floor(Math.random() * 9000));
-  try { sessionStorage.setItem('km-rc-code', RC.code); } catch {}
-  RC.hostSt = 'wait'; try { sessionStorage.setItem('km-rc-host', '1'); } catch {}
-  const peer = RC.host = new P(RC_PREFIX + RC.code, rcOpts());
-  peer.on('open', () => { RC.hostSt = 'ready'; renderRcDlg(); syncRcBtns(); });
+  RC.code = newCode ? '' : lsGetKm('km-rc-code3');
+  if (!/^\d{3}$/.test(RC.code)) RC.code = Array.from({ length: 3 }, () => Math.floor(Math.random() * 10)).join('');
+  lsS('km-rc-code3', RC.code); lsS('km-rc-host', '1');
+  RC.hostSt = 'wait';
+  const peer = RC.host = new P(rcPid(RC.code), rcOpts());
+  peer.on('open', () => { RC.hostSt = 'ready'; RC.idTries = 0; renderRcDlg(); syncRcBtns(); });
   peer.on('error', e => {
-    if (e.type === 'unavailable-id') { try { sessionStorage.removeItem('km-rc-code'); } catch {} peer.destroy(); RC.host = null; RC.code = ''; setTimeout(rcHostStart, 300); return; }
+    if (e.type === 'unavailable-id') {   // Kennung gerade belegt: nach dem Neuladen noch kurz vom alten Fenster – oder die Tafel ist in einem zweiten Fenster offen
+      peer.destroy(); RC.host = null;
+      if (!lsGetKm('km-rc-paired') && !RC.idTries) { lsS('km-rc-code3', null); setTimeout(() => rcHostStart(true), 300); return; }   // noch nie gekoppelt: einfach andere Symbole
+      RC.idTries = (RC.idTries || 0) + 1;
+      if (RC.idTries <= 8) { RC.hostSt = 'wait'; renderRcDlg(); setTimeout(() => rcHostStart(false), 5000); return; }
+      RC.idTries = 0; RC.hostSt = 'dup'; renderRcDlg(); syncRcBtns(); return;
+    }
     if (['network', 'server-error', 'socket-error', 'socket-closed', 'browser-incompatible'].includes(e.type)) { RC.hostSt = 'noserver'; renderRcDlg(); }
   });
   peer.on('disconnected', () => { if (!peer.destroyed) setTimeout(() => { if (!peer.destroyed) peer.reconnect(); }, 2000); });
   peer.on('connection', conn => {
-    conn.on('open', () => { RC.conns.push(conn); RC.last = ''; setResult('📡 Fernbedienung verbunden.', 'ok'); renderRcDlg(); syncRcBtns(); rcBroadcast(true); });
-    conn.on('data', d => { const before = $('result').textContent; try { if (d && d.c === 'ink') rcInkHost(d); else rcHandle(d); } catch (err) { console.warn(err); } const after = $('result').textContent; if (d && d.c !== 'add' && d.c !== 'ink' && after && after !== before) RC.ack = { n: Date.now(), t: after.replace(/^✓\s*/, '') }; setTimeout(() => rcBroadcast(true), 60); });
-    conn.on('close', () => { RC.conns = RC.conns.filter(c => c !== conn); renderRcDlg(); syncRcBtns(); });
+    conn.ok = false;
+    conn.on('open', () => { RC.conns.push(conn); });
+    conn.on('data', d => {
+      if (!conn.ok) { if (d && d.c === 'hello') rcHello(conn, d); return; }   // erst nach Freigabe werden Befehle angenommen
+      const before = $('result').textContent;
+      try { if (d && d.c === 'ink') rcInkHost(d); else rcHandle(d); } catch (err) { console.warn(err); }
+      const after = $('result').textContent;
+      if (d && d.c !== 'add' && d.c !== 'ink' && after && after !== before) RC.ack = { n: Date.now(), t: after.replace(/^✓\s*/, '') };
+      setTimeout(() => rcBroadcast(true), 60);
+    });
+    conn.on('close', () => { RC.conns = RC.conns.filter(c => c !== conn); RC.asks = RC.asks.filter(a => a.conn !== conn); renderRcAsk(); renderRcDlg(); syncRcBtns(); });
     conn.on('error', () => {});
   });
   renderRcDlg(); syncRcBtns();
 }
+function rcHello(conn, d) {
+  const dev = String(d.dev || '').slice(0, 40), name = String(d.name || 'Gerät').slice(0, 40);
+  conn.dev = dev; conn.devName = name;
+  const trust = lsJ('km-rc-trust', []);
+  if (dev && trust.some(t => t.id === dev)) { rcAccept(conn); return; }
+  try { conn.send({ t: 'wait' }); } catch {}
+  RC.asks = RC.asks.filter(a => a.conn !== conn).concat([{ conn, dev, name }]);
+  renderRcAsk();
+}
+function rcAccept(conn) {
+  conn.ok = true;
+  const trust = lsJ('km-rc-trust', []).filter(t => t.id !== conn.dev);
+  if (conn.dev) trust.push({ id: conn.dev, name: conn.devName || 'Gerät', t: Date.now() });
+  lsS('km-rc-trust', trust.slice(-20)); lsS('km-rc-paired', '1');
+  RC.last = ''; setResult(`📡 Fernbedienung „${conn.devName || 'Gerät'}“ verbunden.`, 'ok');
+  renderRcDlg(); syncRcBtns(); rcBroadcast(true);
+}
+function renderRcAsk() {
+  const el = $('rcAsk'), a = RC.asks[0];
+  el.hidden = !a; if (!a) return;
+  el.innerHTML = `<div class="ra-box"><div class="ra-t">📡 Neue Fernbedienung</div><p>„<b>${esc(a.name)}</b>“ möchte diese Tafel steuern.</p><p class="hint" style="margin:0">Nur zulassen, wenn es dein Gerät ist. Danach verbindet es sich ohne Nachfrage.</p><div class="row"><button class="primary" data-ra="yes">✓ Zulassen</button><button data-ra="no">Ablehnen</button></div></div>`;
+}
+$('rcAsk').addEventListener('click', e => {
+  const b = e.target.closest('[data-ra]'), a = RC.asks[0]; if (!b || !a) return;
+  RC.asks.shift();
+  if (b.dataset.ra === 'yes') rcAccept(a.conn);
+  else { try { a.conn.send({ t: 'denied' }); } catch {} setTimeout(() => { try { a.conn.close(); } catch {} }, 400); }
+  renderRcAsk();
+});
 function rcHostStop() {
-  try { sessionStorage.removeItem('km-rc-host'); } catch {}
+  lsS('km-rc-host', null);
   if (RC.host) RC.host.destroy();
-  RC.host = null; RC.conns = []; RC.hostSt = ''; renderRcDlg(); syncRcBtns();
+  RC.host = null; RC.conns = []; RC.asks = []; RC.hostSt = ''; renderRcAsk(); renderRcDlg(); syncRcBtns();
 }
 function syncRcBtns() {
-  const on = !!(RC.host && RC.conns.length);
+  const n = rcOk().length, on = !!(RC.host && n);
   document.querySelectorAll('[data-b="rc"], [data-p="rc"], #bdRcBtn').forEach(b => b.classList.toggle('on', on));
   const bd = $('rcBadge'); bd.hidden = !RC.host; bd.classList.toggle('on', on);
-  bd.innerHTML = on ? `📡 Fernbedienung verbunden${RC.conns.length > 1 ? ' (' + RC.conns.length + ')' : ''}` : `📡 Code ${esc(RC.code)} – warte auf Fernbedienung`;
+  bd.innerHTML = on ? `📡 Fernbedienung verbunden${n > 1 ? ' (' + n + ')' : ''}` : `📡 ${esc(rcRoom())}: <span class="rb-s">${rcSyms(RC.code)}</span>`;
 }
 $('rcBadge').addEventListener('click', () => openRc());
+
 // Was die Fernbedienung anzeigt
 function rcItem(it) {
   const p = it.p || {};
@@ -7153,7 +7224,7 @@ function rcItem(it) {
 }
 function rcState() {
   const b = curBoard(), ban = $('pickBanner'), c = cls(), ft = tmFullRef === timer;
-  return { t: 'state', cls: c.name, view: ui.view, present: !!ui.present, bdPresent: !!ui.bdPresent,
+  return { t: 'state', room: rcRoom(), cls: c.name, view: ui.view, present: !!ui.present, bdPresent: !!ui.bdPresent,
     boards: boardsVis().map(x => ({ id: x.id, name: x.name })), board: b ? b.id : null,
     items: b ? b.items.map(rcItem).filter(Boolean) : [],
     timer: $('timerBox').hidden || ft ? null : { txt: tmText(timer), run: timer.running, done: timer.done, mode: timer.mode },
@@ -7169,14 +7240,14 @@ function rcState() {
     subj: ((c.tt && c.tt.subjects) || []).map(x => x.name), ttW: ui.ttWeek || 0, calM: ui.calMon || todayStr().slice(0, 7), ack: RC.ack || null };
 }
 function rcBroadcast(force) {
-  if (!RC.conns.length) return;
+  if (!rcOk().length) return;
   const st = rcState(), j = JSON.stringify(st);
   if (!force && j === RC.last) return;
   RC.last = j;
-  RC.conns.forEach(c => { try { if (c.open) c.send(st); } catch {} });
+  rcOk().forEach(c => { try { if (c.open) c.send(st); } catch {} });
 }
 setInterval(() => rcBroadcast(false), 500);
-try { if (sessionStorage.getItem('km-rc-host') === '1') setTimeout(rcHostStart, 800); } catch {}   // nach Neuladen der Tafel weiter erreichbar
+if (lsGetKm('km-rc-host') === '1') setTimeout(() => rcHostStart(), 800);   // Tafel bleibt erreichbar – auch nach Neuladen oder Neustart
 function rcShow(v) {   // Ansicht an der Tafel umschalten (Vollbild bleibt erhalten)
   if (ui.vPresent && v !== 'tt' && v !== 'cal') { ui.keepFs = true; setVPresent(false); ui.keepFs = false; if (v === 'exit') { if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); return; } }
   if (v === 'board') { if (ui.present) { ui.keepFs = true; setPresent(false); setView('board'); bdPresent(true); ui.keepFs = false; } else { if (ui.view !== 'board') setView('board'); if (!ui.bdPresent) bdPresent(true); } }
@@ -7371,51 +7442,74 @@ $('rcPanel').addEventListener('pointerup', rcInkEnd);
 $('rcPanel').addEventListener('pointercancel', rcInkEnd);
 
 /* ---------- Dialog (Tafel: Code zeigen · iPad: Code eingeben) ---------- */
-function openRc() { renderRcDlg(); $('rcDlg').hidden = false; }
+function openRc() { RC.pick = []; renderRcDlg(); $('rcDlg').hidden = false; }
 function renderRcDlg() {
   const d = $('rcDlg'); if (!d) return;
-  const st = { '': '', wait: '⏳ Verbinde mit dem Vermittlungsdienst …', ready: '🟢 Bereit – warte auf die Fernbedienung', noserver: '🔴 Vermittlungsdienst nicht erreichbar (Internet? Firewall?)', err: '🔴 Fernbedienung wird von diesem Browser nicht unterstützt' }[RC.hostSt] || '';
-  $('rcHostBox').innerHTML = RC.host ? `<div class="rc-code">${RC.code.split('').map(c => `<span>${c}</span>`).join('')}</div>
-      <p class="rc-st">${RC.conns.length ? `🟢 ${RC.conns.length === 1 ? 'Ein Gerät' : RC.conns.length + ' Geräte'} verbunden` : st}</p>
-      <div class="row" style="justify-content:center"><button id="rcHostOff" class="danger">Fernbedienung beenden</button></div>`
-    : `<p class="hint" style="margin:0">Dieses Gerät ist die <b>Tafel</b> (z. B. der Tafel-PC): Es zeigt einen Code, den du am iPad eingibst.</p><button class="primary" id="rcHostOn">📡 Code anzeigen</button>`;
-  const r = RC.remote;
-  $('rcJoinBox').innerHTML = `<p class="hint" style="margin:0">Dieses Gerät ist die <b>Fernbedienung</b> (z. B. dein iPad): Code von der Tafel eingeben.</p>
-    <div class="row"><input id="rcCodeIn" inputmode="numeric" maxlength="4" placeholder="Code" value="${esc(r ? r.code : (lsGetKm('km-rc-last') || ''))}" style="width:110px;font-size:1.4rem;letter-spacing:.2em;text-align:center"><button class="primary" id="rcJoin">Mit Tafel verbinden</button></div>`;
+  const st = { '': '', wait: '⏳ Verbinde mit dem Vermittlungsdienst …', ready: '🟢 Bereit – warte auf die Fernbedienung', noserver: '🔴 Vermittlungsdienst nicht erreichbar (Internet? Firewall?)', err: '🔴 Fernbedienung wird von diesem Browser nicht unterstützt', dup: '🟠 Diese Tafel ist schon in einem anderen Fenster erreichbar. Das andere Fenster schließen – oder „🔀 Neue Symbole“.' }[RC.hostSt] || '';
+  const ok = rcOk(), trust = lsJ('km-rc-trust', []);
+  $('rcHostBox').innerHTML = RC.host ? `<div class="rc-code">${RC.code.split('').map(c => `<span title="${RC_SYMN[+c]}">${RC_SYM[+c]}</span>`).join('')}</div>
+      <p class="rc-st">${ok.length ? `🟢 ${ok.map(c => esc(c.devName || 'Gerät')).join(', ')} verbunden` : st}</p>
+      <label class="nc-name">Name dieser Tafel (erscheint am iPad)<input id="rcRoomIn" value="${esc(rcRoom())}" maxlength="30" placeholder="z. B. Raum 12"></label>
+      ${trust.length ? `<div class="rc-trust"><b>Zugelassene Geräte</b>${trust.map(t => `<span>${esc(t.name)}<button data-untrust="${esc(t.id)}" title="Nicht mehr zulassen">✕</button></span>`).join('')}</div>` : ''}
+      <div class="row" style="justify-content:center"><button id="rcNewCode" title="Neue Symbole – gekoppelte iPads müssen neu koppeln">🔀 Neue Symbole</button><button id="rcHostOff" class="danger">Fernbedienung ausschalten</button></div>
+      <p class="hint" style="margin:0">Die Tafel bleibt erreichbar (auch nach dem Neustart des PCs), bis du die Fernbedienung ausschaltest.</p>`
+    : `<p class="hint" style="margin:0">Dieses Gerät ist die <b>Tafel</b> (z. B. der Tafel-PC): Es zeigt drei Symbole, die du am iPad antippst.</p><button class="primary" id="rcHostOn">📡 Tafel erreichbar machen</button>`;
+  $('rcJoinBox').hidden = !!RC.host;   // diese Tafel ist Gastgeber – Koppel-Feld nicht nötig
+  const known = lsJ('km-rc-known', []), pick = RC.pick || [];
+  $('rcJoinBox').innerHTML = `<p class="hint" style="margin:0">Dieses Gerät ist die <b>Fernbedienung</b> (z. B. dein iPad).</p>
+    ${known.length ? `<div class="rc-known">${known.map(k => `<span><button class="primary" data-rk="${k.code}">📡 Mit ${esc(k.room || 'Tafel')} verbinden <small>${rcSyms(k.code)}</small></button><button data-rkdel="${k.code}" title="Vergessen">✕</button></span>`).join('')}</div>` : ''}
+    <b style="font-size:.9rem">${known.length ? 'Andere Tafel koppeln' : 'Mit Tafel koppeln'}: die 3 Symbole der Tafel der Reihe nach antippen</b>
+    <div class="rc-slots">${[0, 1, 2].map(i => `<span>${pick[i] != null ? RC_SYM[pick[i]] : ''}</span>`).join('')}<button id="rcPickBack" title="Zurück"${pick.length ? '' : ' disabled'}>⌫</button></div>
+    <div class="rc-symgrid">${RC_SYM.map((s, i) => `<button data-sym="${i}" title="${RC_SYMN[i]}">${s}</button>`).join('')}</div>
+    <label class="nc-name">Name dieses Geräts (erscheint an der Tafel)<input id="rcDevIn" value="${esc(rcDev().name)}" maxlength="30"></label>`;
 }
-const lsGetKm = k => { try { return localStorage.getItem(k) || ''; } catch { return ''; } };
 $('rcDlg').addEventListener('click', e => {
-  if (e.target.id === 'rcHostOn') rcHostStart();
-  if (e.target.id === 'rcHostOff') rcHostStop();
-  if (e.target.id === 'rcClose') $('rcDlg').hidden = true;
-  if (e.target.id === 'rcJoin') { const c = ($('rcCodeIn').value || '').replace(/\D/g, ''); if (c.length !== 4) { $('rcCodeIn').focus(); return; } $('rcDlg').hidden = true; rcConnect(c); }
+  const t = e.target.closest('button') || e.target;
+  if (t.id === 'rcHostOn') rcHostStart();
+  if (t.id === 'rcHostOff') { if (window.confirm('Fernbedienung ausschalten? Die Tafel ist dann nicht mehr vom iPad aus erreichbar.')) rcHostStop(); }
+  if (t.id === 'rcNewCode') { if (window.confirm('Neue Symbole erzeugen? Alle gekoppelten Geräte müssen danach neu koppeln und an der Tafel neu zugelassen werden.')) { RC.idTries = 0; lsS('km-rc-trust', []); rcHostStart(true); } }
+  if (t.id === 'rcClose') $('rcDlg').hidden = true;
+  if (t.dataset && t.dataset.untrust) { lsS('km-rc-trust', lsJ('km-rc-trust', []).filter(x => x.id !== t.dataset.untrust)); RC.conns.filter(c => c.dev === t.dataset.untrust).forEach(c => { try { c.close(); } catch {} }); renderRcDlg(); }
+  if (t.dataset && t.dataset.sym != null) { RC.pick = (RC.pick || []).concat([+t.dataset.sym]).slice(0, 3); renderRcDlg(); if (RC.pick.length === 3) { const c = RC.pick.join(''); RC.pick = []; setTimeout(() => { $('rcDlg').hidden = true; rcConnect(c); }, 250); } }
+  if (t.id === 'rcPickBack') { RC.pick = (RC.pick || []).slice(0, -1); renderRcDlg(); }
+  if (t.dataset && t.dataset.rk) { $('rcDlg').hidden = true; rcConnect(t.dataset.rk); }
+  if (t.dataset && t.dataset.rkdel) { lsS('km-rc-known', lsJ('km-rc-known', []).filter(k => k.code !== t.dataset.rkdel)); renderRcDlg(); }
 });
-$('rcDlg').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'rcCodeIn') $('rcJoin').click(); if (e.key === 'Escape') $('rcDlg').hidden = true; });
+$('rcDlg').addEventListener('change', e => {
+  if (e.target.id === 'rcRoomIn') { lsS('km-rc-room', e.target.value.trim() || null); syncRcBtns(); rcBroadcast(true); }
+  if (e.target.id === 'rcDevIn') lsS('km-rc-devname', e.target.value.trim() || null);
+});
+$('rcDlg').addEventListener('keydown', e => { if (e.key === 'Escape') $('rcDlg').hidden = true; });
+
 
 /* ---------- Fernbedienung (iPad) ---------- */
 function rcConnect(code, keep) {
   const prevTries = RC.remote && RC.remote.code === code ? RC.remote.tries || 0 : 0;
   rcDisconnect(true);
-  try { localStorage.setItem('km-rc-last', code); } catch {}
   let P; try { P = loadPeer(); } catch (e) { setResult('Fernbedienung wird von diesem Browser nicht unterstützt.', 'warn'); return; }
   const r = RC.remote = { code, st: keep ? keep.st : 'connecting', why: keep ? keep.why : '', type: '', state: null, stop: false, tries: prevTries };
   $('rcPanel').hidden = false; renderRc();
   const peer = r.peer = new P(rcOpts());
   const fail = (st, why) => { if (r.stop || RC.remote !== r) return; r.st = st; r.why = why; renderRc(); };
   peer.on('open', () => {
-    const conn = r.conn = peer.connect(RC_PREFIX + code, { reliable: true });
+    const conn = r.conn = peer.connect(rcPid(code), { reliable: true });
     r.timer = setTimeout(() => { if (!conn.open) fail('blocked', 'Die Tafel ist erreichbar, aber das Netz lässt keine Verbindung zwischen den Geräten zu.'); }, 15000);
-    conn.on('open', async () => { clearTimeout(r.timer); r.st = 'ok'; r.tries = 0; renderRc(); r.type = await rcConnType(conn); renderRc(); });
-    conn.on('data', d => { if (d && d.t === 'state') { const an = d.ack && d.ack.n; if (r.lastAck === undefined) r.lastAck = an; else if (an && an !== r.lastAck) { r.lastAck = an; r.ackAt = Date.now(); setTimeout(renderRc, 4100); } r.state = d; renderRc(); } });
-    conn.on('close', () => { if (r.stop || RC.remote !== r) return; r.st = 'lost'; renderRc(); rcRetry(r); });
+    conn.on('open', async () => { clearTimeout(r.timer); r.st = 'hello'; r.tries = 0; const dv = rcDev(); conn.send({ c: 'hello', dev: dv.id, name: dv.name }); renderRc(); r.type = await rcConnType(conn); renderRc(); });
+    conn.on('data', d => {
+      if (d && d.t === 'wait') { r.st = 'confirm'; renderRc(); return; }
+      if (d && d.t === 'denied') { r.stop = true; r.st = 'denied'; r.why = 'Die Tafel hat die Verbindung abgelehnt.'; renderRc(); return; }
+      if (d && d.t === 'state') { if (r.st !== 'ok') { r.st = 'ok'; rcRemember(code, d.room); } else if (d.room !== r.room) rcRemember(code, d.room); r.room = d.room; const an = d.ack && d.ack.n; if (r.lastAck === undefined) r.lastAck = an; else if (an && an !== r.lastAck) { r.lastAck = an; r.ackAt = Date.now(); setTimeout(renderRc, 4100); } r.state = d; renderRc(); } });
+    conn.on('close', () => { if (r.stop || RC.remote !== r) return; if (r.st === 'confirm' || r.st === 'hello') { r.st = 'denied'; r.why = 'Die Verbindung wurde an der Tafel nicht zugelassen.'; r.stop = true; renderRc(); return; } r.st = 'lost'; renderRc(); rcRetry(r); });
     conn.on('error', () => {});
   });
   peer.on('error', e => {
-    if (e.type === 'peer-unavailable') { fail('nocode', 'Unter diesem Code ist keine Tafel erreichbar. Ist an der Tafel „📡 Code anzeigen“ geöffnet?'); rcRetry(r, 5000); }
+    if (e.type === 'peer-unavailable') { fail('nocode', 'Unter diesen Symbolen ist keine Tafel erreichbar. Ist der Klassenmanager an der Tafel geöffnet und die Fernbedienung eingeschaltet („📡 Tafel erreichbar machen“)?'); rcRetry(r, 5000); }
     else if (['network', 'server-error', 'socket-error', 'socket-closed'].includes(e.type)) { fail('noserver', 'Der Vermittlungsdienst ist nicht erreichbar (Internet?).'); rcRetry(r, 6000); }
     else if (e.type === 'browser-incompatible') fail('blocked', 'Dieser Browser unterstützt keine Direktverbindung.');
   });
 }
+// gekoppelte Tafeln merken (neueste zuerst)
+function rcRemember(code, room) { const k = lsJ('km-rc-known', []).filter(x => x.code !== code); k.unshift({ code, room: room || 'Tafel', t: Date.now() }); lsS('km-rc-known', k.slice(0, 6)); }
 function rcRetry(r, ms) {
   if (r.stop || r.retrying) return;
   r.retrying = true; r.tries = (r.tries || 0) + 1;
@@ -7448,8 +7542,8 @@ function renderRc() {
   r.pend = false;
   const keepY = el.scrollTop;
   const s = r.state, typ = { lan: 'direkt im Schulnetz', internet: 'direkt über das Internet', relay: 'über eine Umleitung (verschlüsselt)' }[r.type] || '';
-  const stl = r.st === 'ok' ? `<span class="rc-pill ok">🟢 verbunden${typ ? ' · ' + typ : ''}</span>` : r.st === 'connecting' ? '<span class="rc-pill">⏳ verbinde …</span>' : r.st === 'lost' ? '<span class="rc-pill warn">🟠 Verbindung unterbrochen – verbinde neu …</span>' : `<span class="rc-pill bad">🔴 ${r.st === 'blocked' ? 'blockiert' : 'nicht verbunden'}</span>`;
-  let h = `<div class="rc-head"><b>📡 Fernbedienung${s ? ' · ' + esc(s.cls) : ''}</b><span class="rc-code-s">Code ${esc(r.code)}</span>${stl}<span class="spacer"></span><button id="rcOff">✕ Trennen</button></div>`;
+  const stl = r.st === 'ok' ? `<span class="rc-pill ok">🟢 verbunden${typ ? ' · ' + typ : ''}</span>` : r.st === 'confirm' ? '<span class="rc-pill warn">✋ Bitte an der Tafel „Zulassen“ tippen</span>' : r.st === 'denied' ? '<span class="rc-pill bad">⛔ abgelehnt</span>' : r.st === 'connecting' || r.st === 'hello' ? '<span class="rc-pill">⏳ verbinde …</span>' : r.st === 'lost' ? '<span class="rc-pill warn">🟠 Verbindung unterbrochen – verbinde neu …</span>' : `<span class="rc-pill bad">🔴 ${r.st === 'blocked' ? 'blockiert' : 'nicht verbunden'}</span>`;
+  let h = `<div class="rc-head"><b>📡 Fernbedienung${s ? ' · ' + esc(s.cls) : ''}</b><span class="rc-code-s">${esc(r.room || '')} ${rcSyms(r.code)}</span>${stl}<span class="spacer"></span><button id="rcOff">✕ Trennen</button></div>`;
   if (r.why && r.st !== 'ok') h += `<div class="rc-why">${esc(r.why)}${r.st === 'blocked' ? '<br>Ausweichweg: Tafel direkt am PC bedienen oder das iPad spiegeln.' : ''}</div>`;
   if (s && r.st === 'ok') {
     const on = c => c ? ' class="on"' : '', cur = s.cur || '';
