@@ -414,3 +414,16 @@ NEU in Version 2026-11-19: 📲 „An Schüler“ mit Reitern
   🌐 GitHub – Zugang, Webclip-Adresse und Verbindungs-Code.
 - Ein ✓ am Reiter zeigt, dass die Klasse über diesen Weg verbunden ist. Der zuletzt benutzte Reiter
   wird beim nächsten Öffnen wieder gezeigt. „⛶ Groß anzeigen“ zeigt den Code des gewählten Reiters.
+
+NEU in Version 2026-11-20: 🎧 Klangkulisse
+- In der Tafel-Leiste (und in der Sitzplan-Präsentation) gibt es den Knopf 🎧. Er öffnet ein Fenster
+  mit 22 Geräuschen: Natur (Regen, Gewitter, Wind, Meer, Bach, Wald, Vögel, Grillen, Frösche,
+  Kaminfeuer, Wal, Windspiel), Alltag (Café, Zug, Autofahrt, Ventilator, Brunnen, Tastatur),
+  Rauschen (weiß, rosa, braun) und ruhiges Klavier.
+- Antippen = an/aus. Mehrere Geräusche lassen sich mischen; jedes aktive Geräusch hat einen eigenen
+  Lautstärkeregler, oben gibt es die Gesamtlautstärke. „⏹ Alle aus“ stoppt alles; „▶ Zuletzt“
+  startet die zuletzt gewählte Mischung wieder.
+- Das Fenster kann geschlossen werden – die Geräusche laufen weiter (🎧 leuchtet dann).
+- Fernbedienung: Abschnitt „🎧 Klangkulisse“ mit allen Geräuschen, Lautstärke −/＋ und „Alle aus“.
+  Hinweis: Der Browser der Tafel spielt Ton erst ab, nachdem dort einmal irgendwo geklickt wurde.
+- Alle Geräusche werden im Browser erzeugt (keine Audiodateien, kein Internet nötig).

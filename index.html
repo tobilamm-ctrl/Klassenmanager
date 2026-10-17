@@ -201,6 +201,25 @@
   #voteSetup .vt-round { display: flex; align-items: center; gap: 10px; justify-content: space-between; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 6px 10px; font-size: .85rem; margin-top: 8px; }
   .rc-panel textarea, #rcPanel textarea { font: inherit; width: 100%; box-sizing: border-box; }
   .ghbox .gh-chk span { display: flex; gap: 6px; align-items: flex-start; font-weight: 400; } .ghbox .gh-chk input { margin-top: 3px; }
+  #noisePanel { position: fixed; left: 50%; bottom: 64px; transform: translateX(-50%); z-index: 4200; width: min(780px, 96vw); max-height: 72vh; overflow: auto; background: #fff; border-radius: 16px; box-shadow: 0 16px 50px rgba(0,0,0,.3); padding: 10px 14px 12px; color: #1f2937; }
+  #noisePanel[hidden] { display: none; }
+  #noisePanel .noise-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; position: sticky; top: -10px; background: #fff; padding: 4px 0 8px; z-index: 1; }
+  #noisePanel .noise-head b { font-size: 1.05rem; }
+  #noisePanel .noise-sp { flex: 1; }
+  #noisePanel .noise-mv { display: flex; align-items: center; gap: 4px; font-size: .9rem; }
+  #noisePanel .noise-mv input { width: 120px; accent-color: #23a77a; }
+  #noisePanel .noise-head button { border: 1.5px solid #cbd5e1; background: #fff; border-radius: 10px; padding: 4px 10px; font-weight: 700; cursor: pointer; }
+  #noisePanel .noise-gh { font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: #64748b; margin: 8px 0 4px; }
+  #noisePanel .noise-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+  #noisePanel .noise-tile { display: flex; flex-direction: column; border-radius: 14px; background: #f1f5f9; overflow: hidden; }
+  #noisePanel .noise-tile button { border: 0; background: none; padding: 10px 4px 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; color: inherit; }
+  #noisePanel .noise-i { font-size: 1.9rem; line-height: 1; filter: grayscale(.35); }
+  #noisePanel .noise-n { font-size: .78rem; font-weight: 700; text-align: center; line-height: 1.15; }
+  #noisePanel .noise-tile.on { background: #23a77a; color: #fff; box-shadow: 0 4px 12px rgba(35,167,122,.35); }
+  #noisePanel .noise-tile.on .noise-i { filter: none; }
+  #noisePanel .noise-tile input { margin: 0 8px 8px; accent-color: #fff; }
+  #noisePanel .noise-hint { font-size: .78rem; color: #64748b; margin: 10px 0 0; }
+  #rcPanel .rc-noise button { font-size: .85rem; }
 </style>
 <style>
   :root {
@@ -1419,7 +1438,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-19</p>
+          <p class="hint" style="margin:0">Version 2026-11-20</p>
         </div>
       </details>
 
@@ -1619,6 +1638,7 @@
   <button data-p="duties" class="toggle" title="Dienste-Liste ein/aus">🧽</button>
   <button data-p="flip" class="toggle" title="Schülersicht (Tafel oben)">👁</button>
   <button data-p="vote" title="Abstimmung starten">📊</button>
+  <button data-p="noise" class="toggle" title="Klangkulisse">🎧</button>
   <button data-p="rc" class="toggle" title="Fernbedienung (iPad)">📡</button>
   <button data-p="board" title="Zur Tafel">🖥 Tafel</button>
   <button data-p="exit" class="primary" title="Präsentation beenden (Esc)">✕ Beenden</button>
@@ -1630,6 +1650,7 @@
   <button data-b="edit" class="toggle" title="Bausteine verschieben und in der Größe ändern">✏️ Anordnen</button>
   <button data-b="draw" class="toggle" title="Auf das Tafelbild zeichnen">🖊 Zeichnen</button>
   <button data-b="vote" title="Abstimmung starten">📊 Abstimmung</button>
+  <button data-b="noise" class="toggle" title="Klangkulisse (Regen, Wald, Meer, Rauschen …)">🎧</button>
   <button data-b="rc" class="toggle" title="Fernbedienung (iPad)">📡</button>
   <button data-b="plan" title="Zum Sitzplan (Präsentation)">🪑 Sitzplan</button>
   <button data-b="exit" class="primary" title="Präsentation beenden (Esc)">✕ Beenden</button>
@@ -1703,6 +1724,18 @@
       <div class="row" style="justify-content:flex-end"><button id="rcClose">Schließen</button></div>
     </div>
   </div>
+</div>
+<div id="noisePanel" hidden role="dialog" aria-label="Klangkulisse">
+  <div class="noise-head">
+    <b>🎧 Klangkulisse</b>
+    <label class="noise-mv">🔊 <input type="range" id="noiseMaster" min="0" max="100" value="60" aria-label="Gesamtlautstärke"></label>
+    <span class="noise-sp"></span>
+    <button type="button" id="noiseLast" hidden>▶ Zuletzt</button>
+    <button type="button" id="noiseStop">⏹ Alle aus</button>
+    <button type="button" id="noiseClose" title="Schließen – die Geräusche laufen weiter">✕</button>
+  </div>
+  <div id="noiseGrid"></div>
+  <p class="noise-hint">Antippen = an/aus · mehrere Geräusche lassen sich mischen · die Geräusche laufen weiter, wenn das Fenster zu ist.</p>
 </div>
 <div id="voteFull" hidden></div>
 <button id="voteBadge" hidden title="Abstimmungsrunde – antippen für die nächste Frage"></button>
@@ -4414,6 +4447,7 @@ $('presentBar').addEventListener('click', e => {
   if (k === 'rnd') { openRnd(b); return; }
   if (k === 'rc') { openRc(); syncPresentBar(); syncRcBtns(); return; }
   if (k === 'vote') { openVoteSetup(); return; }
+  if (k === 'noise') { toggleNoisePanel(); syncNoiseBtns(); return; }
   if (k === 'ov') { openOvMenu(b); return; }
   if (k === 'colors') setColors(!$('optColors').checked);
   if (k === 'gender') setGenderView(!ui.genderView);
@@ -6979,6 +7013,7 @@ $('bdBar').addEventListener('click', e => {
   if (k === 'draw') { $('bdMenu').hidden = true; setBdDraw(!ui.bdDraw); }
   if (k === 'rc') openRc();
   if (k === 'vote') openVoteSetup();
+  if (k === 'noise') { toggleNoisePanel(); setTimeout(syncNoiseBtns, 0); }
   if (k === 'exit') bdPresent(false);
   if (k === 'plan') { ui.keepFs = true; bdPresent(false); setView('plan'); setPresent(true); ui.keepFs = false; }
 });
@@ -7635,7 +7670,7 @@ function rcState() {
     sets: (c.teamSets || []).map(t => ({ id: t.id, name: t.name })),
     cur: ui.bdPresent ? 'board' : ui.present ? 'plan' : ui.vPresent ? ui.view : '',
     layout: ui.bdPresent && b ? b.items.map(i => [i.x, i.y, i.w, i.h, (BD_TYPES[i.t] || {}).i || '']) : null, ink: ui.bdPresent && b ? (b.ink || []) : null,
-    subj: ((c.tt && c.tt.subjects) || []).map(x => x.name), ttW: ui.ttWeek || 0, calM: ui.calMon || todayStr().slice(0, 7), ack: RC.ack || null, vote: voteState() };
+    subj: ((c.tt && c.tt.subjects) || []).map(x => x.name), ttW: ui.ttWeek || 0, calM: ui.calMon || todayStr().slice(0, 7), ack: RC.ack || null, vote: voteState(), noise: noiseState() };
 }
 function rcBroadcast(force) {
   if (!rcOk().length) return;
@@ -7705,6 +7740,7 @@ function rcHandle(d) {
     }
   }
   if (d.c === 'vote') rcVoteCmd(d);
+  if (d.c === 'noise') { if (d.a === 't') noiseToggle(d.id); if (d.a === 'mv') noiseMaster(NOISE.mv + (+d.v > 0 ? 0.1 : -0.1)); if (d.a === 'stop') noiseStopAll(); }
   if (d.c === 'clk') setClkShow(d.v === 'off' ? '' : d.v);
   if (d.c === 'phs') setPhShow(d.v === 'off' ? '' : d.v);
   if (d.c === 'flip') { ui.flipped = !ui.flipped; renderAll({ keepList: true }); syncPresentBar(); }
@@ -7978,6 +8014,7 @@ function renderRc() {
     }
     // immer verfügbar: Abstimmung, Arbeitsphase und Vollbild
     h += rcVoteHtml(r, s);
+    h += rcNoiseHtml(s);
     h += `<div class="rc-sec"><h3>Arbeitsphase einblenden</h3><div class="rc-row rc-wrap">${Object.entries(PHASES).map(([k, ph]) => `<button data-rph="${k}" style="--pc:${ph[2]}" class="ph${s.phs === k ? ' on' : ''}">${ph[0]} ${esc(ph[1])}</button>`).join('')}<button data-rph="off"${on(!s.phs)}>aus</button></div></div>`;
     h += `<div class="rc-sec"><h3>Vollbild</h3><div class="rc-sub">⏱ Timer bildschirmfüllend</div><div class="rc-row rc-wrap">${[1, 2, 3, 5, 10, 15, 20, 30].map(m => `<button data-rft="${m}">${m} min</button>`).join('')}<button data-rft="up">⏱ Stoppuhr</button></div>` +
       (s.full ? `<div class="rc-row"><b class="rc-time${s.full.done ? ' done' : ''}">${esc(s.full.txt)}</b><button data-rfa="go">${s.full.run ? '❚❚ Pause' : '▶ Start'}</button><button data-rfa="reset">↺</button>${s.full.mode === 'down' ? '<button data-rfa="m">−1</button><button data-rfa="p">＋1</button>' : ''}<button data-rfa="close">✕ Schließen</button></div>` : '') +
@@ -8052,6 +8089,9 @@ $('rcPanel').addEventListener('click', e => {
   if (b.dataset.rvt) { r.vf = Object.assign(r.vf || {}, { type: b.dataset.rvt }); renderRc(); }
   if (b.dataset.rvn) { r.vf.n = +b.dataset.rvn; if (+r.vf.corr >= r.vf.n) r.vf.corr = ''; renderRc(); }
   if (b.dataset.rvc != null) { r.vf.corr = b.dataset.rvc; renderRc(); }
+  if (b.dataset.rno) rcSend({ c: 'noise', a: 't', id: b.dataset.rno });
+  if (b.dataset.rnmv) rcSend({ c: 'noise', a: 'mv', v: +b.dataset.rnmv });
+  if (b.dataset.rnstop) rcSend({ c: 'noise', a: 'stop' });
   if (b.dataset.rvm) { r.vf.max = +b.dataset.rvm; renderRc(); }
   if (b.dataset.rvote === 'stop' && !window.confirm('Abstimmungsrunde beenden? Die Kinder werden getrennt und müssen für die nächste Abstimmung die Symbole neu antippen.')) return;
   if (b.dataset.rvote) { const f = r.vf || {}; rcSend(b.dataset.rvote === 'start' ? { c: 'vote', a: 'start', type: f.type || 'thumbs', q: (r.fv || {}).vq || '', n: f.n || 4, corr: f.corr || '', list: (r.fv || {}).vopts || '', max: f.max || 1 } : { c: 'vote', a: b.dataset.rvote }); if (b.dataset.rvote === 'start' && r.fv) delete r.fv.vq; }
@@ -8551,6 +8591,278 @@ function rcVoteCmd(d) {
   if (d.a === 'close') voteClose();
   if (d.a === 'stop') voteStop(false);
   if (d.a === 'ok' || d.a === 'no') voteApprove(d.id, d.a === 'ok');
+}
+
+/* ---------- 🎧 Klangkulisse: Natur- und Hintergrundgeräusche, komplett mit Web Audio erzeugt (keine Audiodateien) ---------- */
+const NOISE_SOUNDS = [
+  { id: 'rain', n: 'Regen', i: '🌧️', g: 'Natur' }, { id: 'storm', n: 'Gewitter', i: '⛈️', g: 'Natur' }, { id: 'wind', n: 'Wind', i: '💨', g: 'Natur' },
+  { id: 'waves', n: 'Meer', i: '🌊', g: 'Natur' }, { id: 'stream', n: 'Bach', i: '💧', g: 'Natur' }, { id: 'forest', n: 'Wald', i: '🍃', g: 'Natur' },
+  { id: 'birds', n: 'Vögel', i: '🐦', g: 'Natur' }, { id: 'night', n: 'Grillen', i: '🦗', g: 'Natur' }, { id: 'frogs', n: 'Frösche', i: '🐸', g: 'Natur' },
+  { id: 'fire', n: 'Kaminfeuer', i: '🔥', g: 'Natur' }, { id: 'whale', n: 'Wal', i: '🐋', g: 'Natur' }, { id: 'chimes', n: 'Windspiel', i: '🎐', g: 'Natur' },
+  { id: 'cafe', n: 'Café', i: '👥', g: 'Alltag' }, { id: 'train', n: 'Zug', i: '🚂', g: 'Alltag' }, { id: 'car', n: 'Autofahrt', i: '🚗', g: 'Alltag' },
+  { id: 'fan', n: 'Ventilator', i: '🌀', g: 'Alltag' }, { id: 'fountain', n: 'Brunnen', i: '⛲', g: 'Alltag' }, { id: 'keyboard', n: 'Tastatur', i: '⌨️', g: 'Alltag' },
+  { id: 'white', n: 'Weißes Rauschen', i: '⬜', g: 'Rauschen' }, { id: 'pink', n: 'Rosa Rauschen', i: '🩷', g: 'Rauschen' }, { id: 'brown', n: 'Braunes Rauschen', i: '🟫', g: 'Rauschen' },
+  { id: 'piano', n: 'Klavier', i: '🎹', g: 'Musik' }
+];
+const noiseBufs = new WeakMap();
+function noiseBuffers(ctx) {
+  let b = noiseBufs.get(ctx); if (b) return b;
+  const len = Math.floor(ctx.sampleRate * 5), mk = () => ctx.createBuffer(1, len, ctx.sampleRate);
+  const w = mk(), p = mk(), br = mk(), W = w.getChannelData(0), P = p.getChannelData(0), B = br.getChannelData(0);
+  let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, last = 0, mp = 0, mb = 0;
+  for (let i = 0; i < len; i++) {
+    const x = Math.random() * 2 - 1; W[i] = x;
+    b0 = 0.99886 * b0 + x * 0.0555179; b1 = 0.99332 * b1 + x * 0.0750759; b2 = 0.969 * b2 + x * 0.153852; b3 = 0.8665 * b3 + x * 0.3104856; b4 = 0.55 * b4 + x * 0.5329522; b5 = -0.7616 * b5 - x * 0.016898;
+    P[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + x * 0.5362; b6 = x * 0.115926; mp = Math.max(mp, Math.abs(P[i]));
+    last = (last + 0.02 * x) / 1.02; B[i] = last; mb = Math.max(mb, Math.abs(last));
+  }
+  // Übergang am Schleifenende weich machen
+  const fade = Math.floor(ctx.sampleRate * 0.05);
+  [[W, 1], [P, mp], [B, mb]].forEach(([a, m]) => { for (let i = 0; i < len; i++) a[i] /= m; for (let i = 0; i < fade; i++) { const t = i / fade; a[len - fade + i] = a[len - fade + i] * (1 - t) + a[i] * t; } });
+  b = { white: w, pink: p, brown: br }; noiseBufs.set(ctx, b); return b;
+}
+function noiseMake(id, ctx, dest) {
+  const nodes = [], timers = [], T = () => ctx.currentTime, R = (a, b) => a + Math.random() * (b - a);
+  const out = ctx.createGain(); out.gain.value = 0; out.connect(dest); nodes.push(out);
+  out.gain.setValueAtTime(0, T()); out.gain.linearRampToValueAtTime(1, T() + 0.8);
+  const g = (v, to = out) => { const n = ctx.createGain(); n.gain.value = v; n.connect(to); nodes.push(n); return n; };
+  const f = (type, freq, Q, to) => { const n = ctx.createBiquadFilter(); n.type = type; n.frequency.value = freq; if (Q != null) n.Q.value = Q; n.connect(to); nodes.push(n); return n; };
+  const pan = (p, to) => { if (!ctx.createStereoPanner) return to; const n = ctx.createStereoPanner(); n.pan.value = p; n.connect(to); nodes.push(n); return n; };
+  const src = (kind, to, rate = 1) => { const s = ctx.createBufferSource(); s.buffer = noiseBuffers(ctx)[kind]; s.loop = true; s.playbackRate.value = rate; s.connect(to); s.start(T(), R(0, 4)); nodes.push(s); return s; };
+  const osc = (type, freq, to) => { const o = ctx.createOscillator(); o.type = type; o.frequency.value = freq; o.connect(to); o.start(); nodes.push(o); return o; };
+  const lfo = (rate, depth, param) => { const gg = ctx.createGain(); gg.gain.value = depth; gg.connect(param); nodes.push(gg); return osc('sine', rate, gg); };
+  // Zufallsereignisse: für ~20 s im Voraus planen, dann laufend nachplanen (funktioniert live und offline)
+  const events = (minGap, maxGap, fn, first = 0.3) => {
+    let next = T() + R(first, first + maxGap * 0.5);
+    const plan = () => { while (next < T() + 20) { fn(next); next += R(minGap, maxGap); } };
+    plan(); const iv = setInterval(plan, 5000); timers.push(iv);
+  };
+  // kurzer Rauschimpuls (Klick, Knacken, Tropfen)
+  const burst = (t, dur, vol, ftype, freq, Q, to, kind = 'white') => {
+    const s = ctx.createBufferSource(); s.buffer = noiseBuffers(ctx)[kind];
+    const bf = ctx.createBiquadFilter(); bf.type = ftype; bf.frequency.value = freq; bf.Q.value = Q;
+    const e = ctx.createGain(); e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(vol, t + 0.002); e.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(bf); bf.connect(e); e.connect(to); s.start(t, R(0, 4)); s.stop(t + dur + 0.05);
+  };
+  // Ton mit Hüllkurve (Glocke, Klavier, Vogel)
+  const tone = (t, freq, dur, vol, to, type = 'sine', glide) => {
+    const o = ctx.createOscillator(), e = ctx.createGain(); o.type = type; o.frequency.setValueAtTime(freq, t);
+    if (glide) glide(o.frequency, t);
+    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(vol, t + Math.min(0.02, dur / 4)); e.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(e); e.connect(to); o.start(t); o.stop(t + dur + 0.05);
+  };
+  const bell = (t, freq, dur, vol, to) => { [[1, 1], [2.76, 0.35], [5.4, 0.15]].forEach(([m, a]) => tone(t, freq * m, dur / (m > 1 ? 2 : 1), vol * a, to)); };
+  const reverb = (secs, to) => {
+    const c = ctx.createConvolver(), len = Math.floor(ctx.sampleRate * secs), ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
+    c.buffer = ir; c.connect(to); nodes.push(c); return c;
+  };
+  const rain = (vol) => {
+    const o = g(vol), hp = f('highpass', 600, 0.5, f('lowpass', 7000, 0.5, o)); src('pink', hp);
+    const lf = g(0.25, o); src('brown', f('lowpass', 900, 0.7, lf));
+    lfo(0.07, 0.15, o.gain);
+    const dr = g(0.5, o); events(0.03, 0.18, t => burst(t, R(0.01, 0.03), R(0.05, 0.25), 'bandpass', R(2500, 7000), 3, dr));
+  };
+  const windL = (vol) => {
+    const o = g(vol), bp = f('bandpass', 400, 0.8, o); src('brown', bp); src('pink', f('bandpass', 700, 1.2, g(0.15, o)));
+    lfo(0.05, 200, bp.frequency); lfo(0.13, 120, bp.frequency); lfo(0.09, vol * 0.45, o.gain);
+  };
+  const birdsL = (vol, minGap = 1, maxGap = 5) => {
+    const o = g(vol);
+    events(minGap, maxGap, t => {
+      const p = pan(R(-0.8, 0.8), o), kind = Math.floor(R(0, 3)), base = R(2200, 4800);
+      if (kind === 0) for (let k = 0; k < Math.floor(R(4, 10)); k++) tone(t + k * 0.07, base, 0.06, 0.5, p, 'sine', (fr, tt) => fr.exponentialRampToValueAtTime(base * 1.3, tt + 0.05));
+      else if (kind === 1) { tone(t, base, 0.35, 0.5, p, 'sine', (fr, tt) => { fr.exponentialRampToValueAtTime(base * 1.6, tt + 0.15); fr.exponentialRampToValueAtTime(base * 0.9, tt + 0.33); }); tone(t + 0.45, base * 1.1, 0.25, 0.4, p, 'sine', (fr, tt) => fr.exponentialRampToValueAtTime(base * 0.7, tt + 0.22)); }
+      else for (let k = 0; k < 3; k++) tone(t + k * 0.16, base * (1 + k * 0.12), 0.12, 0.45, p, 'sine', (fr, tt) => fr.exponentialRampToValueAtTime(base * 0.8, tt + 0.1));
+    }, 0.2);
+  };
+  const ocean = (vol, cycle = 8) => {
+    const o = g(0), lp = f('lowpass', 500, 0.6, o); src('brown', lp); src('pink', f('lowpass', 2500, 0.5, g(0.35, lp)));
+    let t0 = T();
+    const plan = () => { while (t0 < T() + 20) { const c = R(cycle * 0.75, cycle * 1.25); o.gain.setValueAtTime(vol * 0.25, t0); o.gain.linearRampToValueAtTime(vol, t0 + c * 0.45); o.gain.linearRampToValueAtTime(vol * 0.25, t0 + c); lp.frequency.setValueAtTime(350, t0); lp.frequency.linearRampToValueAtTime(1600, t0 + c * 0.45); lp.frequency.linearRampToValueAtTime(350, t0 + c); t0 += c; } };
+    plan(); timers.push(setInterval(plan, 5000));
+  };
+  switch (id) {
+    case 'rain': rain(0.55); break;
+    case 'storm': {
+      rain(0.6); src('brown', f('lowpass', 300, 0.7, g(0.35)));
+      const th = g(1);
+      events(8, 22, t => { const d = R(3, 6); const s = ctx.createBufferSource(); s.buffer = noiseBuffers(ctx).brown; const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = R(120, 260); const e = ctx.createGain();
+        e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(R(0.5, 0.9), t + 0.08); e.gain.linearRampToValueAtTime(0.35, t + 0.6); e.gain.linearRampToValueAtTime(0.55, t + 1.2); e.gain.exponentialRampToValueAtTime(0.001, t + d);
+        s.connect(lp); lp.connect(e); e.connect(th); s.start(t, R(0, 4)); s.stop(t + d + 0.1); }, 1.5);
+      break;
+    }
+    case 'wind': windL(0.9); break;
+    case 'waves': ocean(0.8); break;
+    case 'stream': {
+      const o = g(0.5);
+      [900, 1500, 2300, 3200].forEach(fr => { const bp = f('bandpass', fr, 6, o); src('white', bp); lfo(R(3, 9), fr * 0.25, bp.frequency); });
+      src('brown', f('lowpass', 600, 0.7, g(0.6, o)));
+      break;
+    }
+    case 'forest': windL(0.35); birdsL(0.3, 2.5, 8); break;
+    case 'birds': src('pink', f('lowpass', 1200, 0.5, g(0.05))); birdsL(0.5); break;
+    case 'night': {
+      src('brown', f('lowpass', 400, 0.5, g(0.12)));
+      const o = g(0.18);
+      [[4300, -0.6, 0], [4650, 0.5, 0.35], [4050, 0.1, 0.8]].forEach(([fr, p, off]) => { const pp = pan(p, o);
+        events(0.9, 1.6, t => { for (let k = 0; k < 3; k++) for (let j = 0; j < 4; j++) tone(t + k * 0.13 + j * 0.022, fr, 0.016, 0.6, pp); }, off); });
+      break;
+    }
+    case 'frogs': {
+      src('brown', f('lowpass', 500, 0.5, g(0.1)));
+      const o = g(0.55);
+      events(0.6, 2.2, t => { const p = pan(R(-0.7, 0.7), o), fr = R(140, 380), n = Math.floor(R(2, 6)), bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = fr * 3; bp.Q.value = 3; bp.connect(p);
+        for (let k = 0; k < n; k++) { const tt = t + k * R(0.18, 0.3), oo = ctx.createOscillator(), am = ctx.createOscillator(), e = ctx.createGain(), ag = ctx.createGain(); oo.type = 'sawtooth'; oo.frequency.value = fr; am.frequency.value = R(25, 45); ag.gain.value = 0.5;
+          e.gain.setValueAtTime(0, tt); e.gain.linearRampToValueAtTime(0.5, tt + 0.02); e.gain.linearRampToValueAtTime(0, tt + 0.14); am.connect(ag); ag.connect(e.gain); oo.connect(e); e.connect(bp); oo.start(tt); am.start(tt); oo.stop(tt + 0.16); am.stop(tt + 0.16); } }, 0.3);
+      break;
+    }
+    case 'fire': {
+      const o = g(1); src('brown', f('lowpass', 450, 0.5, g(0.45, o))); lfo(0.3, 0.08, o.gain);
+      const cr = g(0.6, o);
+      events(0.05, 0.6, t => { const n = Math.random() < 0.3 ? Math.floor(R(2, 6)) : 1; for (let k = 0; k < n; k++) burst(t + k * R(0.01, 0.05), R(0.004, 0.02), R(0.15, 0.7), 'highpass', R(1500, 4000), 0.7, cr); });
+      break;
+    }
+    case 'whale': {
+      ocean(0.3, 10);
+      const o = g(0.18), rv = reverb(3, g(0.6, o)), dry = g(0.5, o);
+      events(4, 9, t => { const d = R(2, 5), a = R(90, 300), b = a * R(0.6, 2.2); [dry, rv].forEach(to => tone(t, a, d, 0.5, to, 'sine', (fr, tt) => { fr.linearRampToValueAtTime(b, tt + d * 0.6); fr.linearRampToValueAtTime(a * 0.9, tt + d); })); }, 0.5);
+      break;
+    }
+    case 'chimes': {
+      windL(0.25);
+      const o = g(0.2), rv = reverb(2.5, g(0.5, o)), notes = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66, 1318.5];
+      events(0.4, 2.5, t => { const fr = notes[Math.floor(R(0, notes.length))], p = pan(R(-0.6, 0.6), o); bell(t, fr, R(3, 5), 0.5, p); bell(t, fr, 4, 0.2, rv); }, 0.2);
+      break;
+    }
+    case 'cafe': {
+      const o = g(0.8);
+      for (let k = 0; k < 4; k++) { const e = g(0.25, pan(R(-0.6, 0.6), o)), bp = f('bandpass', R(400, 1600), 1.2, e); src('pink', bp); lfo(R(3, 6.5), 0.22, e.gain); lfo(R(0.1, 0.3), R(150, 400), bp.frequency); }
+      src('brown', f('lowpass', 500, 0.5, g(0.25, o)));
+      const cl = g(0.15, o); events(3, 9, t => { const fr = R(2500, 4200); bell(t, fr, 0.5, 0.5, pan(R(-0.8, 0.8), cl)); if (Math.random() < 0.5) bell(t + 0.12, fr * 1.07, 0.4, 0.35, cl); }, 1);
+      break;
+    }
+    case 'train': {
+      const o = g(0.8); src('brown', f('lowpass', 220, 0.7, g(0.7, o))); src('pink', f('bandpass', 900, 0.8, g(0.08, o)));
+      const cl = g(0.9, o); let t0 = T() + 0.3;
+      const plan = () => { while (t0 < T() + 20) { [0, 0.16].forEach(d => burst(t0 + d, 0.09, 0.6, 'bandpass', R(300, 500), 1.5, cl, 'pink')); t0 += 1.1; } };
+      plan(); timers.push(setInterval(plan, 5000));
+      break;
+    }
+    case 'car': {
+      const o = g(0.4); src('brown', f('lowpass', 380, 0.6, o)); const m = osc('sawtooth', 70, f('lowpass', 140, 1, g(0.05, o)));
+      lfo(0.08, 4, m.frequency); lfo(0.05, 0.15, o.gain);
+      break;
+    }
+    case 'fan': {
+      const o = g(0.45); src('brown', f('lowpass', 1200, 0.5, o)); src('pink', f('lowpass', 1500, 0.5, g(0.2, o)));
+      osc('sine', 50, g(0.04, o)); lfo(8, 0.03, o.gain);
+      break;
+    }
+    case 'fountain': {
+      const o = g(0.4); [2200, 3500, 5000].forEach(fr => { const bp = f('bandpass', fr, 3, o); src('white', bp); lfo(R(5, 12), fr * 0.3, bp.frequency); });
+      src('brown', f('lowpass', 500, 0.6, g(0.7, o)));
+      break;
+    }
+    case 'keyboard': {
+      const o = g(1.6), room = g(0.06); src('brown', f('lowpass', 300, 0.5, room));
+      events(0.5, 3, t => { let tt = t; const n = Math.floor(R(3, 12)); for (let k = 0; k < n; k++) { const sp = Math.random() < 0.1; burst(tt, sp ? 0.05 : 0.025, sp ? 0.5 : R(0.35, 0.6), 'bandpass', sp ? 900 : R(2000, 4000), sp ? 2 : 3, o); tt += R(0.08, 0.25); } }, 0.2);
+      break;
+    }
+    case 'white': src('white', f('lowpass', 9000, 0.5, g(0.12))); break;
+    case 'pink': src('pink', g(0.3)); break;
+    case 'brown': src('brown', g(0.5)); break;
+    case 'piano': {
+      const o = g(0.45), lp = f('lowpass', 2500, 0.5, o), rv = reverb(2.5, g(0.35, lp)), sc = [261.63, 293.66, 329.63, 392, 440, 523.25, 587.33, 659.25, 784, 880, 1046.5];
+      const note = (t, fr, v) => [[1, 1], [2, 0.4], [3, 0.15], [4, 0.08]].forEach(([m, a]) => { tone(t, fr * m, R(2, 3.5) / m, v * a, lp, 'triangle'); tone(t, fr * m, 3, v * a * 0.5, rv); });
+      events(1.5, 4, t => { const k = Math.floor(R(0, sc.length)); note(t, sc[k], 0.5); if (Math.random() < 0.3) note(t + 0.02, sc[Math.max(0, k - 2)], 0.35); }, 0.2);
+      break;
+    }
+    default: src('pink', g(0.3));
+  }
+  let stopped = false;
+  return {
+    stop() {
+      if (stopped) return; stopped = true;
+      timers.forEach(clearInterval);
+      try { out.gain.cancelScheduledValues(T()); out.gain.setValueAtTime(out.gain.value, T()); out.gain.linearRampToValueAtTime(0, T() + 0.4); } catch (e) {}
+      setTimeout(() => nodes.forEach(n => { try { if (n.stop) n.stop(); } catch (e) {} try { n.disconnect(); } catch (e) {} }), 500);
+    }
+  };
+}
+
+/* ---- Mischpult ---- */
+const NOISE = { ctx: null, master: null, on: {}, mv: 0.6, vols: {}, last: [] };
+function noiseLoad() { try { const o = JSON.parse(localStorage.getItem('km-noise') || 'null'); if (o) { NOISE.vols = o.v || {}; NOISE.mv = o.mv != null ? o.mv : 0.6; NOISE.last = o.last || []; } } catch (e) {} }
+function noiseSave() { try { localStorage.setItem('km-noise', JSON.stringify({ v: NOISE.vols, mv: NOISE.mv, last: Object.keys(NOISE.on).length ? Object.keys(NOISE.on) : NOISE.last })); } catch (e) {} }
+function noiseCtx() {
+  if (!NOISE.ctx) { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; NOISE.ctx = new AC(); NOISE.master = NOISE.ctx.createGain(); NOISE.master.gain.value = NOISE.mv; NOISE.master.connect(NOISE.ctx.destination); }
+  if (NOISE.ctx.state === 'suspended') NOISE.ctx.resume().catch(() => {});
+  return NOISE.ctx;
+}
+function noiseChanged() { noiseSave(); noiseRender(); document.dispatchEvent(new CustomEvent('noisechange')); }
+function noiseToggle(id, on) {
+  if (!NOISE_SOUNDS.some(s => s.id === id)) return;
+  const cur = !!NOISE.on[id]; if (on == null) on = !cur; if (on === cur) return;
+  if (on) {
+    const ctx = noiseCtx(); if (!ctx) return;
+    const v = NOISE.vols[id] != null ? NOISE.vols[id] : 0.7, node = ctx.createGain(); node.gain.value = v; node.connect(NOISE.master);
+    NOISE.on[id] = { node, h: noiseMake(id, ctx, node), v };
+  } else {
+    const x = NOISE.on[id]; delete NOISE.on[id]; x.h.stop(); setTimeout(() => { try { x.node.disconnect(); } catch (e) {} }, 600);
+  }
+  if (Object.keys(NOISE.on).length) NOISE.last = Object.keys(NOISE.on);
+  noiseChanged();
+}
+function noiseVol(id, v) { v = Math.max(0, Math.min(1, +v)); NOISE.vols[id] = v; const x = NOISE.on[id]; if (x) { x.v = v; x.node.gain.setTargetAtTime(v, NOISE.ctx.currentTime, 0.05); } noiseSave(); document.dispatchEvent(new CustomEvent('noisechange')); }
+function noiseMaster(v) { NOISE.mv = Math.max(0, Math.min(1, +v)); if (NOISE.master) NOISE.master.gain.setTargetAtTime(NOISE.mv, NOISE.ctx.currentTime, 0.05); noiseSave(); const m = document.getElementById('noiseMaster'); if (m && +m.value !== Math.round(NOISE.mv * 100)) m.value = Math.round(NOISE.mv * 100); document.dispatchEvent(new CustomEvent('noisechange')); }
+function noiseStopAll() { Object.keys(NOISE.on).forEach(id => { const x = NOISE.on[id]; delete NOISE.on[id]; x.h.stop(); }); noiseChanged(); }
+function noiseResume() { (NOISE.last || []).forEach(id => noiseToggle(id, true)); }
+function noiseState() { return { on: Object.keys(NOISE.on).map(id => ({ id, v: NOISE.on[id].v })), mv: NOISE.mv, playing: Object.keys(NOISE.on).length > 0, last: NOISE.last }; }
+
+/* ---- Oberfläche ---- */
+function noiseRender() {
+  const grid = document.getElementById('noiseGrid'); if (!grid) return;
+  const e = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let h = '', grp = '';
+  NOISE_SOUNDS.forEach(s => {
+    if (s.g !== grp) { if (grp) h += '</div>'; grp = s.g; h += `<div class="noise-gh">${e(grp)}</div><div class="noise-row">`; }
+    const x = NOISE.on[s.id];
+    h += `<div class="noise-tile${x ? ' on' : ''}"><button type="button" data-noise="${s.id}" aria-pressed="${!!x}"><span class="noise-i">${s.i}</span><span class="noise-n">${e(s.n)}</span></button>${x ? `<input type="range" min="0" max="100" value="${Math.round(x.v * 100)}" data-nvol="${s.id}" aria-label="Lautstärke ${e(s.n)}">` : ''}</div>`;
+  });
+  grid.innerHTML = h + '</div>';
+  const st = noiseState(), last = document.getElementById('noiseLast');
+  if (last) last.hidden = st.playing || !(NOISE.last || []).length;
+  const m = document.getElementById('noiseMaster'); if (m) m.value = Math.round(NOISE.mv * 100);
+}
+function openNoise() { const p = document.getElementById('noisePanel'); if (!p) return; noiseRender(); p.hidden = false; }
+function closeNoise() { const p = document.getElementById('noisePanel'); if (p) p.hidden = true; document.dispatchEvent(new CustomEvent('noisechange')); }
+function toggleNoisePanel() { const p = document.getElementById('noisePanel'); if (p && !p.hidden) closeNoise(); else openNoise(); }
+(function noiseInit() {
+  noiseLoad();
+  const p = document.getElementById('noisePanel'); if (!p) return;
+  p.addEventListener('click', ev => {
+    const b = ev.target.closest('button'); if (!b) return;
+    if (b.dataset.noise) noiseToggle(b.dataset.noise);
+    if (b.id === 'noiseStop') noiseStopAll();
+    if (b.id === 'noiseLast') noiseResume();
+    if (b.id === 'noiseClose') closeNoise();
+  });
+  p.addEventListener('input', ev => {
+    const t = ev.target;
+    if (t.dataset.nvol) noiseVol(t.dataset.nvol, t.value / 100);
+    if (t.id === 'noiseMaster') noiseMaster(t.value / 100);
+  });
+  document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && !p.hidden) closeNoise(); });
+})();
+
+// Knöpfe 🎧 an der Tafel und in der Präsentation leuchten, solange Geräusche laufen
+function syncNoiseBtns() { const on = noiseState().playing; document.querySelectorAll('[data-b="noise"], [data-p="noise"]').forEach(b => b.classList.toggle('on', on)); }
+document.addEventListener('noisechange', syncNoiseBtns);
+function rcNoiseHtml(s) {
+  const n = s.noise || { on: [], mv: 0.6 }, on = new Set(n.on.map(x => x.id));
+  return `<div class="rc-sec"><h3>🎧 Klangkulisse</h3><div class="rc-row rc-wrap rc-noise">${NOISE_SOUNDS.map(x => `<button data-rno="${x.id}"${on.has(x.id) ? ' class="on"' : ''} title="${esc(x.n)}">${x.i} ${esc(x.n)}</button>`).join('')}</div>
+    <div class="rc-row" style="margin-top:6px"><span>🔊 Lautstärke</span><button data-rnmv="-1">−</button><b>${Math.round(n.mv * 100)} %</b><button data-rnmv="1">＋</button>${n.on.length ? '<button data-rnstop="1">⏹ Alle aus</button>' : ''}</div></div>`;
 }
 
 /* ---------- Start ---------- */
