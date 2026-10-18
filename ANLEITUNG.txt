@@ -436,3 +436,19 @@ NEU in Version 2026-11-21: 🎧 Klangkulisse klingt natürlicher
 - Windspiel und Klavier mit echten Obertönen und leichter Schwebung, Vögel singen melodischer,
   Grillen/Frösche/Tastatur/Kaminfeuer aus naturnah geformten Einzelgeräuschen, Café mit
   Stimmengemurmel statt Rauschen.
+
+NEU in Version 2026-11-22: 📋 Strichliste (Klassenliste → Reiter „📋 Strichliste“)
+- Für wiederkehrende Kontrollen. Normalfall: alles in Ordnung – nur Ausnahmen antippen.
+- Vorbelegt: „📦 Material“ mit 📱 iPad vergessen · 🔋 iPad nicht geladen · ✏️ Stift vergessen ·
+  ⚡ Stift nicht geladen. Feld antippen = +1 für heute (höchstens 1 pro Kind, Punkt und Tag),
+  nochmal antippen = zurücknehmen. Heutige Striche sind umrandet.
+- Die Zahl zeigt die Summe im Zählzeitraum (Halbjahr ab 1.8. bzw. 16.2., Schuljahr, Monat, seit Datum
+  oder gesamt). Ab „orange“ (Standard 3) und „rot“ (Standard 5) wird das Feld farbig; wer rot ist,
+  steht zusätzlich auf der Startseite.
+- Über das Datum oben kann man für einen früheren Tag nachtragen. Abwesende Kinder sind ausgegraut.
+- Name antippen = Verlauf mit allen Daten (📋 Kopieren, z. B. für ein Elterngespräch).
+- ▾/▸ klappt die Liste ein und aus (wird gemerkt). Mit den Schaltern oben wechselt man die Liste.
+- ⚙: weitere eigene Strichlisten anlegen (Name, Symbol, Zählpunkte, Schwellen, Zeitraum), Zählpunkte
+  umbenennen/sortieren/löschen, Liste (ohne Striche) in eine andere Klasse kopieren.
+- Datenschutz: Die Striche liegen nur in deiner Klassendatei; sie gehen nie an die Schüler-iPads
+  (nicht in QR-Codes, OneDrive- oder GitHub-Klassendateien).

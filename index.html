@@ -220,6 +220,33 @@
   #noisePanel .noise-tile input { margin: 0 8px 8px; accent-color: #fff; }
   #noisePanel .noise-hint { font-size: .78rem; color: #64748b; margin: 10px 0 0; }
   #rcPanel .rc-noise button { font-size: .85rem; }
+
+  #lvTally[hidden] { display: none !important; }
+  #lvTally { background: var(--panel); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.08); padding: 8px 10px; display: flex; flex-direction: column; min-height: 0; max-width: 760px; }
+  .tl-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .tl-fold { border: 0; background: none; font-size: 1.1rem; padding: 2px 6px; cursor: pointer; }
+  .tl-chips { display: flex; gap: 4px; flex-wrap: wrap; } .tl-chips button { padding: 3px 9px; border-radius: 999px; font-size: .85rem; } .tl-chips button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .tl-day { font-size: .85rem; display: flex; align-items: center; gap: 4px; } .tl-day input { padding: 2px 5px; font: inherit; }
+  .tl-sum { font-size: .82rem; color: var(--muted); margin: 4px 2px; } .tl-red { color: #dc2626; font-weight: 700; }
+  .tl-wrap { overflow: auto; max-height: calc(100vh - 290px); }
+  table.tl { border-collapse: separate; border-spacing: 0; font-size: .88rem; }
+  .tl th, .tl td { border-bottom: 1px solid #eef0f3; padding: 1px 3px; text-align: center; }
+  .tl thead th { position: sticky; top: 0; background: #f8fafc; z-index: 1; font-weight: 400; vertical-align: bottom; padding: 4px 3px; }
+  .tl thead small { display: block; font-size: .64rem; color: var(--muted); line-height: 1.1; max-width: 76px; }
+  .tl .tl-ic { font-size: 1.15rem; }
+  .tl .nm { text-align: left; white-space: nowrap; position: sticky; left: 0; background: #fff; padding-right: 10px; }
+  .tl thead .nm { background: #f8fafc; z-index: 2; } .tl tfoot td { font-size: .78rem; color: var(--muted); font-weight: 700; background: #f8fafc; }
+  .tl .nm button { border: 0; background: none; padding: 2px 0; font: inherit; cursor: pointer; text-align: left; } .tl .nm button:hover { text-decoration: underline; }
+  .tl tr.ab .nm button, .tl tr.ab .tl-c { opacity: .45; }
+  .tl-c { width: 40px; height: 30px; border-radius: 8px; border: 1.5px solid transparent; background: #f8fafc; color: #94a3b8; font-weight: 700; cursor: pointer; padding: 0; }
+  .tl-c:hover { border-color: #cbd5e1; }
+  .tl-c.warn { background: #fff7ed; color: #c2410c; } .tl-c.red { background: #fee2e2; color: #b91c1c; }
+  .tl-c.today { border-color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); color: #0f172a; }
+  .tl-hint { font-size: .75rem; margin: 6px 2px 0; } .tl-lg { padding: 0 5px; border-radius: 5px; } .tl-lg.warn { background: #fff7ed; color: #c2410c; } .tl-lg.red { background: #fee2e2; color: #b91c1c; }
+  .tl-hl { display: grid; grid-template-columns: 28px 1fr; gap: 0 6px; margin: 6px 0; } .tl-hl .hint { grid-column: 2; font-size: .8rem; }
+  .tl-form { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px 10px; margin-bottom: 10px; } .tl-form label { display: flex; flex-direction: column; font-size: .78rem; font-weight: 600; gap: 2px; } .tl-form label.w { grid-column: span 3; } .tl-form label[hidden] { display: none; }
+  .tl-form input, .tl-form select, .tl-ir input { font: inherit; padding: 4px 6px; border: 1px solid #cbd5e1; border-radius: 6px; }
+  .tl-ir { display: flex; gap: 6px; margin: 4px 0; } .tl-ir input:not(.tl-ii) { flex: 1; } .tl-ii { width: 52px; text-align: center; } .tl-ir button { padding: 2px 8px; }
 </style>
 <style>
   :root {
@@ -1438,7 +1465,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-21</p>
+          <p class="hint" style="margin:0">Version 2026-11-22</p>
         </div>
       </details>
 
@@ -1558,7 +1585,7 @@
       <!-- ================= Klassenliste ================= -->
       <div id="listView">
         <div class="topbar">
-          <div class="modes" id="listTabs"><button data-t="table" class="active">▦ Abhak-Tabelle</button><button data-t="heft">📚 Hausaufgabenheft</button></div>
+          <div class="modes" id="listTabs"><button data-t="table" class="active">▦ Abhak-Tabelle</button><button data-t="heft">📚 Hausaufgabenheft</button><button data-t="tally">📋 Strichliste</button></div>
           <button id="undo2" title="Rückgängig (Strg+Z)">↶</button><button id="redo2" title="Wiederholen (Strg+Y)">↷</button>
           <span class="spacer"></span>
           <button id="newHw" class="primary">＋ Hausaufgabe</button>
@@ -1586,6 +1613,7 @@
           </div>
           <div class="heft" id="heftList"></div>
         </div>
+        <div id="lvTally" hidden></div>
         <datalist id="subjList"></datalist>
       </div>
 
@@ -1977,6 +2005,7 @@
   </div>
 </div>
 
+<div class="cdlg-back" id="tlDlg" hidden><div class="cdlg nc" style="width:560px"><div class="nc-body" id="tlDlgBody"></div></div></div>
 <div class="cdlg-back" id="qrDlg" hidden tabindex="-1">
   <div class="cdlg qr-dlg">
     <div class="cdlg-title">📲 An die Schüler-iPads senden</div>
@@ -4795,8 +4824,10 @@ function renderListView() {
   $('subjList').innerHTML = subjectSuggest().map(s => `<option>${esc(s)}</option>`).join('');
   if (document.activeElement !== $('qhSubj')) fillSubjSel($('qhSubj'), $('qhSubj').value && $('qhSubj').value !== '__new' ? $('qhSubj').value : '');
   document.querySelectorAll('#listTabs button').forEach(b => b.classList.toggle('active', b.dataset.t === ui.listTab));
-  $('lvTable').hidden = ui.listTab !== 'table'; $('lvHeft').hidden = ui.listTab !== 'heft';
+  $('lvTable').hidden = ui.listTab !== 'table'; $('lvHeft').hidden = ui.listTab !== 'heft'; $('lvTally').hidden = ui.listTab !== 'tally';
+  ['lfType', 'lfSubject', 'noteModeBtn'].forEach(id => { $(id).hidden = ui.listTab === 'tally'; }); document.querySelector('.lfbar > .hint').hidden = ui.listTab === 'tally'; ['newHw', 'newList'].forEach(id => { $(id).hidden = ui.listTab === 'tally'; });
   $('undo2').disabled = !undoStack.length; $('redo2').disabled = !redoStack.length;
+  if (ui.listTab === 'tally') { renderTally(); return; }
   if (!c.students.length) {
     $('mxWrap').innerHTML = '<p class="hint" style="padding:16px">Noch keine Schüler – trage sie unter „⚙️ Einstellungen“ → „Schüler“ ein.</p>';
     $('heftList').innerHTML = ''; return;
@@ -6600,6 +6631,7 @@ function renderStart() {
   const hwSoon = (c.checks || []).filter(k => k.kind === 'hw' && k.due > t && k.due <= addDays(t, 7) && !hwFinished(k)).sort((a, b) => a.due.localeCompare(b.due));
   right += `<div class="st-card"><h3>📝 Demnächst <small>(14 Tage)</small></h3>` + (soon.length || hwSoon.length ? soon.map(x => `<div class="st-it" data-ex="${x.id}" style="--sc:${x.kind === 'ev' ? 'var(--sun)' : (subjColor(x.subject) || 'var(--red)')}"><span class="d">${fmtDW(x.date < t ? t : x.date)}</span><span class="s"${x.kind === 'ev' ? ' style="color:#7a5b00"' : ''}>${x.kind === 'ev' ? '📅' : '📝 ' + esc(x.subject || 'Probe')}</span><span class="x">${esc((x.time ? x.time + ' · ' : '') + x.title)}</span></div>`).join('') +
     hwSoon.map(k => `<div class="st-it" data-chk="${k.id}" style="--sc:${subjColor(k.subject) || 'var(--accent)'}"><span class="d">${fmtDW(k.due)}</span><span class="s">📚 ${esc(k.subject || 'HA')}</span><span class="x">${esc(k.title || '')}</span></div>`).join('') : '<p class="st-none">Keine Proben, Termine oder Hausaufgaben.</p>') + '</div>';
+  right += tallyStartHtml(c);
   // Mitteilungen, Dienste
   const msgs = (c.msgs || []).filter(msgCurrent), dn = displayNames(c.students), duties = (c.duties || []).filter(d => (d.sids || []).some(Boolean));
   let info = '';
@@ -6624,6 +6656,7 @@ $('startView').addEventListener('click', e => {
   const g = e.target.closest('[data-go]'); if (g) { setView(g.dataset.go); return; }
   const k = e.target.closest('[data-chk]'); if (k) { openChk(k.dataset.chk); return; }
   const x = e.target.closest('[data-ex]'); if (x) { openExam(x.dataset.ex); return; }
+  const tl = e.target.closest('[data-tally]'); if (tl) { ui.listTab = 'tally'; ui.tally.list = tl.dataset.tally; setView('list'); return; }
   const a = e.target.closest('[data-act]'); if (!a) return;
   const act = a.dataset.act;
   if (act === 'hw') openChk(null, 'hw');
@@ -8945,6 +8978,150 @@ function rcNoiseHtml(s) {
   const n = s.noise || { on: [], mv: 0.6 }, on = new Set(n.on.map(x => x.id));
   return `<div class="rc-sec"><h3>🎧 Klangkulisse</h3><div class="rc-row rc-wrap rc-noise">${NOISE_SOUNDS.map(x => `<button data-rno="${x.id}"${on.has(x.id) ? ' class="on"' : ''} title="${esc(x.n)}">${x.i} ${esc(x.n)}</button>`).join('')}</div>
     <div class="rc-row" style="margin-top:6px"><span>🔊 Lautstärke</span><button data-rnmv="-1">−</button><b>${Math.round(n.mv * 100)} %</b><button data-rnmv="1">＋</button>${n.on.length ? '<button data-rnstop="1">⏹ Alle aus</button>' : ''}</div></div>`;
+}
+
+/* ---------- 📋 Strichliste: wiederkehrende Kontrollen (z. B. iPad/Stift vergessen oder leer) ----------
+   Normalfall = alles in Ordnung. Nur Ausnahmen werden angetippt: +1 für den gewählten Tag (höchstens 1 pro Kind/Punkt/Tag).
+   Daten nur in der Klassendatei: c.tally = { lists: [...], marks: [{ l, it, s, d }] } */
+const TALLY_DEFAULT = () => ({ lists: [{ id: 'tl1', name: 'Material', icon: '📦', warn: 3, alert: 5, per: 'half', since: '', items: [
+  { id: 'ti1', i: '📱', n: 'iPad vergessen' }, { id: 'ti2', i: '🔋', n: 'iPad nicht geladen' }, { id: 'ti3', i: '✏️', n: 'Stift vergessen' }, { id: 'ti4', i: '⚡', n: 'Stift nicht geladen' }] }], marks: [] });
+const tallyData = (c = cls()) => c.tally || TALLY_DEFAULT();
+const tallyEnsure = c => { if (!c.tally) c.tally = TALLY_DEFAULT(); return c.tally; };
+ui.tally = { list: null, day: null, open: true }; let tlTxt = '';
+try { ui.tally.open = localStorage.getItem('km-tally-open') !== '0'; } catch {}
+const tallyList = (td = tallyData()) => td.lists.find(l => l.id === ui.tally.list) || td.lists[0] || null;
+const tallyDay = () => ui.tally.day || todayStr();
+// Beginn des Zählzeitraums
+function tallyFrom(l, day = todayStr()) {
+  const [y, m] = day.split('-').map(Number);
+  if (l.per === 'month') return day.slice(0, 8) + '01';
+  if (l.per === 'year') return (m >= 8 ? y : y - 1) + '-08-01';
+  if (l.per === 'since') return l.since || '0000-01-01';
+  if (l.per === 'all') return '0000-01-01';
+  // Schulhalbjahr: 1. HJ ab 1. August, 2. HJ ab 16. Februar
+  const hj2 = y + '-02-16';
+  return day >= hj2 && m < 8 ? hj2 : (m >= 8 ? y : y - 1) + '-08-01';
+}
+const TALLY_PER = { half: 'Halbjahr', year: 'Schuljahr', month: 'Monat', since: 'seit Datum', all: 'gesamt' };
+function tallyCounts(td, l, day = tallyDay()) {
+  const from = tallyFrom(l, day), cnt = {}, today = {};
+  td.marks.forEach(m => { if (m.l !== l.id || m.d < from) return; const k = m.s + '|' + m.it; cnt[k] = (cnt[k] || 0) + 1; if (m.d === day) today[k] = 1; });
+  return { cnt, today, from };
+}
+function tallyToggle(sid, itemId) {
+  const c = cls(), day = tallyDay();
+  change(() => {
+    const td = tallyEnsure(c), l = tallyList(td); if (!l) return;
+    const i = td.marks.findIndex(m => m.l === l.id && m.it === itemId && m.s === sid && m.d === day);
+    if (i >= 0) td.marks.splice(i, 1); else td.marks.push({ l: l.id, it: itemId, s: sid, d: day });
+  }, { keepList: true });
+}
+function renderTally() {
+  const box = $('lvTally'); if (!box) return;
+  const c = cls(), td = tallyData(c), l = tallyList(td), day = tallyDay(), isToday = day === todayStr();
+  if (!c.students.length) { box.innerHTML = '<p class="hint" style="padding:16px">Noch keine Schüler – trage sie unter „⚙️ Einstellungen“ → „Schüler“ ein.</p>'; return; }
+  const chips = td.lists.map(x => `<button data-tl="${x.id}"${x === l ? ' class="on"' : ''}>${esc(x.icon || '📋')} ${esc(x.name)}</button>`).join('');
+  let h = `<div class="tl-head"><button class="tl-fold" data-tfold="1" aria-expanded="${ui.tally.open}" title="Ein-/ausklappen">${ui.tally.open ? '▾' : '▸'}</button><div class="tl-chips">${chips}</div><span class="spacer"></span>`;
+  if (!l) { box.innerHTML = h + `<button data-tcfg="1">⚙ Listen</button></div><p class="hint" style="padding:12px">Noch keine Strichliste – unter „⚙ Listen“ eine anlegen.</p>`; return; }
+  const { cnt, today, from } = tallyCounts(td, l, day), studs = listStudents();
+  const todayN = Object.keys(today).length, red = new Set();
+  Object.entries(cnt).forEach(([k, n]) => { if (l.alert && n >= l.alert) red.add(k.split('|')[0]); });
+  h += `<label class="tl-day" title="Tag, für den angetippt wird">${isToday ? 'Heute' : '📅'} <input type="date" id="tlDay" value="${day}" max="${todayStr()}"></label>${isToday ? '' : '<button data-ttoday="1">Heute</button>'}<button data-tcfg="1" title="Listen und Zählpunkte bearbeiten">⚙</button></div>`;
+  h += `<div class="tl-sum">${esc(l.icon || '')} ${esc(l.name)} · ${TALLY_PER[l.per] || ''} ab ${fmtD(from)} · ${isToday ? 'heute' : fmtDW(day)}: <b>${todayN}</b> ${todayN === 1 ? 'Strich' : 'Striche'}${red.size ? ` · <span class="tl-red">${red.size}× rot</span>` : ''}</div>`;
+  if (ui.tally.open) {
+    h += `<div class="tl-wrap"><table class="tl"><thead><tr><th class="nm">Name</th>${l.items.map(it => `<th title="${esc(it.n)}"><span class="tl-ic">${esc(it.i)}</span><small>${esc(it.n)}</small></th>`).join('')}</tr></thead><tbody>`;
+    h += studs.map(s => {
+      const ab = isToday && isAbsent(s);
+      return `<tr${ab ? ' class="ab"' : ''}><td class="nm"><button data-thist="${s.id}" title="Verlauf">${esc(fullName(s))}</button>${ab ? ' <small>abwesend</small>' : ''}</td>` + l.items.map(it => {
+        const k = s.id + '|' + it.id, n = cnt[k] || 0, lv = l.alert && n >= l.alert ? ' red' : l.warn && n >= l.warn ? ' warn' : '';
+        return `<td><button class="tl-c${lv}${today[k] ? ' today' : ''}" data-ts="${s.id}" data-ti="${it.id}" title="${esc(it.n)} – antippen: ${today[k] ? 'Strich von ' + (isToday ? 'heute' : fmtD(day)) + ' entfernen' : '+1'}">${n || '·'}</button></td>`;
+      }).join('') + '</tr>';
+    }).join('');
+    h += `</tbody><tfoot><tr><td class="nm">${isToday ? 'Heute' : fmtD(day)}</td>${l.items.map(it => { const n = studs.filter(s => today[s.id + '|' + it.id]).length; return `<td>${n || '·'}</td>`; }).join('')}</tr></tfoot></table></div>
+      <p class="hint tl-hint">Normalfall: alles in Ordnung. Nur antippen, wenn etwas fehlt (+1 für ${isToday ? 'heute' : fmtD(day)}, erneut tippen = zurücknehmen) · Name antippen = Verlauf · <span class="tl-lg warn">ab ${l.warn || '–'}</span> <span class="tl-lg red">ab ${l.alert || '–'}</span></p>`;
+  }
+  box.innerHTML = h;
+}
+// Verlauf eines Kindes (alle Striche dieser Liste mit Datum)
+function tallyHist(sid) {
+  const c = cls(), td = tallyData(c), l = tallyList(td), s = c.students.find(x => x.id === sid); if (!l || !s) return;
+  const from = tallyFrom(l), ms = td.marks.filter(m => m.l === l.id && m.s === sid).sort((a, b) => b.d.localeCompare(a.d));
+  const lines = l.items.map(it => { const ds = ms.filter(m => m.it === it.id); const cur = ds.filter(m => m.d >= from); return { it, ds, cur }; });
+  const txt = `${fullName(s)} – ${l.name} (${TALLY_PER[l.per]} ab ${fmtD(from)})\n` + lines.map(x => `${x.it.i} ${x.it.n}: ${x.cur.length}×${x.cur.length ? ' (' + x.cur.map(m => fmtD(m.d)).join(', ') + ')' : ''}`).join('\n');
+  tlTxt = txt;
+  $('tlDlgBody').innerHTML = `<h3 style="margin:0 0 6px">${esc(fullName(s))} · ${esc(l.icon || '')} ${esc(l.name)}</h3><p class="hint" style="margin:0 0 8px">${TALLY_PER[l.per]} ab ${fmtD(from)}</p>` +
+    lines.map(x => `<div class="tl-hl"><span class="tl-ic">${esc(x.it.i)}</span><b>${esc(x.it.n)}: ${x.cur.length}×</b><div class="hint">${x.cur.map(m => fmtDW(m.d)).join(' · ') || '–'}${x.ds.length > x.cur.length ? ` <i>(davor noch ${x.ds.length - x.cur.length}×)</i>` : ''}</div></div>`).join('') +
+    `<div class="row" style="justify-content:flex-end;margin-top:10px"><button id="tlCopy">📋 Kopieren</button><button class="primary" id="tlClose">Schließen</button></div>`;
+  $('tlDlg').hidden = false;
+}
+// Listen verwalten
+function tallyCfg() {
+  const td = tallyData(), l = tallyList(td);
+  const it = x => `<div class="tl-ir" data-tir="${x.id}"><input class="tl-ii" value="${esc(x.i)}" maxlength="4" data-tf="i"><input value="${esc(x.n)}" maxlength="40" data-tf="n" placeholder="z. B. Heft vergessen"><button data-tup="${x.id}" title="nach oben">↑</button><button data-tdel="${x.id}" title="Zählpunkt löschen">✕</button></div>`;
+  $('tlDlgBody').innerHTML = `<h3 style="margin:0 0 8px">⚙ Strichlisten</h3>
+    <div class="tl-chips" style="margin-bottom:8px">${td.lists.map(x => `<button data-tcl="${x.id}"${x === l ? ' class="on"' : ''}>${esc(x.icon)} ${esc(x.name)}</button>`).join('')}<button data-tnew="1">＋ Neue Liste</button></div>
+    ${l ? `<div class="tl-form"><label>Symbol<input class="tl-ii" id="tlIcon" value="${esc(l.icon)}" maxlength="4"></label><label class="w">Name<input id="tlName" value="${esc(l.name)}" maxlength="40"></label>
+      <label>orange ab<input type="number" id="tlWarn" min="0" max="99" value="${l.warn || ''}"></label><label>rot ab<input type="number" id="tlAlert" min="0" max="99" value="${l.alert || ''}"></label>
+      <label>Zeitraum<select id="tlPer">${Object.entries(TALLY_PER).map(([k, n]) => `<option value="${k}"${l.per === k ? ' selected' : ''}>${n}</option>`).join('')}</select></label>
+      <label${l.per === 'since' ? '' : ' hidden'} id="tlSinceL">ab<input type="date" id="tlSince" value="${l.since || ''}"></label></div>
+      <b style="font-size:.85rem">Zählpunkte</b><div id="tlItems">${l.items.map(it).join('')}</div>
+      <div class="row"><button data-tadd="1">＋ Zählpunkt</button><span class="spacer"></span><button data-tlcopy="1" title="Diese Liste (ohne Striche) in eine andere Klasse kopieren">⧉ In andere Klasse …</button><button class="danger" data-tldel="1">Liste löschen</button></div>` : ''}
+    <div class="row" style="justify-content:flex-end;margin-top:10px"><button class="primary" id="tlClose">Fertig</button></div>`;
+  $('tlDlg').hidden = false;
+}
+function tallyEdit(fn) { const c = cls(); change(() => { const td = tallyEnsure(c), l = tallyList(td); fn(td, l); }, { keepList: true }); }
+$('tlDlg').addEventListener('click', async e => {
+  const b = e.target.closest('button'); if (e.target === $('tlDlg')) { $('tlDlg').hidden = true; return; } if (!b) return;
+  if (b.id === 'tlClose') { $('tlDlg').hidden = true; renderTally(); return; }
+  if (b.id === 'tlCopy') { try { await navigator.clipboard.writeText(tlTxt); setResult('📋 Verlauf kopiert.', 'ok'); } catch { setResult('Kopieren nicht möglich.', 'warn'); } return; }
+  if (b.dataset.tcl) { ui.tally.list = b.dataset.tcl; tallyCfg(); return; }
+  if (b.dataset.tnew) { const id = 'tl' + Date.now().toString(36); tallyEdit(td => { td.lists.push({ id, name: 'Neue Liste', icon: '📋', warn: 3, alert: 5, per: 'half', since: '', items: [{ id: 'ti' + Date.now().toString(36), i: '❗', n: '' }] }); }); ui.tally.list = id; tallyCfg(); setTimeout(() => { const i = $('tlName'); if (i) { i.focus(); i.select(); } }, 30); return; }
+  if (b.dataset.tadd) { tallyEdit((td, l) => l.items.push({ id: 'ti' + Date.now().toString(36), i: '❗', n: '' })); tallyCfg(); return; }
+  if (b.dataset.tdel) { const l = tallyList(), used = tallyData().marks.some(m => m.l === l.id && m.it === b.dataset.tdel); if (used && !window.confirm('Diesen Zählpunkt mit allen bisherigen Strichen löschen?')) return; tallyEdit((td, l) => { l.items = l.items.filter(x => x.id !== b.dataset.tdel); td.marks = td.marks.filter(m => !(m.l === l.id && m.it === b.dataset.tdel)); }); tallyCfg(); return; }
+  if (b.dataset.tup) { tallyEdit((td, l) => { const i = l.items.findIndex(x => x.id === b.dataset.tup); if (i > 0) [l.items[i - 1], l.items[i]] = [l.items[i], l.items[i - 1]]; }); tallyCfg(); return; }
+  if (b.dataset.tldel) { const l = tallyList(); if (!window.confirm(`Strichliste „${l.name}“ mit allen Strichen löschen?`)) return; tallyEdit(td => { td.lists = td.lists.filter(x => x.id !== l.id); td.marks = td.marks.filter(m => m.l !== l.id); }); ui.tally.list = null; tallyCfg(); return; }
+  if (b.dataset.tlcopy) {
+    const others = state.classes.filter(x => x !== cls()); if (!others.length) { setResult('Es gibt keine andere Klasse.', 'warn'); return; }
+    const name = window.prompt('In welche Klasse kopieren?\n' + others.map(x => x.name).join(', '), others[0].name); if (!name) return;
+    const tc = others.find(x => x.name.trim().toLowerCase() === name.trim().toLowerCase()); if (!tc) { setResult(`Klasse „${name}“ nicht gefunden.`, 'warn'); return; }
+    const l = JSON.parse(JSON.stringify(tallyList())); l.id = 'tl' + Date.now().toString(36);
+    change(() => { tallyEnsure(tc).lists.push(l); }, { keepList: true }); setResult(`⧉ Liste „${l.name}“ in Klasse ${tc.name} kopiert (ohne Striche).`, 'ok'); return;
+  }
+});
+$('tlDlg').addEventListener('change', e => {
+  const t = e.target, v = t.value;
+  if (t.id === 'tlIcon') tallyEdit((td, l) => { l.icon = v.trim() || '📋'; });
+  if (t.id === 'tlName') tallyEdit((td, l) => { l.name = v.trim() || 'Liste'; });
+  if (t.id === 'tlWarn') tallyEdit((td, l) => { l.warn = Math.max(0, +v || 0); });
+  if (t.id === 'tlAlert') tallyEdit((td, l) => { l.alert = Math.max(0, +v || 0); });
+  if (t.id === 'tlPer') { tallyEdit((td, l) => { l.per = v; }); $('tlSinceL').hidden = v !== 'since'; }
+  if (t.id === 'tlSince') tallyEdit((td, l) => { l.since = v; });
+  const r = t.closest('[data-tir]'); if (r && t.dataset.tf) tallyEdit((td, l) => { const x = l.items.find(y => y.id === r.dataset.tir); if (x) x[t.dataset.tf] = v.trim() || (t.dataset.tf === 'i' ? '❗' : ''); });
+  if (t.id === 'tlIcon' || t.id === 'tlName') { const l = tallyList(), ch = $('tlDlg').querySelector(`[data-tcl="${l.id}"]`); if (ch) ch.textContent = (l.icon || '') + ' ' + l.name; }
+  renderTally();
+});
+$('tlDlg').addEventListener('keydown', e => { if (e.key === 'Escape') $('tlDlg').hidden = true; });
+$('lvTally').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.ts) { tallyToggle(b.dataset.ts, b.dataset.ti); renderTally(); return; }
+  if (b.dataset.tl) { ui.tally.list = b.dataset.tl; if (!ui.tally.open) { ui.tally.open = true; try { localStorage.setItem('km-tally-open', '1'); } catch {} } renderTally(); return; }
+  if (b.dataset.tfold) { ui.tally.open = !ui.tally.open; try { localStorage.setItem('km-tally-open', ui.tally.open ? '1' : '0'); } catch {} renderTally(); return; }
+  if (b.dataset.ttoday) { ui.tally.day = null; renderTally(); return; }
+  if (b.dataset.tcfg) { tallyCfg(); return; }
+  if (b.dataset.thist) tallyHist(b.dataset.thist);
+});
+$('lvTally').addEventListener('change', e => { if (e.target.id === 'tlDay') { const v = e.target.value; ui.tally.day = v && v !== todayStr() ? v : null; renderTally(); } });
+// Startseite: wer hat die rote Schwelle erreicht?
+function tallyStartHtml(c) {
+  if (!c.tally) return '';
+  const td = c.tally, out = [];
+  td.lists.forEach(l => {
+    if (!l.alert) return;
+    const { cnt } = tallyCounts(td, l, todayStr()), hit = new Map();
+    Object.entries(cnt).forEach(([k, n]) => { if (n < l.alert) return; const [sid, it] = k.split('|'), s = c.students.find(x => x.id === sid), item = l.items.find(x => x.id === it); if (s && item) hit.set(sid, (hit.get(sid) || []).concat([item.i + ' ' + n + '×'])); });
+    hit.forEach((v, sid) => out.push(`<div class="st-it" data-tally="${l.id}" style="--sc:var(--red)"><span class="s" style="color:var(--red)">${esc(l.icon || '📋')}</span><span class="x">${esc(fullName(c.students.find(x => x.id === sid)))}: ${esc(v.join(', '))}</span></div>`));
+  });
+  return out.length ? `<div class="st-card"><h3>📋 Strichliste – rote Schwelle erreicht</h3>${out.join('')}</div>` : '';
 }
 
 /* ---------- Start ---------- */
