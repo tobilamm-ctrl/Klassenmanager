@@ -452,3 +452,20 @@ NEU in Version 2026-11-22: 📋 Strichliste (Klassenliste → Reiter „📋 Str
   umbenennen/sortieren/löschen, Liste (ohne Striche) in eine andere Klasse kopieren.
 - Datenschutz: Die Striche liegen nur in deiner Klassendatei; sie gehen nie an die Schüler-iPads
   (nicht in QR-Codes, OneDrive- oder GitHub-Klassendateien).
+
+NEU in Version 2026-11-23: Abhak-Tabelle, Strichlisten und Ausdruck
+- Neuer Status „– entschuldigt“ (z. B. krank): Klick auf ein Feld: leer → ✓ → ✗ → – → leer.
+- Eine Hausaufgabe/Abhakliste gilt als erledigt, sobald bei JEDEM Kind etwas eingetragen ist
+  (✓, ✗ oder –). Sie verschwindet dann aus „nur noch nicht komplett erledigte“ und rutscht im
+  Hausaufgabenheft unter „Erledigt“.
+- Strichlisten direkt in der Abhak-Tabelle: zwischen Σ und der ersten Hausaufgabe eine schmale
+  Spalte je Strichliste (z. B. 📦) mit der Summe im Zählzeitraum (orange/rot wie in der Strichliste).
+  Klick auf die Überschrift klappt sie in die einzelnen Zählpunkte auf (📱 🔋 ✏️ ⚡) – dort zählt
+  ein Klick +1 für heute, nochmal = zurück. Die Spalten bleiben beim Seitwärtsscrollen stehen.
+- „🖨 Übersicht drucken“:
+  · Zeitraum per Schnellwahl (wie in der Tabelle, Woche, Monat, Halbjahr, Schuljahr, gesamt) oder frei.
+  · „Strichlisten“ ankreuzen: Anzahl und Daten erscheinen in der Schülerübersicht und als Spalten in
+    der Klassentabelle.
+  · Neu: „Kompakte Liste Vergessen“ – alle Kinder mit ✗ oder Strichen untereinander (für dich).
+  · Schülerübersicht mit „Nur Vergessenes“ (Kinder ohne Vergessenes fallen weg) und „Mehrere Kinder
+    pro Seite“ (mit Schnittlinie, z. B. als Zettel für die Eltern).

@@ -247,6 +247,21 @@
   .tl-form { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px 10px; margin-bottom: 10px; } .tl-form label { display: flex; flex-direction: column; font-size: .78rem; font-weight: 600; gap: 2px; } .tl-form label.w { grid-column: span 3; } .tl-form label[hidden] { display: none; }
   .tl-form input, .tl-form select, .tl-ir input { font: inherit; padding: 4px 6px; border: 1px solid #cbd5e1; border-radius: 6px; }
   .tl-ir { display: flex; gap: 6px; margin: 4px 0; } .tl-ir input:not(.tl-ii) { flex: 1; } .tl-ii { width: 52px; text-align: center; } .tl-ir button { padding: 2px 8px; }
+
+  .mx td.s-ex { background: #f1f5f9; color: #64748b; }
+  .chip.s-ex { background: #f1f5f9; border-color: #cbd5e1; color: #475569; }
+  .r-m .c-ex { color: #666; }
+
+  .mx .tlx { position: sticky; z-index: 1; background: #fff; text-align: center; padding: 2px; min-width: 30px; width: 30px; font-size: .8rem; font-weight: 700; color: #475569; }
+  .mx thead .tlx { z-index: 3; background: #f3f4f6; cursor: pointer; vertical-align: bottom; font-weight: 400; line-height: 1.1; }
+  .mx thead .tlx span { font-size: 1rem; display: block; } .mx thead .tlx small { font-size: .65rem; color: var(--muted); }
+  .mx .tlx.tl0 { border-left: 2px solid #e2e8f0; }
+  .mx td.tlc { cursor: pointer; } .mx td.tlc:hover { background: #f1f5f9; }
+  .mx td.tlx.warn { background: #fff7ed; color: #c2410c; } .mx td.tlx.red { background: #fee2e2; color: #b91c1c; }
+  .mx td.tlc.today { box-shadow: inset 0 0 0 2px var(--accent); color: #0f172a; }
+
+  .r-kid.r-cut { break-after: auto; break-inside: avoid; border-bottom: 1.5px dashed #999; padding-bottom: 4mm; margin-bottom: 5mm; }
+  .r-fl td { text-align: left; vertical-align: top; } .r-fl td.fl div { margin: .3mm 0; } .r-fl small { color: #555; }
 </style>
 <style>
   :root {
@@ -1465,7 +1480,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-22</p>
+          <p class="hint" style="margin:0">Version 2026-11-23</p>
         </div>
       </details>
 
@@ -1600,7 +1615,7 @@
           <select id="lfRange"><option value="week">Woche</option><option value="month">Monat</option><option value="open">nur noch nicht komplett erledigte</option><option value="all">gesamter Zeitraum</option></select>
           <span class="lfnav" id="lfNav"><button id="lfPrev" title="zurück">◀</button><button id="lfLbl" title="Zur aktuellen Woche bzw. zum aktuellen Monat"></button><button id="lfNext" title="vor">▶</button></span>
           <button id="noteModeBtn" class="toggle" title="Bemerkungs-Modus: Klick auf ein Feld bzw. einen Namen öffnet die Bemerkung statt abzuhaken">📝 Bemerkung</button>
-          <span class="hint">Klick auf ein Feld: leer → ✓ → ✗ → leer · Rechtsklick (oder 📝-Modus): Bemerkung zum Kind · Klick auf die Spaltenüberschrift: bearbeiten</span>
+          <span class="hint">Klick auf ein Feld: leer → ✓ → ✗ → – (entschuldigt) → leer · Rechtsklick (oder 📝-Modus): Bemerkung zum Kind · Klick auf die Spaltenüberschrift: bearbeiten</span>
         </div>
         <div id="lvTable"><div class="mxwrap" id="mxWrap"></div></div>
         <div id="lvHeft" hidden>
@@ -1914,13 +1929,20 @@
     <div class="nc-body">
       <label class="chk"><input type="radio" name="rpFmt" value="kids" checked> Schülerübersicht – eine Seite pro Kind</label>
       <label class="chk"><input type="radio" name="rpFmt" value="table"> Klassentabelle – alle Kinder und Einträge auf einen Blick</label>
+      <label class="chk"><input type="radio" name="rpFmt" value="forgot"> Kompakte Liste „Vergessen“ – alle Kinder mit ✗ oder Strichen untereinander (für dich)</label>
       <label class="nc-name" id="rpWhoRow">Für<select id="rpWho"></select></label>
+      <div id="rpKidOpts">
+        <label class="chk"><input type="checkbox" id="rpOnlyNo"> Nur Vergessenes (✗ und Striche) – Kinder ohne Vergessenes weglassen</label>
+        <label class="chk"><input type="checkbox" id="rpMulti"> Mehrere Kinder pro Seite (zum Ausschneiden, z. B. als Zettel für die Eltern)</label>
+      </div>
+      <label class="nc-name">Zeitraum<select id="rpRange"><option value="tab">wie in der Tabelle</option><option value="week">diese Woche</option><option value="month">dieser Monat</option><option value="half">dieses Halbjahr</option><option value="year">dieses Schuljahr</option><option value="all">gesamter Zeitraum</option><option value="custom">eigener Zeitraum …</option></select></label>
       <div class="row">
         <label class="nc-name" style="flex:1">von<input type="date" id="rpFrom"></label>
         <label class="nc-name" style="flex:1">bis<input type="date" id="rpTo"></label>
       </div>
       <label class="chk"><input type="checkbox" id="rpHw" checked> Hausaufgaben</label>
       <label class="chk"><input type="checkbox" id="rpList" checked> Abhaklisten</label>
+      <label class="chk"><input type="checkbox" id="rpTally" checked> Strichlisten (z. B. iPad/Stift vergessen)</label>
       <label class="chk"><input type="checkbox" id="rpNote"> Notiz des Kindes mit ausgeben</label>
       <p class="hint">Ohne Datum wird der gesamte Zeitraum ausgegeben. Die Klassentabelle wird im Querformat gedruckt.</p>
       <div class="row" style="justify-content:flex-end"><button id="rpCancel">Abbrechen</button><button class="primary" id="rpPrint">🖨 Drucken</button></div>
@@ -2203,7 +2225,7 @@ const ui = { mode: 'room', flipped: false, selSeat: null, animating: false, _sel
 // selectedId = zuletzt gewählter Tisch; beim Setzen wird die Mehrfachauswahl auf genau diesen Tisch zurückgesetzt
 Object.defineProperty(ui, 'selectedId', { get() { return this._sel; }, set(v) { this._sel = v; this.multi = new Set(v ? [v] : []); } });
 // Hausaufgabe gilt beim Lehrer als erledigt: alle Schüler ✓ oder aktiv archiviert
-const hwFinished = k => !!k.archived || (cls().students.length > 0 && cls().students.every(s => k.status[s.id] === 'ok'));
+const hwFinished = k => !!k.archived || (cls().students.length > 0 && cls().students.every(s => !!k.status[s.id]));   // erledigt = bei jedem Kind etwas eingetragen (✓, ✗ oder – entschuldigt)
 const stillCurrent = date => !!date && Date.now() < new Date(date + 'T13:00').getTime();   // am Abgabe-/Probentag bis 13 Uhr aktuell
 const todayStr = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
 const fmtDate = s => s ? s.split('-').reverse().join('.') : '';
@@ -4727,8 +4749,8 @@ function gong(mul) {
    ===================================================================== */
 ui.view = 'plan'; ui.listTab = 'table';
 ui.lf = { type: 'all', subject: '', range: 'month', off: 0 };
-const STATE_NEXT = { '': 'ok', ok: 'no', no: '' };
-const STATE_SYM = { '': '', ok: '✓', no: '✗' };
+const STATE_NEXT = { '': 'ok', ok: 'no', no: 'ex', ex: '' };
+const STATE_SYM = { '': '', ok: '✓', no: '✗', ex: '–' };
 const fmtD = s => s ? new Date(s + 'T00:00').toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) : '';
 const fmtDW = s => s ? new Date(s + 'T00:00').toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' }) : '';
 const addDays = (s, n) => { const d = new Date(s + 'T00:00'); d.setDate(d.getDate() + n); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
@@ -4745,8 +4767,8 @@ function listStudents() {
 const sortName = s => ui.nameSort === 'first' || !s.last ? fullName(s) : s.last + ', ' + s.first;
 const fullName = s => [s.first, s.last].filter(Boolean).join(' ');
 function chkCounts(k, studs) {
-  const r = { ok: 0, no: 0, open: 0 };
-  studs.forEach(s => { const v = k.status[s.id] || ''; if (v === 'ok') r.ok++; else if (v === 'no') r.no++; else r.open++; });
+  const r = { ok: 0, no: 0, ex: 0, open: 0 };
+  studs.forEach(s => { const v = k.status[s.id] || ''; if (v === 'ok') r.ok++; else if (v === 'no') r.no++; else if (v === 'ex') r.ex++; else r.open++; });
   return r;
 }
 // Zeitraum der Abhak-Tabelle: Woche oder Monat, mit ◀ ▶ blätterbar
@@ -4763,7 +4785,7 @@ function visibleChecks(noPeriod) {
   return (c.checks || []).filter(k =>
     (f.type === 'all' || k.kind === f.type) &&
     (!f.subject || (k.subject || '') === f.subject) &&
-    (noPeriod || f.range !== 'open' || chkCounts(k, studs).ok < studs.length) &&
+    (noPeriod || f.range !== 'open' || chkCounts(k, studs).open > 0) &&
     (!per || (chkDate(k).slice(0, 10) >= per.from && chkDate(k).slice(0, 10) <= per.to))
   ).sort((a, b) => chkDate(b).localeCompare(chkDate(a)) || (b.created || '').localeCompare(a.created || ''));
 }
@@ -4836,15 +4858,26 @@ function renderListView() {
 }
 
 function renderMatrix() {
-  const studs = listStudents(), cols = visibleChecks();
-  if (!cols.length) { $('mxWrap').innerHTML = `<p class="hint" style="padding:16px">Keine Einträge ${lfPeriod() ? 'in diesem Zeitraum – mit ◀ ▶ blättern oder' : 'für diese Auswahl –'} mit „＋ Hausaufgabe“ oder „＋ Abhakliste“ einen anlegen.</p>`; return; }
+  const studs = listStudents(), cols = visibleChecks(), td0 = tallyData(), tls = td0.lists.filter(l => l.items.length), t = todayStr();
+  const empty = cols.length ? '' : `<p class="hint" style="padding:10px 16px">Keine Einträge ${lfPeriod() ? 'in diesem Zeitraum – mit ◀ ▶ blättern oder' : 'für diese Auswahl –'} mit „＋ Hausaufgabe“ oder „＋ Abhakliste“ einen anlegen.</p>`;
+  if (!cols.length && !tls.length) { $('mxWrap').innerHTML = empty; return; }
+  // Strichlisten: zugeklappt eine schmale Summenspalte je Liste, aufgeklappt eine Spalte je Zählpunkt (antippen = +1 heute)
+  const tlc = tls.map(l => ({ l, open: !!ui.tally.mx[l.id], ...tallyCounts(td0, l, t) }));
+  const tlHead = tlc.map(({ l, open }) => open
+    ? l.items.map((it, i) => `<th class="tlx stk${i === 0 ? ' tl0' : ''}" data-tlx="${l.id}" title="${esc(l.name)}: ${esc(it.n)} – Klick auf die Überschrift: zuklappen"><span>${esc(it.i)}</span>${i === 0 ? '<small>▾</small>' : ''}</th>`).join('')
+    : `<th class="tlx stk tl0" data-tlx="${l.id}" title="Strichliste ${esc(l.name)} (${TALLY_PER[l.per]}) – Klick: aufklappen"><span>${esc(l.icon || '📋')}</span><small>▸</small></th>`).join('');
+  const tlRow = sid => tlc.map(({ l, open, cnt, today }) => {
+    const lev = n => l.alert && n >= l.alert ? ' red' : l.warn && n >= l.warn ? ' warn' : '';
+    if (!open) { let sum = 0, mx = 0; l.items.forEach(it => { const n = cnt[sid + '|' + it.id] || 0; sum += n; mx = Math.max(mx, n); }); return `<td class="tlx stk tl0${lev(mx)}" title="${esc(l.name)}: ${l.items.map(it => it.i + ' ' + (cnt[sid + '|' + it.id] || 0)).join(' · ')}">${sum || ''}</td>`; }
+    return l.items.map((it, i) => { const k = sid + '|' + it.id, n = cnt[k] || 0; return `<td class="tlx stk tlc${i === 0 ? ' tl0' : ''}${lev(n)}${today[k] ? ' today' : ''}" data-tls="${l.id}" data-tli="${it.id}" data-sid="${sid}" title="${esc(it.n)} – Klick: ${today[k] ? 'heutigen Strich entfernen' : '+1 für heute'}">${n || ''}</td>`; }).join('');
+  }).join('');
   const th = k => {
     const n = chkCounts(k, studs);
     return `<th class="col${k.kind === 'hw' ? ' hwc' : ''}${isLate(k) && n.open ? ' late' : ''}" data-cid="${k.id}" title="Klicken zum Bearbeiten${k.note ? '\n' + esc(k.note) : ''}">
       <div class="ch"><span class="ty">${k.kind === 'hw' ? '📚' : '☑'}${k.subject ? ' ' + esc(k.subject) : ''}</span>
       <b>${esc(k.title || '(ohne Titel)')}</b>
       <small>${k.kind === 'hw' ? (k.due ? 'fällig ' + fmtD(k.due) : '') : (k.due ? 'bis ' + fmtD(k.due) : '')}</small>
-      <span class="cnt"><i class="ok">✓${n.ok}</i> <i class="no">✗${n.no}</i> <i class="op">○${n.open}</i></span></div></th>`;
+      <span class="cnt"><i class="ok">✓${n.ok}</i> <i class="no">✗${n.no}</i>${n.ex ? ` <i class="op" title="entschuldigt">–${n.ex}</i>` : ''} <i class="op">○${n.open}</i></span></div></th>`;
   };
   const rows = studs.map(s => {
     let no = 0, open = 0;
@@ -4855,12 +4888,22 @@ function renderMatrix() {
       return `<td class="cell s-${v || 'e'}${!v && isLate(k) ? ' late' : ''}${nt ? ' hasnote' : ''}" data-cid="${k.id}" data-sid="${s.id}"${nt ? ` title="📝 ${esc(nt)}"` : ''}>${STATE_SYM[v]}</td>`;
     }).join('');
     return `<tr><td class="nm" data-kid="${s.id}" title="${esc(fullName(s))} – Klick = Übersicht">${esc(sortName(s))}${isAbsent(s) ? ' <span title="heute abwesend">🤒</span>' : ''}</td>
-      <td class="sum">${no ? `<b class="no">✗${no}</b>` : ''}${open ? ` <span class="op">○${open}</span>` : ''}</td>${cells}</tr>`;
+      <td class="sum">${no ? `<b class="no">✗${no}</b>` : ''}${open ? ` <span class="op">○${open}</span>` : ''}</td>${tlRow(s.id)}${cells}</tr>`;
   }).join('');
-  $('mxWrap').innerHTML = `<table class="mx"><thead><tr><th class="nm">Name</th><th class="sum" title="✗ vergessen · ○ offen (in der Auswahl)">Σ</th>${cols.map(th).join('')}</tr></thead><tbody>${rows}</tbody></table>`;
+  $('mxWrap').innerHTML = empty + `<table class="mx"><thead><tr><th class="nm">Name</th><th class="sum" title="✗ vergessen · ○ offen (in der Auswahl)">Σ</th>${tlHead}${cols.map(th).join('')}</tr></thead><tbody>${rows}</tbody></table>`;
+  mxSticky();
+}
+// feste Spalten links (Name, Σ, Strichlisten) – Abstände nach der tatsächlichen Breite
+function mxSticky() {
+  const tb = $('mxWrap').querySelector('table.mx'); if (!tb) return;
+  const hc = [...tb.tHead.rows[0].cells]; let left = 0; const lefts = [];
+  hc.forEach((c, i) => { if (c.classList.contains('nm') || c.classList.contains('sum') || c.classList.contains('stk')) { lefts[i] = left; left += c.getBoundingClientRect().width; } });
+  [...tb.rows].forEach(r => [...r.cells].forEach((c, i) => { if (lefts[i] != null) c.style.left = lefts[i] + 'px'; }));
 }
 $('mxWrap').addEventListener('click', e => {
   const kn = e.target.closest('td.nm[data-kid]'); if (kn) { openKid(kn.dataset.kid); return; }
+  const tx = e.target.closest('th[data-tlx]'); if (tx) { ui.tally.mx[tx.dataset.tlx] = !ui.tally.mx[tx.dataset.tlx]; try { localStorage.setItem('km-tally-mx', JSON.stringify(ui.tally.mx)); } catch {} renderMatrix(); return; }
+  const tc = e.target.closest('td[data-tls]'); if (tc) { tallyToggle(tc.dataset.sid, tc.dataset.tli, tc.dataset.tls, todayStr()); return; }
   const td = e.target.closest('td.cell');
   if (td && ui.noteMode) { openCellNote(td.dataset.cid, td.dataset.sid, td); return; }
   if (td) {
@@ -4882,7 +4925,7 @@ function renderHeft() {
   const card = k => {
     const n = chkCounts(k, studs);
     const by = v => studs.filter(s => (k.status[s.id] || '') === v);
-    const chip = (s, v) => { const nt = k.notes && k.notes[s.id]; return `<button class="chip s-${v || 'e'}" data-cid="${k.id}" data-sid="${s.id}" title="${nt ? '📝 ' + esc(nt) + '\n' : ''}Klick: ${v === '' ? '✓ erledigt' : v === 'ok' ? '✗ vergessen' : 'wieder offen'} · Rechtsklick: Bemerkung">${esc(displayNames(cls().students).get(s.id))}${nt ? ' 📝' : ''}${isAbsent(s) ? ' 🤒' : ''}</button>`; };
+    const chip = (s, v) => { const nt = k.notes && k.notes[s.id]; return `<button class="chip s-${v || 'e'}" data-cid="${k.id}" data-sid="${s.id}" title="${nt ? '📝 ' + esc(nt) + '\n' : ''}Klick: ${v === '' ? '✓ erledigt' : v === 'ok' ? '✗ vergessen' : v === 'no' ? '– entschuldigt (z. B. krank)' : 'wieder offen'} · Rechtsklick: Bemerkung">${esc(displayNames(cls().students).get(s.id))}${nt ? ' 📝' : ''}${isAbsent(s) ? ' 🤒' : ''}</button>`; };
     const notes = Object.entries(k.notes || {}).filter(([id, t]) => t && cls().students.some(s => s.id === id));
     const pct = studs.length ? Math.round(n.ok / studs.length * 100) : 0;
     const dueTxt = !k.due ? '' : k.due === todayStr() ? 'heute fällig' : k.due === addDays(todayStr(), 1) ? 'morgen fällig' : (isLate(k) ? 'fällig war ' : 'fällig ') + fmtDW(k.due);
@@ -4896,19 +4939,20 @@ function renderHeft() {
         <div class="hw-t">${esc(k.title || '')}</div>
         ${k.note ? `<div class="hint">${esc(k.note)}</div>` : ''}
         <div class="hw-bar"><i style="width:${pct}%"></i></div>
-        <div class="hw-s"><span class="ok">✓ ${n.ok}</span> · <span class="no">✗ ${n.no}</span> · <span class="op">○ ${n.open}</span>
+        <div class="hw-s"><span class="ok">✓ ${n.ok}</span> · <span class="no">✗ ${n.no}</span>${n.ex ? ` · <span class="op">– ${n.ex}</span>` : ''} · <span class="op">○ ${n.open}</span>
           ${n.open ? `<button data-allok="${k.id}" class="small">Übrige ✓</button><button data-restno="${k.id}" class="small">Übrige ✗</button>` : ''}</div>
         ${notes.length ? `<div class="hw-notes">${notes.map(([id, t]) => `<div><b>${esc(displayNames(cls().students).get(id))}:</b> ${esc(t)}</div>`).join('')}</div>` : ''}
       </div>
       <div class="hw-r">
         ${n.open ? `<div class="hw-g"><span class="lbl">Offen:</span>${by('').map(s => chip(s, '')).join('')}</div>` : ''}
         ${n.no ? `<div class="hw-g"><span class="lbl">Vergessen:</span>${by('no').map(s => chip(s, 'no')).join('')}</div>` : ''}
+        ${n.ex ? `<div class="hw-g"><span class="lbl">Entschuldigt:</span>${by('ex').map(s => chip(s, 'ex')).join('')}</div>` : ''}
         ${n.ok ? `<details class="hw-g"${!n.open && !n.no ? ' open' : ''}><summary>✓ Erledigt (${n.ok})</summary>${by('ok').map(s => chip(s, 'ok')).join('')}</details>` : ''}
       </div>
     </div>`;
   };
   $('heftList').innerHTML = (hws.length ? hws.map(card).join('') : `<p class="hint" style="padding:8px">${all.length ? 'Keine offenen Hausaufgaben – die übrigen stehen unter „Erledigt“.' : 'Noch keine Hausaufgaben für diese Auswahl.'}</p>`)
-    + (doneHw.length ? `<details class="heft-done"${ui.heftDone ? ' open' : ''}><summary>Erledigt – alle ✓ oder archiviert (${doneHw.length})</summary>${doneHw.map(card).join('')}</details>` : '');
+    + (doneHw.length ? `<details class="heft-done"${ui.heftDone ? ' open' : ''}><summary>Erledigt – bei allen eingetragen oder archiviert (${doneHw.length})</summary>${doneHw.map(card).join('')}</details>` : '');
   const hd = $('heftList').querySelector('.heft-done'); if (hd) hd.addEventListener('toggle', () => { ui.heftDone = hd.open; });
 }
 $('heftList').addEventListener('click', e => {
@@ -5040,61 +5084,102 @@ $('ckClear').addEventListener('click', () => bulk((k, id) => { delete k.status[i
 /* ---------- Schülerübersicht / Klassentabelle drucken ---------- */
 $('repBtn').addEventListener('click', () => {
   const studs = listStudents();
-  $('rpWho').innerHTML = '<option value="">alle Kinder (je eine Seite)</option>' + studs.map(s => `<option value="${s.id}">${esc(fullName(s))}</option>`).join('');
+  $('rpWho').innerHTML = '<option value="">alle Kinder</option>' + studs.map(s => `<option value="${s.id}">${esc(fullName(s))}</option>`).join('');
+  $('rpRange').value = lfPeriod() ? 'tab' : 'all'; rpRangeFill(); rpVis();
   $('repDlg').hidden = false;
 });
+// Zeitraum-Schnellwahl füllt von/bis
+function rpRangeFill() {
+  const v = $('rpRange').value, t = todayStr(), p = lfPeriod();
+  const set = (a, b) => { $('rpFrom').value = a; $('rpTo').value = b; };
+  if (v === 'tab') set(p ? p.from : '', p ? p.to : '');
+  if (v === 'week') { const mo = addDays(t, -weekdayIdx(new Date())); set(mo, addDays(mo, 6)); }
+  if (v === 'month') set(t.slice(0, 8) + '01', t);
+  if (v === 'half') set(tallyFrom({ per: 'half' }, t), t);
+  if (v === 'year') set(tallyFrom({ per: 'year' }, t), t);
+  if (v === 'all') set('', '');
+}
+const rpVis = () => { const f = document.querySelector('input[name="rpFmt"]:checked').value; $('rpWhoRow').hidden = $('rpKidOpts').hidden = f !== 'kids'; };
+$('rpRange').addEventListener('change', rpRangeFill);
+['rpFrom', 'rpTo'].forEach(id => $(id).addEventListener('input', () => { $('rpRange').value = 'custom'; }));
 $('rpCancel').addEventListener('click', () => { $('repDlg').hidden = true; });
 $('repDlg').addEventListener('keydown', e => { if (e.key === 'Escape') $('repDlg').hidden = true; });
-document.querySelectorAll('input[name="rpFmt"]').forEach(r => r.addEventListener('change', () => {
-  $('rpWhoRow').hidden = document.querySelector('input[name="rpFmt"]:checked').value !== 'kids';
-}));
-const repOpt = () => ({ from: $('rpFrom').value, to: $('rpTo').value, hw: $('rpHw').checked, li: $('rpList').checked, note: $('rpNote').checked });
+document.querySelectorAll('input[name="rpFmt"]').forEach(r => r.addEventListener('change', rpVis));
+const repOpt = () => ({ from: $('rpFrom').value, to: $('rpTo').value, hw: $('rpHw').checked, li: $('rpList').checked, note: $('rpNote').checked, tl: $('rpTally').checked, onlyNo: $('rpOnlyNo').checked, multi: $('rpMulti').checked });
+// Striche eines Kindes im Zeitraum: [{ l, rows: [{ it, ds }] }]
+function reportTally(sid, o) {
+  const c = cls(); if (!o.tl || !c.tally) return [];
+  return c.tally.lists.map(l => ({ l, rows: l.items.map(it => ({ it, ds: c.tally.marks.filter(m => m.l === l.id && m.it === it.id && m.s === sid && (!o.from || m.d >= o.from) && (!o.to || m.d <= o.to)).map(m => m.d).sort() })).filter(r => r.ds.length || !o.onlyNo) }))
+    .filter(x => x.rows.some(r => r.ds.length) || (!o.onlyNo && x.rows.length));
+}
+const tlDates = ds => ds.map(d => fmtD(d)).join(', ');
 function reportChecks(o) {
   const { from, to, hw, li } = o || repOpt();
   return (cls().checks || []).filter(k => ((k.kind === 'hw' && hw) || (k.kind === 'list' && li)) && (!from || chkDate(k) >= from) && (!to || chkDate(k) <= to))
     .sort((a, b) => chkDate(a).localeCompare(chkDate(b)));
 }
-const symTxt = v => v === 'ok' ? '<span class="r-ok">✓ erledigt</span>' : v === 'no' ? '<span class="r-no">✗ vergessen</span>' : '<span class="r-op">○ offen</span>';
+const symTxt = v => v === 'ok' ? '<span class="r-ok">✓ erledigt</span>' : v === 'no' ? '<span class="r-no">✗ vergessen</span>' : v === 'ex' ? '<span class="r-op">– entschuldigt</span>' : '<span class="r-op">○ offen</span>';
 function buildKidReport(ids, o) {
   o = o || repOpt();
   const c = cls(), ks = reportChecks(o), from = o.from, to = o.to;
   const range = from || to ? `Zeitraum: ${from ? fmtDate(from) : '…'} – ${to ? fmtDate(to) : fmtDate(todayStr())}` : 'Gesamter Zeitraum';
   return ids.map(id => {
     const s = c.students.find(x => x.id === id); if (!s) return '';
-    const hw = ks.filter(k => k.kind === 'hw'), li = ks.filter(k => k.kind === 'list');
-    const cnt = arr => { const r = { ok: 0, no: 0, op: 0 }; arr.forEach(k => { const v = k.status[id] || ''; if (v === 'ok') r.ok++; else if (v === 'no') r.no++; else r.op++; }); return r; };
+    const only = o.onlyNo, mine = k => !only || k.status[id] === 'no';
+    const hw = ks.filter(k => k.kind === 'hw' && mine(k)), li = ks.filter(k => k.kind === 'list' && mine(k)), tl = reportTally(id, o);
+    if (only && ids.length > 1 && !hw.length && !li.length && !tl.some(x => x.rows.some(r => r.ds.length))) return '';
+    const cnt = arr => { const r = { ok: 0, no: 0, ex: 0, op: 0 }; arr.forEach(k => { const v = k.status[id] || ''; if (v === 'ok') r.ok++; else if (v === 'no') r.no++; else if (v === 'ex') r.ex++; else r.op++; }); return r; };
     const ch = cnt(hw), cl = cnt(li);
     const tbl = (arr, isHw) => !arr.length ? '<p class="r-none">keine Einträge</p>' :
       `<table class="r-t"><thead><tr>${isHw ? '<th>fällig</th><th>Fach</th><th>Aufgabe</th>' : '<th>bis</th><th>Eintrag</th>'}<th>Status</th><th>Bemerkung</th></tr></thead><tbody>` +
       arr.map(k => `<tr>${isHw ? `<td>${fmtDate(k.due || k.given)}</td><td>${esc(k.subject || '')}</td>` : `<td>${fmtDate(k.due)}</td>`}<td>${esc(k.title)}</td><td>${symTxt(k.status[id] || '')}</td><td>${esc((k.notes && k.notes[id]) || '')}</td></tr>`).join('') + '</tbody></table>';
-    return `<section class="r-kid">
+    const tlTbl = x => `<table class="r-t"><thead><tr><th>${esc(x.l.icon || '')} ${esc(x.l.name)}</th><th>Anzahl</th><th>Daten</th></tr></thead><tbody>${x.rows.map(r => `<tr><td>${esc(r.it.i)} ${esc(r.it.n)}</td><td>${r.ds.length ? `<span class="r-no">${r.ds.length}×</span>` : '0'}</td><td>${tlDates(r.ds)}</td></tr>`).join('')}</tbody></table>`;
+    return `<section class="r-kid${o.multi ? ' r-cut' : ''}">
       <div class="r-head"><h2>${esc(fullName(s))}</h2><span>Klasse ${esc(c.name)} · ${range} · Stand ${fmtDate(todayStr())}</span></div>
-      <div class="r-sum">
-        ${o.hw ? `<div><b>Hausaufgaben</b><span class="r-ok">✓ ${ch.ok}</span><span class="r-no">✗ ${ch.no}</span><span class="r-op">○ ${ch.op}</span></div>` : ''}
-        ${o.li ? `<div><b>Abhaklisten</b><span class="r-ok">✓ ${cl.ok}</span><span class="r-no">✗ ${cl.no}</span><span class="r-op">○ ${cl.op}</span></div>` : ''}
-      </div>
-      ${o.hw ? `<h3>Hausaufgaben</h3>${tbl(hw, true)}` : ''}
-      ${o.li ? `<h3>Abhaklisten</h3>${tbl(li, false)}` : ''}
+      ${only ? '' : `<div class="r-sum">
+        ${o.hw ? `<div><b>Hausaufgaben</b><span class="r-ok">✓ ${ch.ok}</span><span class="r-no">✗ ${ch.no}</span>${ch.ex ? `<span class="r-op">– ${ch.ex}</span>` : ''}<span class="r-op">○ ${ch.op}</span></div>` : ''}
+        ${o.li ? `<div><b>Abhaklisten</b><span class="r-ok">✓ ${cl.ok}</span><span class="r-no">✗ ${cl.no}</span>${cl.ex ? `<span class="r-op">– ${cl.ex}</span>` : ''}<span class="r-op">○ ${cl.op}</span></div>` : ''}
+        ${tl.map(x => `<div><b>${esc(x.l.icon || '')} ${esc(x.l.name)}</b>${x.rows.map(r => `<span${r.ds.length ? ' class="r-no"' : ' class="r-op"'}>${esc(r.it.i)} ${r.ds.length}</span>`).join('')}</div>`).join('')}
+      </div>`}
+      ${o.hw && (!only || hw.length) ? `<h3>Hausaufgaben${only ? ' – vergessen' : ''}</h3>${tbl(hw, true)}` : ''}
+      ${o.li && (!only || li.length) ? `<h3>Abhaklisten${only ? ' – nicht erledigt' : ''}</h3>${tbl(li, false)}` : ''}
+      ${tl.length ? `<h3>Strichlisten</h3>${tl.map(tlTbl).join('')}` : ''}
+      ${only && !hw.length && !li.length && !tl.length ? '<p class="r-none">Nichts vergessen 👍</p>' : ''}
       ${o.note && s.note ? `<h3>Notiz</h3><p>${esc(s.note)}</p>` : ''}
     </section>`;
   }).join('');
 }
 function buildClassTable() {
-  const c = cls(), ks = reportChecks(), studs = listStudents();
-  const head = ks.map(k => `<th><div>${k.kind === 'hw' ? '📚' : '☑'} ${esc(k.subject ? k.subject + ': ' : '')}${esc(k.title)}</div><small>${fmtDate(k.due || k.given)}</small></th>`).join('');
+  const c = cls(), o = repOpt(), ks = reportChecks(), studs = listStudents();
+  const tli = o.tl && c.tally ? c.tally.lists.flatMap(l => l.items.map(it => ({ l, it }))) : [];
+  const tlN = (sid, x) => c.tally.marks.filter(m => m.l === x.l.id && m.it === x.it.id && m.s === sid && (!o.from || m.d >= o.from) && (!o.to || m.d <= o.to)).length;
+  const head = tli.map(x => `<th title="${esc(x.l.name)}"><div>${esc(x.it.i)} ${esc(x.it.n)}</div></th>`).join('') + ks.map(k => `<th><div>${k.kind === 'hw' ? '📚' : '☑'} ${esc(k.subject ? k.subject + ': ' : '')}${esc(k.title)}</div><small>${fmtDate(k.due || k.given)}</small></th>`).join('');
   const rows = studs.map(s => {
     let no = 0, op = 0;
     const cells = ks.map(k => { const v = k.status[s.id] || ''; if (v === 'no') no++; if (!v) op++; return `<td class="c-${v || 'e'}">${STATE_SYM[v] || ''}${k.notes && k.notes[s.id] ? '<sup>*</sup>' : ''}</td>`; }).join('');
-    return `<tr><td class="n">${esc(fullName(s))}</td>${cells}<td class="s">${no}</td><td class="s">${op}</td></tr>`;
+    return `<tr><td class="n">${esc(fullName(s))}</td>${tli.map(x => { const n = tlN(s.id, x); return `<td class="${n ? 'c-no' : ''}">${n || ''}</td>`; }).join('')}${cells}<td class="s">${no}</td><td class="s">${op}</td></tr>`;
   }).join('');
   return `<section class="r-class"><div class="r-head"><h2>Klassenübersicht ${esc(c.name)}</h2><span>Stand ${fmtDate(todayStr())}</span></div>
-    ${ks.length ? `<table class="r-m"><thead><tr><th class="n">Name</th>${head}<th class="s">✗</th><th class="s">○</th></tr></thead><tbody>${rows}</tbody></table>
-    <p class="r-leg">✓ erledigt · ✗ vergessen/fehlt · leer = offen · * = Bemerkung</p>
+    ${ks.length || tli.length ? `<table class="r-m"><thead><tr><th class="n">Name</th>${head}<th class="s">✗</th><th class="s">○</th></tr></thead><tbody>${rows}</tbody></table>
+    <p class="r-leg">✓ erledigt · ✗ vergessen/fehlt · – entschuldigt · leer = offen · * = Bemerkung</p>
     ${(() => { const nl = []; ks.forEach(k => Object.entries(k.notes || {}).forEach(([id, t]) => { const st = c.students.find(x => x.id === id); if (t && st) nl.push(`<li><b>${esc(fullName(st))}</b> – ${esc(k.subject ? k.subject + ': ' : '')}${esc(k.title)}: ${esc(t)}</li>`); })); return nl.length ? `<h3 style="font-size:10pt;margin:3mm 0 1mm">Bemerkungen</h3><ul class="r-notes">${nl.join('')}</ul>` : ''; })()}` : '<p class="r-none">Keine Einträge im gewählten Zeitraum.</p>'}</section>`;
+}
+function buildForgotList() {
+  const c = cls(), o = repOpt(), ks = reportChecks(o), studs = listStudents();
+  const range = o.from || o.to ? `${o.from ? fmtDate(o.from) : '…'} – ${o.to ? fmtDate(o.to) : fmtDate(todayStr())}` : 'gesamter Zeitraum';
+  const rows = studs.map(s => {
+    const no = ks.filter(k => k.status[s.id] === 'no'), tl = reportTally(s.id, { ...o, onlyNo: true });
+    if (!no.length && !tl.length) return '';
+    const a = no.map(k => `<div>✗ ${fmtD(k.due || k.given)} ${k.kind === 'hw' ? esc(k.subject ? k.subject + ': ' : '') : '☑ '}${esc(k.title)}${k.notes && k.notes[s.id] ? ` <i>(${esc(k.notes[s.id])})</i>` : ''}</div>`).join('');
+    const b = tl.map(x => x.rows.filter(r => r.ds.length).map(r => `<div>${esc(r.it.i)} ${esc(r.it.n)}: <b>${r.ds.length}×</b> <small>(${tlDates(r.ds)})</small></div>`).join('')).join('');
+    return `<tr><td class="n">${esc(fullName(s))}</td><td class="fl">${a || '–'}</td><td class="fl">${b || '–'}</td></tr>`;
+  }).join('');
+  return `<section class="r-class"><div class="r-head"><h2>Vergessen – Klasse ${esc(c.name)}</h2><span>${range} · Stand ${fmtDate(todayStr())}</span></div>
+    ${rows ? `<table class="r-m r-fl"><thead><tr><th class="n">Name</th><th>✗ Hausaufgaben / Abhaklisten</th><th>Strichlisten</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="r-none">Im gewählten Zeitraum hat niemand etwas vergessen.</p>'}</section>`;
 }
 // Übersicht eines Kindes (Klick auf den Namen in der Abhak-Tabelle)
 let kidId = null;
-function kidOpt() { const p = $('kidRange').value === 'per' ? lfPeriod() : null; return { from: p ? p.from : '', to: p ? p.to : '', hw: ui.lf.type !== 'list', li: ui.lf.type !== 'hw', note: true }; }
+function kidOpt() { const p = $('kidRange').value === 'per' ? lfPeriod() : null; return { from: p ? p.from : '', to: p ? p.to : '', hw: ui.lf.type !== 'list', li: ui.lf.type !== 'hw', note: true, tl: true }; }
 function renderKid() {
   const studs = listStudents();
   $('kidSel').innerHTML = studs.map(st => `<option value="${st.id}"${st.id === kidId ? ' selected' : ''}>${esc(sortName(st))}</option>`).join('');
@@ -5117,7 +5202,8 @@ $('kidPrint').addEventListener('click', () => {
 });
 $('rpPrint').addEventListener('click', () => {
   const fmt = document.querySelector('input[name="rpFmt"]:checked').value;
-  const html = fmt === 'table' ? buildClassTable() : buildKidReport($('rpWho').value ? [$('rpWho').value] : listStudents().map(s => s.id));
+  const html = fmt === 'table' ? buildClassTable() : fmt === 'forgot' ? buildForgotList() : buildKidReport($('rpWho').value ? [$('rpWho').value] : listStudents().map(s => s.id));
+  if (!html.trim()) { setResult('Im gewählten Zeitraum hat niemand etwas vergessen.', 'ok'); return; }
   $('reportSheet').innerHTML = html;
   $('repDlg').hidden = true;
   ui.printReport = true;
@@ -8987,7 +9073,8 @@ const TALLY_DEFAULT = () => ({ lists: [{ id: 'tl1', name: 'Material', icon: '�
   { id: 'ti1', i: '📱', n: 'iPad vergessen' }, { id: 'ti2', i: '🔋', n: 'iPad nicht geladen' }, { id: 'ti3', i: '✏️', n: 'Stift vergessen' }, { id: 'ti4', i: '⚡', n: 'Stift nicht geladen' }] }], marks: [] });
 const tallyData = (c = cls()) => c.tally || TALLY_DEFAULT();
 const tallyEnsure = c => { if (!c.tally) c.tally = TALLY_DEFAULT(); return c.tally; };
-ui.tally = { list: null, day: null, open: true }; let tlTxt = '';
+ui.tally = { list: null, day: null, open: true, mx: {} }; let tlTxt = '';
+try { ui.tally.mx = JSON.parse(localStorage.getItem('km-tally-mx') || '{}') || {}; } catch {}
 try { ui.tally.open = localStorage.getItem('km-tally-open') !== '0'; } catch {}
 const tallyList = (td = tallyData()) => td.lists.find(l => l.id === ui.tally.list) || td.lists[0] || null;
 const tallyDay = () => ui.tally.day || todayStr();
@@ -9008,10 +9095,10 @@ function tallyCounts(td, l, day = tallyDay()) {
   td.marks.forEach(m => { if (m.l !== l.id || m.d < from) return; const k = m.s + '|' + m.it; cnt[k] = (cnt[k] || 0) + 1; if (m.d === day) today[k] = 1; });
   return { cnt, today, from };
 }
-function tallyToggle(sid, itemId) {
-  const c = cls(), day = tallyDay();
+function tallyToggle(sid, itemId, listId, dayIn) {
+  const c = cls(), day = dayIn || tallyDay();
   change(() => {
-    const td = tallyEnsure(c), l = tallyList(td); if (!l) return;
+    const td = tallyEnsure(c), l = listId ? td.lists.find(x => x.id === listId) : tallyList(td); if (!l) return;
     const i = td.marks.findIndex(m => m.l === l.id && m.it === itemId && m.s === sid && m.d === day);
     if (i >= 0) td.marks.splice(i, 1); else td.marks.push({ l: l.id, it: itemId, s: sid, d: day });
   }, { keepList: true });
