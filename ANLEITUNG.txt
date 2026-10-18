@@ -427,3 +427,12 @@ NEU in Version 2026-11-20: 🎧 Klangkulisse
 - Fernbedienung: Abschnitt „🎧 Klangkulisse“ mit allen Geräuschen, Lautstärke −/＋ und „Alle aus“.
   Hinweis: Der Browser der Tafel spielt Ton erst ab, nachdem dort einmal irgendwo geklickt wurde.
 - Alle Geräusche werden im Browser erzeugt (keine Audiodateien, kein Internet nötig).
+
+NEU in Version 2026-11-21: 🎧 Klangkulisse klingt natürlicher
+- Alle Geräusche in echtem Stereo mit warmem Raumhall statt „aus der Dose“.
+- Wasser (Bach, Brunnen, Regentropfen) wird jetzt aus vielen einzelnen Tropfen/Blasen gebildet statt
+  aus gefiltertem Rauschen – das blecherne, hohle Klingen ist weg.
+- Wellen rollen einzeln an (mit Gischt), Wind kommt in Böen, Gewitter grollt länger.
+- Windspiel und Klavier mit echten Obertönen und leichter Schwebung, Vögel singen melodischer,
+  Grillen/Frösche/Tastatur/Kaminfeuer aus naturnah geformten Einzelgeräuschen, Café mit
+  Stimmengemurmel statt Rauschen.

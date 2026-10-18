@@ -1438,7 +1438,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-20</p>
+          <p class="hint" style="margin:0">Version 2026-11-21</p>
         </div>
       </details>
 
@@ -8604,189 +8604,271 @@ const NOISE_SOUNDS = [
   { id: 'white', n: 'Weißes Rauschen', i: '⬜', g: 'Rauschen' }, { id: 'pink', n: 'Rosa Rauschen', i: '🩷', g: 'Rauschen' }, { id: 'brown', n: 'Braunes Rauschen', i: '🟫', g: 'Rauschen' },
   { id: 'piano', n: 'Klavier', i: '🎹', g: 'Musik' }
 ];
-const noiseBufs = new WeakMap();
-function noiseBuffers(ctx) {
-  let b = noiseBufs.get(ctx); if (b) return b;
-  const len = Math.floor(ctx.sampleRate * 5), mk = () => ctx.createBuffer(1, len, ctx.sampleRate);
-  const w = mk(), p = mk(), br = mk(), W = w.getChannelData(0), P = p.getChannelData(0), B = br.getChannelData(0);
-  let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, last = 0, mp = 0, mb = 0;
-  for (let i = 0; i < len; i++) {
-    const x = Math.random() * 2 - 1; W[i] = x;
-    b0 = 0.99886 * b0 + x * 0.0555179; b1 = 0.99332 * b1 + x * 0.0750759; b2 = 0.969 * b2 + x * 0.153852; b3 = 0.8665 * b3 + x * 0.3104856; b4 = 0.55 * b4 + x * 0.5329522; b5 = -0.7616 * b5 - x * 0.016898;
-    P[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + x * 0.5362; b6 = x * 0.115926; mp = Math.max(mp, Math.abs(P[i]));
-    last = (last + 0.02 * x) / 1.02; B[i] = last; mb = Math.max(mb, Math.abs(last));
-  }
-  // Übergang am Schleifenende weich machen
-  const fade = Math.floor(ctx.sampleRate * 0.05);
-  [[W, 1], [P, mp], [B, mb]].forEach(([a, m]) => { for (let i = 0; i < len; i++) a[i] /= m; for (let i = 0; i < fade; i++) { const t = i / fade; a[len - fade + i] = a[len - fade + i] * (1 - t) + a[i] * t; } });
-  b = { white: w, pink: p, brown: br }; noiseBufs.set(ctx, b); return b;
+/* Klang-Erzeugung v2: Stereo, breite Filter, vorberechnete Klangtexturen (Blubbern, Tropfen, Knacken, Klicks),
+   Glocken/Klavier mit unharmonischen Teiltönen, warmer Raumhall. Alles im Browser, keine Audiodateien. */
+const noiseCache = new WeakMap();
+function noiseC(ctx) { let c = noiseCache.get(ctx); if (!c) { c = {}; noiseCache.set(ctx, c); } return c; }
+const nR = (a, b) => a + Math.random() * (b - a);
+// Stereo-Puffer mit nahtloser Schleife (Ende in den Anfang überblenden)
+function noiseBuf(ctx, secs, fill, loop = true) {
+  const sr = ctx.sampleRate, len = Math.floor(sr * secs), b = ctx.createBuffer(2, len, sr), L = b.getChannelData(0), R = b.getChannelData(1);
+  fill(L, R, sr, len);
+  if (loop) { const fd = Math.floor(sr * 0.25); [L, R].forEach(a => { for (let i = 0; i < fd; i++) { const t = i / fd; a[i] = a[i] * t + a[len - fd + i] * (1 - t); } }); b._le = (len - fd) / sr; }   // Schleife endet vor dem eingeblendeten Stück
+  let m = 0; for (let i = 0; i < len; i++) m = Math.max(m, Math.abs(L[i]), Math.abs(R[i]));
+  if (m > 0) for (let i = 0; i < len; i++) { L[i] /= m; R[i] /= m; }
+  return b;
 }
+// Grundrauschen, 10 s, jeder Kanal unabhängig (echte Stereobreite)
+function noiseBase(ctx, kind) {
+  const c = noiseC(ctx), k = 'n_' + kind; if (c[k]) return c[k];
+  c[k] = noiseBuf(ctx, 10, (L, R, sr, len) => {
+    [L, R].forEach(a => {
+      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, br = 0;
+      for (let i = 0; i < len; i++) {
+        const x = Math.random() * 2 - 1;
+        if (kind === 'white') a[i] = x;
+        else if (kind === 'pink') { b0 = 0.99886 * b0 + x * 0.0555179; b1 = 0.99332 * b1 + x * 0.0750759; b2 = 0.969 * b2 + x * 0.153852; b3 = 0.8665 * b3 + x * 0.3104856; b4 = 0.55 * b4 + x * 0.5329522; b5 = -0.7616 * b5 - x * 0.016898; a[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + x * 0.5362; b6 = x * 0.115926; }
+        else { br = (br + 0.02 * x) / 1.02; a[i] = br; }
+      }
+    });
+  });
+  return c[k];
+}
+// kleine Bausteine für vorberechnete Texturen
+function addBubble(A, sr, at, f0, rise, dur, amp) {   // aufsteigender gedämpfter Sinus = Wassertropfen/Blubbern
+  let ph = 0; const n = Math.floor(dur * sr), k = Math.log(rise) / dur;
+  for (let i = 0; i < n && at + i < A.length; i++) { const t = i / sr; ph += 2 * Math.PI * f0 * Math.exp(k * t) / sr; A[at + i] += amp * Math.sin(ph) * Math.exp(-t / (dur * 0.3)) * Math.min(1, t * 2000); }
+}
+function addReso(A, sr, at, freqs, decay, amp, noiseAmt = 0) {   // gedämpfte Resonanzen (Klick, Knacken, Holz)
+  const n = Math.floor(decay * 6 * sr);
+  for (let i = 0; i < n && at + i < A.length; i++) { const t = i / sr, e = Math.exp(-t / decay); let s = 0; for (const f of freqs) s += Math.sin(2 * Math.PI * f * t); A[at + i] += amp * e * (s / freqs.length + noiseAmt * (Math.random() * 2 - 1)); }
+}
+function noiseTex(ctx, key, secs, gen) { const c = noiseC(ctx), k = 't_' + key; return c[k] || (c[k] = noiseBuf(ctx, secs, gen)); }
+// warmer Raumhall (abklingendes, tiefpassgefiltertes Stereo-Rauschen)
+function noiseIR(ctx, secs, damp) {
+  const c = noiseC(ctx), k = 'ir_' + secs + '_' + damp; if (c[k]) return c[k];
+  const sr = ctx.sampleRate, len = Math.floor(sr * secs), b = ctx.createBuffer(2, len, sr);
+  for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); let lp = 0; for (let i = 0; i < len; i++) { const t = i / len, a = 1 - Math.min(0.97, damp * t); lp = lp * (1 - a) + (Math.random() * 2 - 1) * a; d[i] = lp * Math.pow(1 - t, 2.5) * (i < sr * 0.01 ? i / (sr * 0.01) : 1); } }
+  return (c[k] = b);
+}
+// Klavierton: zwei leicht verstimmte Saiten, unharmonische Teiltöne, höhere klingen schneller ab, Hammergeräusch
+function noisePianoNote(ctx, f) {
+  const c = noiseC(ctx), k = 'pn_' + f.toFixed(1); if (c[k]) return c[k];
+  const sr = ctx.sampleRate, secs = 5, len = Math.floor(sr * secs), b = ctx.createBuffer(2, len, sr), L = b.getChannelData(0), R = b.getChannelData(1), B = 0.0004;
+  for (let n = 1; n <= 10; n++) {
+    const fn = n * f * Math.sqrt(1 + B * n * n); if (fn > 9000) break;
+    const amp = Math.pow(n, -1.3) * (n === 1 ? 1 : 0.9), dec = 2.6 / (1 + 0.45 * (n - 1)) * (440 / Math.max(220, f)) ** 0.3;
+    [[1, 0.6, 0.4], [1.0012, 0.4, 0.6]].forEach(([dt, gl, gr]) => { const w = 2 * Math.PI * fn * dt / sr, ph = Math.random() * 6.28;
+      for (let i = 0; i < len; i++) { const t = i / sr, e = (0.7 * Math.exp(-t / (dec * 0.25)) + 0.3 * Math.exp(-t / dec)) * Math.min(1, t * 300), s = amp * e * Math.sin(w * i + ph); L[i] += s * gl; R[i] += s * gr; } });
+  }
+  for (let i = 0; i < sr * 0.03; i++) { const t = i / sr, h = (Math.random() * 2 - 1) * 0.05 * Math.exp(-t / 0.006); L[i] += h; R[i] += h; }
+  let m = 0; for (let i = 0; i < len; i++) m = Math.max(m, Math.abs(L[i]), Math.abs(R[i])); for (let i = 0; i < len; i++) { L[i] /= m; R[i] /= m; }
+  return (c[k] = b);
+}
+// Glocke/Röhre: Teiltöne eines frei schwingenden Stabs, leichte Schwebung, Anschlag
+function noiseBellNote(ctx, f, metal = 1) {
+  const c = noiseC(ctx), k = 'bl_' + f.toFixed(1) + '_' + metal; if (c[k]) return c[k];
+  const sr = ctx.sampleRate, secs = 5, len = Math.floor(sr * secs), b = ctx.createBuffer(2, len, sr), L = b.getChannelData(0), R = b.getChannelData(1);
+  [[1, 1, 4], [2.756, 0.5, 2.2], [5.404, 0.25 * metal, 1.2], [8.933, 0.12 * metal, 0.7]].forEach(([m, a, d]) => {
+    [[1, 0.55, 0.45], [1.0015, 0.45, 0.55]].forEach(([dt, gl, gr]) => { const w = 2 * Math.PI * f * m * dt / sr, ph = Math.random() * 6.28;
+      for (let i = 0; i < len; i++) { const t = i / sr, s = a * Math.exp(-t / d) * Math.min(1, t * 800) * Math.sin(w * i + ph); L[i] += s * gl; R[i] += s * gr; } });
+  });
+  let m = 0; for (let i = 0; i < len; i++) m = Math.max(m, Math.abs(L[i]), Math.abs(R[i])); for (let i = 0; i < len; i++) { L[i] /= m; R[i] /= m; }
+  return (c[k] = b);
+}
+
 function noiseMake(id, ctx, dest) {
-  const nodes = [], timers = [], T = () => ctx.currentTime, R = (a, b) => a + Math.random() * (b - a);
+  const nodes = [], timers = [], T = () => ctx.currentTime, R = nR;
   const out = ctx.createGain(); out.gain.value = 0; out.connect(dest); nodes.push(out);
-  out.gain.setValueAtTime(0, T()); out.gain.linearRampToValueAtTime(1, T() + 0.8);
+  out.gain.setValueAtTime(0, T()); out.gain.linearRampToValueAtTime(1, T() + 1.2);
   const g = (v, to = out) => { const n = ctx.createGain(); n.gain.value = v; n.connect(to); nodes.push(n); return n; };
-  const f = (type, freq, Q, to) => { const n = ctx.createBiquadFilter(); n.type = type; n.frequency.value = freq; if (Q != null) n.Q.value = Q; n.connect(to); nodes.push(n); return n; };
+  const f = (type, freq, Q, to, gain) => { const n = ctx.createBiquadFilter(); n.type = type; n.frequency.value = freq; if (Q != null) n.Q.value = Q; if (gain != null) n.gain.value = gain; n.connect(to); nodes.push(n); return n; };
   const pan = (p, to) => { if (!ctx.createStereoPanner) return to; const n = ctx.createStereoPanner(); n.pan.value = p; n.connect(to); nodes.push(n); return n; };
-  const src = (kind, to, rate = 1) => { const s = ctx.createBufferSource(); s.buffer = noiseBuffers(ctx)[kind]; s.loop = true; s.playbackRate.value = rate; s.connect(to); s.start(T(), R(0, 4)); nodes.push(s); return s; };
+  const play = (buf, to, rate = 1, loop = true) => { const s = ctx.createBufferSource(); s.buffer = buf; s.loop = loop; if (loop && buf._le) { s.loopStart = 0; s.loopEnd = buf._le; } s.playbackRate.value = rate; s.connect(to); s.start(T(), loop ? R(0, buf._le || buf.duration) : 0); nodes.push(s); return s; };
+  const noise = (kind, to, rate = 1) => play(noiseBase(ctx, kind), to, rate);
   const osc = (type, freq, to) => { const o = ctx.createOscillator(); o.type = type; o.frequency.value = freq; o.connect(to); o.start(); nodes.push(o); return o; };
-  const lfo = (rate, depth, param) => { const gg = ctx.createGain(); gg.gain.value = depth; gg.connect(param); nodes.push(gg); return osc('sine', rate, gg); };
-  // Zufallsereignisse: für ~20 s im Voraus planen, dann laufend nachplanen (funktioniert live und offline)
-  const events = (minGap, maxGap, fn, first = 0.3) => {
-    let next = T() + R(first, first + maxGap * 0.5);
-    const plan = () => { while (next < T() + 20) { fn(next); next += R(minGap, maxGap); } };
-    plan(); const iv = setInterval(plan, 5000); timers.push(iv);
-  };
-  // kurzer Rauschimpuls (Klick, Knacken, Tropfen)
-  const burst = (t, dur, vol, ftype, freq, Q, to, kind = 'white') => {
-    const s = ctx.createBufferSource(); s.buffer = noiseBuffers(ctx)[kind];
-    const bf = ctx.createBiquadFilter(); bf.type = ftype; bf.frequency.value = freq; bf.Q.value = Q;
-    const e = ctx.createGain(); e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(vol, t + 0.002); e.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    s.connect(bf); bf.connect(e); e.connect(to); s.start(t, R(0, 4)); s.stop(t + dur + 0.05);
-  };
-  // Ton mit Hüllkurve (Glocke, Klavier, Vogel)
-  const tone = (t, freq, dur, vol, to, type = 'sine', glide) => {
-    const o = ctx.createOscillator(), e = ctx.createGain(); o.type = type; o.frequency.setValueAtTime(freq, t);
-    if (glide) glide(o.frequency, t);
-    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(vol, t + Math.min(0.02, dur / 4)); e.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    o.connect(e); e.connect(to); o.start(t); o.stop(t + dur + 0.05);
-  };
-  const bell = (t, freq, dur, vol, to) => { [[1, 1], [2.76, 0.35], [5.4, 0.15]].forEach(([m, a]) => tone(t, freq * m, dur / (m > 1 ? 2 : 1), vol * a, to)); };
-  const reverb = (secs, to) => {
-    const c = ctx.createConvolver(), len = Math.floor(ctx.sampleRate * secs), ir = ctx.createBuffer(2, len, ctx.sampleRate);
-    for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
-    c.buffer = ir; c.connect(to); nodes.push(c); return c;
-  };
-  const rain = (vol) => {
-    const o = g(vol), hp = f('highpass', 600, 0.5, f('lowpass', 7000, 0.5, o)); src('pink', hp);
-    const lf = g(0.25, o); src('brown', f('lowpass', 900, 0.7, lf));
-    lfo(0.07, 0.15, o.gain);
-    const dr = g(0.5, o); events(0.03, 0.18, t => burst(t, R(0.01, 0.03), R(0.05, 0.25), 'bandpass', R(2500, 7000), 3, dr));
+  const lfo = (rate, depth, param, type = 'sine') => { const gg = ctx.createGain(); gg.gain.value = depth; gg.connect(param); nodes.push(gg); return osc(type, rate, gg); };
+  const room = (secs, damp, wet, to = out) => { const cv = ctx.createConvolver(); cv.buffer = noiseIR(ctx, secs, damp); cv.connect(g(wet, to)); nodes.push(cv); return cv; };
+  // zufällige Ereignisse ~20 s im Voraus planen (live und offline nutzbar)
+  const events = (minGap, maxGap, fn, first = 0.3) => { let next = T() + R(first, first + maxGap * 0.4); const plan = () => { while (next < T() + 20) { fn(next); next += R(minGap, maxGap); } }; plan(); timers.push(setInterval(plan, 5000)); };
+  const shot = (buf, t, to, rate = 1, vol = 1) => { const s = ctx.createBufferSource(), e = ctx.createGain(); s.buffer = buf; s.playbackRate.value = rate; e.gain.value = vol; s.connect(e); e.connect(to); s.start(t); };
+  // zwei versetzte Abspieler einer Textur → keine hörbare Wiederholung
+  const texture = (buf, to, vol = 1) => { const o = g(vol, to); play(buf, g(0.6, o), 1); play(buf, pan(0, g(0.5, o)), 0.913); return o; };
+
+  // --- Texturen ---
+  const waterTex = (key, rate, fLo, fHi, dur) => noiseTex(ctx, key, 14, (L, Rr, sr, len) => {
+    const n = Math.floor(14 * rate);
+    for (let k = 0; k < n; k++) { const at = Math.floor(Math.random() * len), p = Math.random(), a = R(0.2, 1) ** 2;
+      const f0 = Math.exp(R(Math.log(fLo), Math.log(fHi))), rise = R(1.4, 2.6), d = R(dur * 0.5, dur * 1.5);
+      addBubble(L, sr, at, f0, rise, d, a * (1 - p)); addBubble(Rr, sr, at, f0, rise, d, a * p); }
+  });
+  const crackleTex = () => noiseTex(ctx, 'crackle', 12, (L, Rr, sr, len) => {
+    for (let k = 0; k < 12 * 7; k++) { let at = Math.floor(Math.random() * len); const p = Math.random(), n = Math.random() < 0.35 ? Math.floor(R(2, 7)) : 1;
+      for (let j = 0; j < n; j++) { const a = R(0.2, 1) ** 2, fr = [R(1800, 4500), R(3000, 7000)], d = R(0.0008, 0.004); addReso(L, sr, at, fr, d, a * (1 - p), 0.7); addReso(Rr, sr, at, fr, d, a * p, 0.7); at += Math.floor(sr * R(0.004, 0.04)); } }
+    for (let k = 0; k < 12 * 0.6; k++) { const at = Math.floor(Math.random() * len), p = Math.random(), fr = [R(400, 900), R(1200, 2200)]; addReso(L, sr, at, fr, 0.012, 1.4 * (1 - p), 0.5); addReso(Rr, sr, at, fr, 0.012, 1.4 * p, 0.5); }
+  });
+  const keyTex = () => noiseTex(ctx, 'keys', 16, (L, Rr, sr, len) => {
+    let t = 0.3;
+    while (t < 15.5) { const n = Math.floor(R(3, 14)); for (let k = 0; k < n && t < 15.5; k++) { const at = Math.floor(t * sr), sp = Math.random() < 0.12, base = sp ? R(700, 1000) : R(1700, 2900), a = sp ? 0.9 : R(0.4, 0.75), p = 0.45 + R(-0.15, 0.15);
+      const fr = [base, base * 1.53, base * 2.31]; addReso(L, sr, at, fr, sp ? 0.006 : 0.003, a * (1 - p), 0.5); addReso(Rr, sr, at, fr, sp ? 0.006 : 0.003, a * p, 0.5);
+      addReso(L, sr, at + Math.floor(sr * 0.035), [base * 0.7, base * 1.1], 0.002, a * 0.35 * (1 - p), 0.6); addReso(Rr, sr, at + Math.floor(sr * 0.035), [base * 0.7, base * 1.1], 0.002, a * 0.35 * p, 0.6);
+      t += R(0.09, 0.26); } t += R(0.6, 3); }
+  });
+  const cricketTex = () => noiseTex(ctx, 'crickets', 12, (L, Rr, sr, len) => {
+    [[4400, 0.2, 1, 0.95], [4750, 0.8, 0.7, 1.25], [4100, 0.5, 0.35, 0.8], [5000, 0.65, 0.25, 1.6], [3900, 0.3, 0.2, 1.1]].forEach(([fr, p, a, per]) => {
+      let t = R(0, per);
+      while (t < 11.8) { for (let ch = 0; ch < 3; ch++) for (let pu = 0; pu < 4; pu++) { const at = Math.floor((t + ch * 0.12 + pu * 0.021) * sr), d = Math.floor(0.016 * sr), ff = fr * R(0.995, 1.005);
+        for (let i = 0; i < d && at + i < len; i++) { const s = a * Math.sin(Math.PI * i / d) ** 2 * Math.sin(2 * Math.PI * ff * i / sr); L[at + i] += s * (1 - p); Rr[at + i] += s * p; } }
+        t += per * R(0.9, 1.1); }
+    });
+  });
+  const frogTex = () => noiseTex(ctx, 'frogs', 14, (L, Rr, sr, len) => {
+    for (let k = 0; k < 16; k++) { let t = R(0, 13); const p = R(0.1, 0.9), pr = R(18, 34), f1 = R(450, 900), f2 = f1 * R(1.8, 2.6), a = R(0.4, 1), n = Math.floor(R(2, 5)), dist = Math.random() < 0.4 ? 0.4 : 1;
+      for (let c = 0; c < n; c++) { const pulses = Math.floor(R(4, 9)); for (let j = 0; j < pulses; j++) { const at = Math.floor((t + j / pr) * sr), env = Math.sin(Math.PI * (j + 0.5) / pulses); addReso(L, sr, at, [f1, f2], 0.006, a * env * dist * (1 - p), 0.15); addReso(Rr, sr, at, [f1, f2], 0.006, a * env * dist * p, 0.15); } t += R(0.35, 0.6); }
+    }
+  });
+  const birdTex = () => noiseTex(ctx, 'birds', 16, (L, Rr, sr, len) => {
+    const sing = (A, at, f0, f1, d, a) => { let ph = 0; const n = Math.floor(d * sr); for (let i = 0; i < n && at + i < A.length; i++) { const t = i / n, fr = f0 + (f1 - f0) * (t < 0.5 ? 2 * t * t : 1 - 2 * (1 - t) * (1 - t)), vib = 1 + 0.04 * Math.sin(2 * Math.PI * 60 * i / sr); ph += 2 * Math.PI * fr * vib / sr; A[at + i] += a * Math.sin(Math.PI * t) ** 1.5 * (Math.sin(ph) + 0.25 * Math.sin(2 * ph)); } };
+    for (let k = 0; k < 16 / 1.6; k++) { let t = R(0, 15); const p = R(0.1, 0.9), kind = Math.floor(R(0, 4)), base = R(2400, 4600), a = R(0.4, 1) * (Math.random() < 0.35 ? 0.35 : 1);
+      const put = (tt, f0, f1, d, aa) => { const at = Math.floor(tt * sr); sing(L, at, f0, f1, d, aa * (1 - p)); sing(Rr, at, f0, f1, d, aa * p); };
+      if (kind === 0) for (let j = 0; j < R(5, 11); j++) put(t + j * 0.075, base, base * 1.25, 0.06, a);
+      else if (kind === 1) { put(t, base * 0.8, base * 1.35, 0.32, a); put(t + 0.42, base * 1.2, base * 0.75, 0.24, a * 0.8); }
+      else if (kind === 2) for (let j = 0; j < 3; j++) put(t + j * 0.17, base * (1 + j * 0.1), base * 0.85, 0.12, a * 0.9);
+      else { for (let j = 0; j < 4; j++) put(t + j * 0.11, base * 1.3, base * 0.9, 0.08, a * 0.8); put(t + 0.5, base * 0.9, base * 1.5, 0.35, a); }
+    }
+  });
+  const rainTex = () => waterTex('drops', 260, 1800, 6500, 0.012);
+  const thunder = (t, to) => { const d = R(4, 8), s = ctx.createBufferSource(); s.buffer = noiseBase(ctx, 'brown'); const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(R(500, 900), t); lp.frequency.exponentialRampToValueAtTime(120, t + d * 0.6); const e = ctx.createGain();
+    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(R(0.6, 1), t + R(0.03, 0.2)); let tt = t + 0.3; while (tt < t + d * 0.7) { e.gain.linearRampToValueAtTime(R(0.25, 0.75), tt); tt += R(0.2, 0.6); } e.gain.exponentialRampToValueAtTime(0.001, t + d);
+    s.connect(lp); lp.connect(e); e.connect(to); s.start(t, R(0, 9)); s.stop(t + d + 0.1); };
+
+  // --- Bausteine ---
+  const rainL = (vol, heavy) => {
+    const o = g(vol);
+    noise('pink', f('lowpass', heavy ? 5000 : 7000, 0.5, f('highpass', 300, 0.5, g(0.55, o))));     // breites Rauschen der vielen Tropfen
+    noise('brown', f('lowpass', 700, 0.5, g(heavy ? 0.6 : 0.3, o)));                               // tiefe Fülle
+    texture(rainTex(), f('highshelf', 5000, null, o, -6), 0.35);                                     // einzelne Tropfen
+    lfo(0.05, 0.08, o.gain);
   };
   const windL = (vol) => {
-    const o = g(vol), bp = f('bandpass', 400, 0.8, o); src('brown', bp); src('pink', f('bandpass', 700, 1.2, g(0.15, o)));
-    lfo(0.05, 200, bp.frequency); lfo(0.13, 120, bp.frequency); lfo(0.09, vol * 0.45, o.gain);
+    const o = g(vol), lp = f('lowpass', 500, 0.4, o), lp2 = f('lowpass', 900, 0.3, g(0.25, o));
+    noise('brown', lp); noise('pink', lp2);
+    lfo(0.045, 220, lp.frequency); lfo(0.11, 120, lp.frequency); lfo(0.07, 300, lp2.frequency);
+    const gust = g(0.6, o); noise('brown', f('bandpass', 350, 0.6, gust)); gust.gain.value = 0;
+    events(4, 11, t => { const d = R(2, 5); gust.gain.setValueAtTime(0, t); gust.gain.linearRampToValueAtTime(R(0.3, 0.7), t + d * 0.4); gust.gain.linearRampToValueAtTime(0, t + d); }, 1);
   };
-  const birdsL = (vol, minGap = 1, maxGap = 5) => {
+  const oceanL = (vol, minGap = 6, maxGap = 10) => {
     const o = g(vol);
-    events(minGap, maxGap, t => {
-      const p = pan(R(-0.8, 0.8), o), kind = Math.floor(R(0, 3)), base = R(2200, 4800);
-      if (kind === 0) for (let k = 0; k < Math.floor(R(4, 10)); k++) tone(t + k * 0.07, base, 0.06, 0.5, p, 'sine', (fr, tt) => fr.exponentialRampToValueAtTime(base * 1.3, tt + 0.05));
-      else if (kind === 1) { tone(t, base, 0.35, 0.5, p, 'sine', (fr, tt) => { fr.exponentialRampToValueAtTime(base * 1.6, tt + 0.15); fr.exponentialRampToValueAtTime(base * 0.9, tt + 0.33); }); tone(t + 0.45, base * 1.1, 0.25, 0.4, p, 'sine', (fr, tt) => fr.exponentialRampToValueAtTime(base * 0.7, tt + 0.22)); }
-      else for (let k = 0; k < 3; k++) tone(t + k * 0.16, base * (1 + k * 0.12), 0.12, 0.45, p, 'sine', (fr, tt) => fr.exponentialRampToValueAtTime(base * 0.8, tt + 0.1));
-    }, 0.2);
+    noise('brown', f('lowpass', 300, 0.5, g(0.35, o)));   // fernes Grollen
+    const wave = (t, p) => { const d = R(5, 8), s = ctx.createBufferSource(), s2 = ctx.createBufferSource(); s.buffer = noiseBase(ctx, 'brown'); s2.buffer = noiseBase(ctx, 'pink');
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.4; lp.frequency.setValueAtTime(250, t); lp.frequency.linearRampToValueAtTime(R(1500, 2600), t + d * 0.4); lp.frequency.exponentialRampToValueAtTime(400, t + d);
+      const e = ctx.createGain(); e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(0.9, t + d * 0.4); e.gain.exponentialRampToValueAtTime(0.01, t + d);
+      const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 2500; const fe = ctx.createGain(); fe.gain.setValueAtTime(0, t); fe.gain.setValueAtTime(0, t + d * 0.35); fe.gain.linearRampToValueAtTime(0.35, t + d * 0.45); fe.gain.exponentialRampToValueAtTime(0.005, t + d * 1.1);
+      const pp = pan(p, o); s.connect(lp); lp.connect(e); e.connect(pp); s2.connect(hp); hp.connect(fe); fe.connect(pp);
+      s.start(t, R(0, 9)); s2.start(t, R(0, 9)); s.stop(t + d + 0.2); s2.stop(t + d * 1.2); };
+    events(minGap * 0.55, maxGap * 0.55, t => wave(t, R(-0.5, 0.5)), 0);
   };
-  const ocean = (vol, cycle = 8) => {
-    const o = g(0), lp = f('lowpass', 500, 0.6, o); src('brown', lp); src('pink', f('lowpass', 2500, 0.5, g(0.35, lp)));
-    let t0 = T();
-    const plan = () => { while (t0 < T() + 20) { const c = R(cycle * 0.75, cycle * 1.25); o.gain.setValueAtTime(vol * 0.25, t0); o.gain.linearRampToValueAtTime(vol, t0 + c * 0.45); o.gain.linearRampToValueAtTime(vol * 0.25, t0 + c); lp.frequency.setValueAtTime(350, t0); lp.frequency.linearRampToValueAtTime(1600, t0 + c * 0.45); lp.frequency.linearRampToValueAtTime(350, t0 + c); t0 += c; } };
-    plan(); timers.push(setInterval(plan, 5000));
-  };
+  const birdsL = (vol) => { const o = g(vol), rv = room(2.2, 2.5, 0.35, o); texture(birdTex(), o, 1); texture(birdTex(), rv, 0.6); };
+
   switch (id) {
-    case 'rain': rain(0.55); break;
-    case 'storm': {
-      rain(0.6); src('brown', f('lowpass', 300, 0.7, g(0.35)));
-      const th = g(1);
-      events(8, 22, t => { const d = R(3, 6); const s = ctx.createBufferSource(); s.buffer = noiseBuffers(ctx).brown; const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = R(120, 260); const e = ctx.createGain();
-        e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(R(0.5, 0.9), t + 0.08); e.gain.linearRampToValueAtTime(0.35, t + 0.6); e.gain.linearRampToValueAtTime(0.55, t + 1.2); e.gain.exponentialRampToValueAtTime(0.001, t + d);
-        s.connect(lp); lp.connect(e); e.connect(th); s.start(t, R(0, 4)); s.stop(t + d + 0.1); }, 1.5);
-      break;
-    }
-    case 'wind': windL(0.9); break;
-    case 'waves': ocean(0.8); break;
+    case 'rain': rainL(0.75); break;
+    case 'storm': rainL(0.8, true); events(9, 24, t => thunder(t, g(0.7)), 2); break;
+    case 'wind': windL(0.55); break;
+    case 'waves': oceanL(0.8); break;
     case 'stream': {
-      const o = g(0.5);
-      [900, 1500, 2300, 3200].forEach(fr => { const bp = f('bandpass', fr, 6, o); src('white', bp); lfo(R(3, 9), fr * 0.25, bp.frequency); });
-      src('brown', f('lowpass', 600, 0.7, g(0.6, o)));
+      const o = g(1);
+      texture(waterTex('stream', 900, 300, 1400, 0.035), o, 0.55);
+      texture(waterTex('stream2', 400, 900, 3000, 0.02), o, 0.25);
+      noise('pink', f('lowpass', 2200, 0.5, f('highpass', 150, 0.5, g(0.25, o))));
       break;
     }
-    case 'forest': windL(0.35); birdsL(0.3, 2.5, 8); break;
-    case 'birds': src('pink', f('lowpass', 1200, 0.5, g(0.05))); birdsL(0.5); break;
-    case 'night': {
-      src('brown', f('lowpass', 400, 0.5, g(0.12)));
-      const o = g(0.18);
-      [[4300, -0.6, 0], [4650, 0.5, 0.35], [4050, 0.1, 0.8]].forEach(([fr, p, off]) => { const pp = pan(p, o);
-        events(0.9, 1.6, t => { for (let k = 0; k < 3; k++) for (let j = 0; j < 4; j++) tone(t + k * 0.13 + j * 0.022, fr, 0.016, 0.6, pp); }, off); });
-      break;
-    }
-    case 'frogs': {
-      src('brown', f('lowpass', 500, 0.5, g(0.1)));
-      const o = g(0.55);
-      events(0.6, 2.2, t => { const p = pan(R(-0.7, 0.7), o), fr = R(140, 380), n = Math.floor(R(2, 6)), bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = fr * 3; bp.Q.value = 3; bp.connect(p);
-        for (let k = 0; k < n; k++) { const tt = t + k * R(0.18, 0.3), oo = ctx.createOscillator(), am = ctx.createOscillator(), e = ctx.createGain(), ag = ctx.createGain(); oo.type = 'sawtooth'; oo.frequency.value = fr; am.frequency.value = R(25, 45); ag.gain.value = 0.5;
-          e.gain.setValueAtTime(0, tt); e.gain.linearRampToValueAtTime(0.5, tt + 0.02); e.gain.linearRampToValueAtTime(0, tt + 0.14); am.connect(ag); ag.connect(e.gain); oo.connect(e); e.connect(bp); oo.start(tt); am.start(tt); oo.stop(tt + 0.16); am.stop(tt + 0.16); } }, 0.3);
-      break;
-    }
+    case 'forest': windL(0.45); birdsL(0.35); break;
+    case 'birds': noise('pink', f('lowpass', 900, 0.4, g(0.05))); birdsL(1.1); break;
+    case 'night': { const o = g(0.6), rv = room(1.8, 3, 0.5, o); texture(cricketTex(), f('lowpass', 7000, 0.5, o), 0.6); texture(cricketTex(), rv, 0.4); noise('brown', f('lowpass', 350, 0.4, g(0.15))); break; }
+    case 'frogs': { const o = g(1.4), rv = room(1.5, 3, 0.4, o); texture(frogTex(), o, 0.8); texture(frogTex(), rv, 0.4); noise('brown', f('lowpass', 350, 0.4, g(0.12))); break; }
     case 'fire': {
-      const o = g(1); src('brown', f('lowpass', 450, 0.5, g(0.45, o))); lfo(0.3, 0.08, o.gain);
-      const cr = g(0.6, o);
-      events(0.05, 0.6, t => { const n = Math.random() < 0.3 ? Math.floor(R(2, 6)) : 1; for (let k = 0; k < n; k++) burst(t + k * R(0.01, 0.05), R(0.004, 0.02), R(0.15, 0.7), 'highpass', R(1500, 4000), 0.7, cr); });
+      const o = g(1); const bed = f('lowpass', 600, 0.4, g(0.5, o)); noise('brown', bed); lfo(0.25, 0.12, bed.frequency); lfo(0.4, 150, bed.frequency);
+      noise('pink', f('bandpass', 2500, 0.4, g(0.04, o)));   // leises Zischen
+      texture(crackleTex(), o, 0.6);
       break;
     }
     case 'whale': {
-      ocean(0.3, 10);
-      const o = g(0.18), rv = reverb(3, g(0.6, o)), dry = g(0.5, o);
-      events(4, 9, t => { const d = R(2, 5), a = R(90, 300), b = a * R(0.6, 2.2); [dry, rv].forEach(to => tone(t, a, d, 0.5, to, 'sine', (fr, tt) => { fr.linearRampToValueAtTime(b, tt + d * 0.6); fr.linearRampToValueAtTime(a * 0.9, tt + d); })); }, 0.5);
+      oceanL(0.45, 8, 13);
+      const o = g(0.35), rv = room(4, 1.5, 0.9, o), lp = f('lowpass', 900, 0.5, g(0.5, o));
+      events(4, 9, t => { const d = R(2.5, 5.5), a = R(110, 320), b = a * R(0.6, 2.1), oo = ctx.createOscillator(), e = ctx.createGain(), vb = ctx.createOscillator(), vg = ctx.createGain(); oo.type = 'sawtooth';
+        oo.frequency.setValueAtTime(a, t); oo.frequency.exponentialRampToValueAtTime(b, t + d * 0.6); oo.frequency.exponentialRampToValueAtTime(a * 0.85, t + d); vb.frequency.value = R(4, 7); vg.gain.value = a * 0.015; vb.connect(vg); vg.connect(oo.frequency);
+        e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(0.25, t + d * 0.3); e.gain.linearRampToValueAtTime(0.18, t + d * 0.7); e.gain.linearRampToValueAtTime(0, t + d);
+        oo.connect(e); e.connect(lp); e.connect(rv); oo.start(t); vb.start(t); oo.stop(t + d + 0.1); vb.stop(t + d + 0.1); }, 1);
       break;
     }
     case 'chimes': {
-      windL(0.25);
-      const o = g(0.2), rv = reverb(2.5, g(0.5, o)), notes = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66, 1318.5];
-      events(0.4, 2.5, t => { const fr = notes[Math.floor(R(0, notes.length))], p = pan(R(-0.6, 0.6), o); bell(t, fr, R(3, 5), 0.5, p); bell(t, fr, 4, 0.2, rv); }, 0.2);
+      windL(0.3);
+      const o = g(0.2), rv = room(3, 2, 0.5, o), notes = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66];
+      events(0.5, 2.8, t => { const fr = notes[Math.floor(R(0, notes.length))], p = pan(R(-0.7, 0.7), o), v = R(0.3, 0.9); shot(noiseBellNote(ctx, fr, 0.8), t, p, 1, v); shot(noiseBellNote(ctx, fr, 0.8), t, rv, 1, v * 0.6);
+        if (Math.random() < 0.4) shot(noiseBellNote(ctx, notes[Math.floor(R(0, notes.length))], 0.8), t + R(0.08, 0.3), p, 1, v * 0.6); }, 0.3);
       break;
     }
     case 'cafe': {
-      const o = g(0.8);
-      for (let k = 0; k < 4; k++) { const e = g(0.25, pan(R(-0.6, 0.6), o)), bp = f('bandpass', R(400, 1600), 1.2, e); src('pink', bp); lfo(R(3, 6.5), 0.22, e.gain); lfo(R(0.1, 0.3), R(150, 400), bp.frequency); }
-      src('brown', f('lowpass', 500, 0.5, g(0.25, o)));
-      const cl = g(0.15, o); events(3, 9, t => { const fr = R(2500, 4200); bell(t, fr, 0.5, 0.5, pan(R(-0.8, 0.8), cl)); if (Math.random() < 0.5) bell(t + 0.12, fr * 1.07, 0.4, 0.35, cl); }, 1);
+      const o = g(1), rv = room(1.6, 2, 0.8, o), hall = f('lowpass', 2600, 0.5, o);
+      noise('brown', f('lowpass', 400, 0.4, g(0.3, o)));
+      const V = [[730, 1090], [530, 1840], [270, 2290], [570, 840], [300, 870], [440, 1020], [660, 1700]];
+      for (let k = 0; k < 10; k++) {   // Stimmen: Grundton + Hauchanteil durch wechselnde Vokal-Formanten, Silbenrhythmus, Satzmelodie
+        const p = pan(R(-0.85, 0.85), hall), vo = g(0, p); vo.connect(g(0.8, rv));
+        const f1 = f('bandpass', 600, 2.5, vo), f2 = f('bandpass', 1400, 3.5, vo);
+        const pitch = R(95, 230), src = osc('sawtooth', pitch, g(0.35, f1)); src.connect(g(0.2, f2)); lfo(R(4, 7), pitch * 0.03, src.frequency); lfo(R(0.3, 0.8), pitch * 0.06, src.frequency, 'triangle');
+        const br = ctx.createBufferSource(); br.buffer = noiseBase(ctx, 'pink'); br.loop = true; br.loopEnd = noiseBase(ctx, 'pink')._le || 9.7; br.connect(g(0.9, f1)); br.connect(g(0.7, f2)); br.start(T(), R(0, 9)); nodes.push(br);
+        let t = T() + R(0, 2); const dist = k > 4 ? 0.4 : 1;
+        const plan = () => { while (t < T() + 20) { const talk = R(1.5, 5); let tt = t; while (tt < t + talk) { const d = R(0.1, 0.28), v = V[Math.floor(R(0, V.length))], a = R(0.04, 0.1) * dist;
+          vo.gain.setValueAtTime(0.001, tt); vo.gain.linearRampToValueAtTime(a, tt + d * 0.3); vo.gain.linearRampToValueAtTime(0.001, tt + d); f1.frequency.setTargetAtTime(v[0] * R(0.9, 1.1), tt, 0.02); f2.frequency.setTargetAtTime(v[1] * R(0.9, 1.1), tt, 0.02);
+          src.frequency.setTargetAtTime(pitch * R(0.85, 1.2), tt, 0.05); tt += d + R(0, 0.06); }
+          t = tt + R(0.6, 3); } };
+        plan(); timers.push(setInterval(plan, 5000));
+      }
+      const cl = g(0.12, o); events(2.5, 8, t => { const fr = R(2400, 3800); shot(noiseBellNote(ctx, fr, 1.2), t, pan(R(-0.8, 0.8), cl), 1, R(0.3, 0.8)); shot(noiseBellNote(ctx, fr, 1.2), t, rv, 1, 0.3); }, 1);
       break;
     }
     case 'train': {
-      const o = g(0.8); src('brown', f('lowpass', 220, 0.7, g(0.7, o))); src('pink', f('bandpass', 900, 0.8, g(0.08, o)));
-      const cl = g(0.9, o); let t0 = T() + 0.3;
-      const plan = () => { while (t0 < T() + 20) { [0, 0.16].forEach(d => burst(t0 + d, 0.09, 0.6, 'bandpass', R(300, 500), 1.5, cl, 'pink')); t0 += 1.1; } };
-      plan(); timers.push(setInterval(plan, 5000));
+      const o = g(0.75); noise('brown', f('lowpass', 180, 0.5, g(0.8, o))); noise('pink', f('lowpass', 1200, 0.4, f('highpass', 200, 0.4, g(0.12, o))));
+      const cl = f('lowpass', 900, 0.5, g(1, o)), knock = noiseTex(ctx, 'knock', 1, (L, Rr, sr) => { addReso(L, sr, 10, [95, 160, 310], 0.035, 1, 0.6); addReso(Rr, sr, 10, [97, 165, 300], 0.035, 1, 0.6); });
+      let t0 = T() + 0.4; const plan = () => { while (t0 < T() + 20) { shot(knock, t0, cl, R(0.95, 1.05), 0.8); shot(knock, t0 + 0.17, cl, R(0.95, 1.05), 0.6); t0 += 1.15; } }; plan(); timers.push(setInterval(plan, 5000));
       break;
     }
     case 'car': {
-      const o = g(0.4); src('brown', f('lowpass', 380, 0.6, o)); const m = osc('sawtooth', 70, f('lowpass', 140, 1, g(0.05, o)));
-      lfo(0.08, 4, m.frequency); lfo(0.05, 0.15, o.gain);
+      const o = g(0.5); const lp = f('lowpass', 350, 0.4, o); noise('brown', lp); noise('pink', f('lowpass', 1500, 0.4, f('highpass', 400, 0.4, g(0.08, o))));
+      const m = osc('sawtooth', 62, f('lowpass', 160, 0.5, g(0.06, o))); lfo(0.06, 5, m.frequency); lfo(0.04, 0.12, o.gain); lfo(0.07, 60, lp.frequency);
       break;
     }
     case 'fan': {
-      const o = g(0.45); src('brown', f('lowpass', 1200, 0.5, o)); src('pink', f('lowpass', 1500, 0.5, g(0.2, o)));
-      osc('sine', 50, g(0.04, o)); lfo(8, 0.03, o.gain);
+      const o = g(0.55); const lp = f('lowpass', 1100, 0.4, o); noise('brown', lp); noise('pink', f('lowpass', 2000, 0.4, g(0.18, o)));
+      osc('sine', 50, g(0.03, o)); osc('sine', 100, g(0.012, o)); lfo(7.5, 0.04, o.gain);
       break;
     }
     case 'fountain': {
-      const o = g(0.4); [2200, 3500, 5000].forEach(fr => { const bp = f('bandpass', fr, 3, o); src('white', bp); lfo(R(5, 12), fr * 0.3, bp.frequency); });
-      src('brown', f('lowpass', 500, 0.6, g(0.7, o)));
+      const o = g(1);
+      texture(waterTex('splash', 1500, 900, 4500, 0.012), o, 0.5);
+      noise('white', f('lowpass', 7000, 0.4, f('highpass', 1200, 0.4, g(0.12, o))));
+      noise('pink', f('lowpass', 900, 0.4, g(0.2, o)));
       break;
     }
-    case 'keyboard': {
-      const o = g(1.6), room = g(0.06); src('brown', f('lowpass', 300, 0.5, room));
-      events(0.5, 3, t => { let tt = t; const n = Math.floor(R(3, 12)); for (let k = 0; k < n; k++) { const sp = Math.random() < 0.1; burst(tt, sp ? 0.05 : 0.025, sp ? 0.5 : R(0.35, 0.6), 'bandpass', sp ? 900 : R(2000, 4000), sp ? 2 : 3, o); tt += R(0.08, 0.25); } }, 0.2);
-      break;
-    }
-    case 'white': src('white', f('lowpass', 9000, 0.5, g(0.12))); break;
-    case 'pink': src('pink', g(0.3)); break;
-    case 'brown': src('brown', g(0.5)); break;
+    case 'keyboard': { const o = g(1.6), rv = room(0.6, 4, 0.25, o); texture(keyTex(), o, 0.8); texture(keyTex(), rv, 0.5); noise('brown', f('lowpass', 300, 0.4, g(0.05, o))); break; }
+    case 'white': noise('white', f('lowpass', 9000, 0.4, g(0.12))); break;
+    case 'pink': noise('pink', g(0.3)); break;
+    case 'brown': noise('brown', g(0.5)); break;
     case 'piano': {
-      const o = g(0.45), lp = f('lowpass', 2500, 0.5, o), rv = reverb(2.5, g(0.35, lp)), sc = [261.63, 293.66, 329.63, 392, 440, 523.25, 587.33, 659.25, 784, 880, 1046.5];
-      const note = (t, fr, v) => [[1, 1], [2, 0.4], [3, 0.15], [4, 0.08]].forEach(([m, a]) => { tone(t, fr * m, R(2, 3.5) / m, v * a, lp, 'triangle'); tone(t, fr * m, 3, v * a * 0.5, rv); });
-      events(1.5, 4, t => { const k = Math.floor(R(0, sc.length)); note(t, sc[k], 0.5); if (Math.random() < 0.3) note(t + 0.02, sc[Math.max(0, k - 2)], 0.35); }, 0.2);
+      const o = g(0.5), rv = room(3.5, 1.8, 0.55, o), sc = [261.63, 293.66, 329.63, 392, 440, 523.25, 587.33, 659.25, 784, 880];
+      const note = (t, fr, v) => { const p = pan(R(-0.25, 0.25), o); shot(noisePianoNote(ctx, fr), t, p, 1, v); shot(noisePianoNote(ctx, fr), t, rv, 1, v); };
+      events(1.6, 4.2, t => { const k = Math.floor(R(0, sc.length)); note(t, sc[k], R(0.5, 0.85)); if (Math.random() < 0.3) note(t + R(0.01, 0.05), sc[Math.max(0, k - 2)], 0.4); if (Math.random() < 0.15) note(t, sc[k] / 2, 0.45); }, 0.3);
       break;
     }
-    default: src('pink', g(0.3));
+    default: noise('pink', g(0.3));
   }
   let stopped = false;
   return {
     stop() {
       if (stopped) return; stopped = true;
       timers.forEach(clearInterval);
-      try { out.gain.cancelScheduledValues(T()); out.gain.setValueAtTime(out.gain.value, T()); out.gain.linearRampToValueAtTime(0, T() + 0.4); } catch (e) {}
-      setTimeout(() => nodes.forEach(n => { try { if (n.stop) n.stop(); } catch (e) {} try { n.disconnect(); } catch (e) {} }), 500);
+      try { out.gain.cancelScheduledValues(T()); out.gain.setValueAtTime(out.gain.value, T()); out.gain.linearRampToValueAtTime(0, T() + 0.5); } catch (e) {}
+      setTimeout(() => nodes.forEach(n => { try { if (n.stop) n.stop(); } catch (e) {} try { n.disconnect(); } catch (e) {} }), 600);
     }
   };
 }
