@@ -442,6 +442,20 @@
   .nz-last { font-weight: 700; }
   .headfile .hfclose { padding: 4px 8px; font-size: .95rem; color: #64748b; background: #fff; border: 1px solid #d1d5db; }
   .headfile .hfclose:hover { color: #b91c1c; border-color: #fca5a5; background: #fef2f2; }
+  /* Stundenplan: Kopfleiste mit „Plan“-Menü, Wochenauswahl im Plan */
+  .tt-bar { flex-wrap: wrap; }
+  .ttm-wrap { position: relative; }
+  .ttmenu { position: absolute; left: 0; top: calc(100% + 4px); z-index: 2600; background: #fff; border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,.22); padding: 8px; display: flex; flex-direction: column; gap: 6px; min-width: 230px; }
+  .ttmenu[hidden] { display: none; }
+  .ttmenu button { text-align: left; justify-content: flex-start; width: 100%; }
+  .ttmenu .chk { padding: 4px 6px; }
+  .ttmenu #ttClear { margin-top: 4px; }
+  .tt-card { background: var(--panel); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.08); min-width: 0; display: flex; flex-direction: column; }
+  .tt-card .tt-grid { box-shadow: none; border-radius: 0 0 12px 12px; }
+  .tt-weekbar { display: flex; justify-content: center; padding: 10px 8px 4px; }
+  .tt-weekbar .tt-week { margin-left: 0; }
+  body.vpresent #ttView .tt-card { height: 100%; } body.vpresent #ttView .tt-card .tt-grid { flex: 1; min-height: 0; }
+  .tt-tile.ins-b { box-shadow: 0 -3px 0 0 var(--accent); } .tt-tile.ins-a { box-shadow: 0 3px 0 0 var(--accent); }
 </style>
 <style>
   :root {
@@ -488,7 +502,7 @@
   .sw { width: 100%; height: 26px; padding: 0; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; display: flex; align-items: center; justify-content: center; }
   .sw i { width: 15px; height: 15px; border-radius: 50%; background: var(--sw); }
   .sw.none i { background: transparent; border: 2px dashed #b8bbc6; width: 13px; height: 13px; }
-  #palette { position: fixed; z-index: 2000; display: none; grid-template-columns: repeat(5, 28px); gap: 6px; background: #fff; padding: 9px; border-radius: 10px; box-shadow: 0 6px 22px rgba(0,0,0,.22); }
+  #palette { position: fixed; z-index: 3500; display: none; grid-template-columns: repeat(5, 28px); gap: 6px; background: #fff; padding: 9px; border-radius: 10px; box-shadow: 0 6px 22px rgba(0,0,0,.22); }
   #palette.show { display: grid; }
   #palette button { width: 28px; height: 28px; padding: 0; border-radius: 50%; border: 2px solid #fff; background: var(--sw); box-shadow: 0 0 0 1px #d1d5db; }
   #palette button.cur { box-shadow: 0 0 0 3px var(--ink); }
@@ -1665,7 +1679,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-28</p>
+          <p class="hint" style="margin:0">Version 2026-11-29</p>
         </div>
       </details>
 
@@ -1715,7 +1729,6 @@
             <p class="hint">Beides sind nur Ansichten zum Ein- und Ausschalten – die eingestellten Farben bleiben erhalten. Auch oben über dem Plan mit 🎨 und ⚥ schaltbar.</p>
           </div>
           <div class="slist" id="slist"></div>
-          <div id="palette"></div>
           <div class="row fill"><button id="stuAdd">＋ Schüler hinzufügen</button><button id="allPresent" title="Alle Abwesenheitsmarkierungen entfernen">Alle anwesend</button></div>
           <p class="hint">Farbe = Markierung auf dem Tisch · ⬆ = soll nach vorne (Nähe Tafel) · 🤒 = heute abwesend (gilt nur heute, morgen automatisch wieder anwesend) · 📝 = Notiz</p>
         </div>
@@ -1819,18 +1832,20 @@
 
       <!-- ================= Stundenplan ================= -->
       <div id="ttView">
-        <div class="topbar">
+        <div class="topbar tt-bar">
           <b id="ttTitle" style="font-size:1.05rem" hidden>Stundenplan</b>
-          <button id="ttPalToggle" class="toggle" title="Fächerleiste ein-/ausblenden">🎨 Fächer</button>
-          <button id="ttRaster" title="Stundenraster bearbeiten">⚙ Raster</button>
+          <span class="ttm-wrap"><button id="ttPlanBtn" title="Stundenplan einrichten: Raster, Fächer, Samstag, leeren">⚙️ Plan ▾</button>
+            <div id="ttPlanMenu" class="ttmenu" hidden>
+              <button id="ttRaster" title="Stundenraster bearbeiten">🕒 Raster (Stundenzeiten)</button>
+              <button id="ttPalToggle" class="toggle" title="Fächerleiste ein-/ausblenden">🎨 Fächer</button>
+              <label class="chk"><input type="checkbox" id="ttSat"> Samstag</label>
+              <button id="ttClear" class="danger">🗑 Plan leeren</button>
+            </div></span>
+          <button id="ttChgBtn" class="toggle" title="Änderungen für einzelne Tage: Ausfall, Vertretung, Raum, Hinweis">✏️ Tagesänderung</button>
+          <span class="spacer"></span>
           <button id="ttHwAdd" class="primary" title="Neue Hausaufgabe eintragen">＋ Hausaufgabe</button>
           <button id="ttExamAdd" class="primary" title="Probe oder Termin (Ausflug, Elternabend …) eintragen">＋ Probe/Termin</button>
-          <button id="ttSend" title="Stundenplan, Hausaufgaben und Proben per QR-Code an die Schüler-iPads">📲 An Schüler</button><button id="ttPresent" title="Stundenplan bildschirmfüllend zeigen">⛶ Präsentieren</button><button id="ttChgBtn" class="toggle" title="Änderungen für einzelne Tage: Ausfall, Vertretung, Raum, Hinweis">✏️ Tagesänderung</button>
-          <label class="chk"><input type="checkbox" id="ttSat"> Samstag</label>
-          <span class="tt-week"><button id="ttPrev" title="Woche zurück">◀</button><button id="ttThis" title="Zur aktuellen Woche"></button><button id="ttNext" title="Woche vor">▶</button></span>
-          <span class="spacer"></span>
-          <button id="ttClear" class="danger">Plan leeren</button>
-          <button id="ttPrint">🖨 Drucken</button>
+          <button id="ttSend" title="Stundenplan, Hausaufgaben und Proben per QR-Code an die Schüler-iPads">📲 An Schüler</button><button id="ttPrint">🖨 Drucken</button><button id="ttPresent" title="Stundenplan bildschirmfüllend zeigen">⛶ Präsentieren</button>
         </div>
         <div class="tt-wrap">
           <div class="tt-pal" id="ttPalette" title="Fach hierher zurückziehen = aus der Stunde entfernen">
@@ -1839,10 +1854,10 @@
             <div class="row"><input type="text" id="ttNewSubj" placeholder="Neues Fach" list="ttSuggestList" style="flex:1;min-width:0"><button id="ttAddSubj">＋</button></div>
             <datalist id="ttSuggestList"><option>Deutsch</option><option>Mathematik</option><option>Englisch</option><option>Sachunterricht</option><option>Biologie</option><option>Geschichte</option><option>Erdkunde</option><option>Physik</option><option>Chemie</option><option>Musik</option><option>Kunst</option><option>Sport</option><option>Religion</option><option>Ethik</option><option>Informatik</option><option>Französisch</option><option>Latein</option><option>Klassenrat</option></datalist>
             <button id="ttSuggest" class="small">Typische Fächer hinzufügen</button>
-            <p class="hint">Klick auf ein Fach = Name/Farbe ändern. Fach im Plan verschieben = tauschen, zurück hierher ziehen oder ✕ = entfernen. Klick auf eine Uhrzeit = Raster bearbeiten.</p>
+            <p class="hint">Klick auf ein Fach = Name/Farbe ändern. Fach auf ein anderes Fach in dieser Liste ziehen = Reihenfolge ändern. Fach im Plan verschieben = tauschen, zurück hierher ziehen oder ✕ = entfernen. Klick auf eine Uhrzeit = Raster bearbeiten.</p>
           </div>
           <div class="tt-main">
-            <div class="tt-grid" id="ttGrid"></div>
+            <div class="tt-card"><div class="tt-weekbar"><span class="tt-week"><button id="ttPrev" title="Woche zurück">◀</button><button id="ttThis" title="Zur aktuellen Woche"></button><button id="ttNext" title="Woche vor">▶</button></span></div><div class="tt-grid" id="ttGrid"></div></div>
             <div class="agenda" id="ttAgenda"></div>
           </div>
         </div>
@@ -1965,6 +1980,7 @@
   <div id="noiseGrid"></div>
   <p class="noise-hint">Antippen = an/aus · mehrere Geräusche lassen sich mischen · die Geräusche laufen weiter, wenn das Fenster zu ist.</p>
 </div>
+<div id="palette"></div>
 <div id="goalParty" hidden></div>
 <div id="goalAsk" hidden></div>
 <div class="cdlg-back" id="goalDlg" hidden><div class="cdlg nc" style="width:640px"><div class="cdlg-title">🎯 Klassenziel / Belohnung</div><div class="nc-body" id="goalBody"></div></div></div>
@@ -5535,7 +5551,7 @@ function renderTimetable() {
   // Fächer-Leiste
   $('ttSubjects').innerHTML = tt.subjects.map(s => {
     const n = Object.values(tt.cells).filter(v => cellHas(v, s.id)).length;
-    return `<div class="tt-tile" data-sub="${s.id}" style="--sc:${s.color}" title="Ziehen = in eine Stunde setzen · Klick = bearbeiten (Name, Farbe, Material)${s.mat ? '\nMaterial: ' + esc(s.mat) : ''}"><span>${esc(s.name)}${s.mat ? ' <i class="mt" title="Material eingetragen">🎒</i>' : ''}</span><small>${n || ''}</small></div>`;
+    return `<div class="tt-tile" data-sub="${s.id}" style="--sc:${s.color}" title="Ziehen = in eine Stunde setzen · in der Liste auf ein anderes Fach ziehen = Reihenfolge ändern · Klick = bearbeiten (Name, Farbe, Material)${s.mat ? '\nMaterial: ' + esc(s.mat) : ''}"><span>${esc(s.name)}${s.mat ? ' <i class="mt" title="Material eingetragen">🎒</i>' : ''}</span><small>${n || ''}</small></div>`;
   }).join('') || '<p class="hint">Noch keine Fächer – unten eines hinzufügen.</p>';
   // Raster
   const days = ttDays(tt), now = new Date(), today = weekdayIdx(now), hm = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
@@ -5601,8 +5617,13 @@ document.addEventListener('pointermove', e => {
   ttDrag.ghost.style.left = e.clientX + 'px'; ttDrag.ghost.style.top = e.clientY + 'px';
   const under = document.elementsFromPoint(e.clientX, e.clientY);
   const has = c => under.find(x => x.classList && x.classList.contains(c));
-  const over = has('tt-add') || has('tt-part') || has('tt-cell') || under.find(x => x.id === 'ttPalette');
-  if (ttDrag.over !== over) { if (ttDrag.over) ttDrag.over.classList.remove('drop'); if (over) over.classList.add('drop'); ttDrag.over = over; }
+  // Fach in der Leiste auf ein anderes Fach ziehen = Reihenfolge ändern
+  const tileOver = !ttDrag.from && has('tt-tile');
+  if (tileOver) { const r = tileOver.getBoundingClientRect(); ttDrag.after = e.clientY > r.top + r.height / 2; }
+  const over = tileOver || has('tt-add') || has('tt-part') || has('tt-cell') || under.find(x => x.id === 'ttPalette');
+  document.querySelectorAll('.tt-tile.ins-b, .tt-tile.ins-a').forEach(x => x.classList.remove('ins-b', 'ins-a'));
+  if (tileOver && tileOver.dataset.sub !== ttDrag.sid) tileOver.classList.add(ttDrag.after ? 'ins-a' : 'ins-b');
+  if (ttDrag.over !== over) { if (ttDrag.over) ttDrag.over.classList.remove('drop'); if (over && !tileOver) over.classList.add('drop'); ttDrag.over = over; }
 });
 document.addEventListener('pointerup', () => {
   if (!ttDrag) return;
@@ -5610,6 +5631,7 @@ document.addEventListener('pointerup', () => {
   if (d.ghost) d.ghost.remove();
   document.body.classList.remove('tt-dragging');
   if (d.over) d.over.classList.remove('drop');
+  document.querySelectorAll('.tt-tile.ins-b, .tt-tile.ins-a').forEach(x => x.classList.remove('ins-b', 'ins-a'));
   if (!d.ghost) {   // nur geklickt
     if (!d.from) openSubj(d.sid); else openWho(d.from, d.el);
     return;
@@ -5618,7 +5640,14 @@ document.addEventListener('pointerup', () => {
   change(() => {
     const tt = timetable();
     const removeFrom = () => { if (d.from) setCell(tt, d.from, cellArr(tt, d.from).filter((x, i) => i !== d.fromIdx)); };
-    if (d.over.id === 'ttPalette') { removeFrom(); return; }   // zurück in die Leiste = entfernen
+    if (d.over.classList.contains('tt-tile')) {   // Reihenfolge der Fächer ändern
+      const tgt = d.over.dataset.sub; if (tgt === d.sid) return;
+      const sub = tt.subjects.find(x => x.id === d.sid); if (!sub) return;
+      tt.subjects = tt.subjects.filter(x => x !== sub);
+      const i = tt.subjects.findIndex(x => x.id === tgt); tt.subjects.splice(i + (d.after ? 1 : 0), 0, sub);
+      return;
+    }
+    if (d.over.id === 'ttPalette') { if (!d.from) { const sub = tt.subjects.find(x => x.id === d.sid); if (sub) { tt.subjects = tt.subjects.filter(x => x !== sub).concat(sub); } } else removeFrom(); return; }   // zurück in die Leiste = entfernen
     const to = d.over.closest('.tt-cell').dataset.key, toArr = cellArr(tt, to);
     if (d.over.classList.contains('tt-add')) {   // als zweites Fach (geteilte Klasse) dazu
       if (d.from === to) return;
@@ -5840,6 +5869,9 @@ $('slSave').addEventListener('click', () => {
   $('slotDlg').hidden = true;
 });
 $('ttRaster').addEventListener('click', openSlots);
+$('ttPlanBtn').addEventListener('click', () => { const m = $('ttPlanMenu'); m.hidden = !m.hidden; $('ttPlanBtn').classList.toggle('on', !m.hidden); });
+$('ttPlanMenu').addEventListener('click', e => { if (e.target.closest('button')) { $('ttPlanMenu').hidden = true; $('ttPlanBtn').classList.remove('on'); } });
+document.addEventListener('pointerdown', e => { if (!$('ttPlanMenu').hidden && !e.target.closest('.ttm-wrap')) { $('ttPlanMenu').hidden = true; $('ttPlanBtn').classList.remove('on'); } });
 
 /* ---------- Fächerleiste ein/aus ---------- */
 $('ttPalToggle').addEventListener('click', () => { ui.ttPal = !ttPalShown(); renderTimetable(); });

@@ -539,3 +539,11 @@ NEU in Version 2026-11-27
 NEU in Version 2026-11-28
 - 📡 Fernbedienung: Glücksrad, „📷 Foto an die Tafel“ und „🖼 Bild aus Fotos“ stehen jetzt im Bereich
   „Vollbild“. Der 🔴 Zeiger hat einen eigenen Bereich, darunter folgt „🖊 Zeichnen auf dem Tafelbild“.
+
+NEU in Version 2026-11-29: Stundenplan aufgeräumt
+- Links: „⚙️ Plan ▾“ (Raster/Stundenzeiten, Fächerleiste, Samstag, Plan leeren) und „✏️ Tagesänderung“.
+  Rechts: ＋ Hausaufgabe · ＋ Probe/Termin · 📲 An Schüler · 🖨 Drucken · ⛶ Präsentieren.
+- Die Wochenauswahl ◀ KW ▶ steht jetzt mittig direkt im Stundenplan-Feld.
+- Fächerleiste: Ein Fach auf ein anderes Fach in der Liste ziehen = Reihenfolge ändern
+  (die grüne Linie zeigt, wo es landet).
+- Fach bearbeiten: Die Farbe lässt sich wieder ändern (die Farbauswahl lag hinter dem Fenster).
