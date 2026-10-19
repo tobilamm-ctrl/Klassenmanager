@@ -469,3 +469,14 @@ NEU in Version 2026-11-23: Abhak-Tabelle, Strichlisten und Ausdruck
   · Neu: „Kompakte Liste Vergessen“ – alle Kinder mit ✗ oder Strichen untereinander (für dich).
   · Schülerübersicht mit „Nur Vergessenes“ (Kinder ohne Vergessenes fallen weg) und „Mehrere Kinder
     pro Seite“ (mit Schnittlinie, z. B. als Zettel für die Eltern).
+
+NEU in Version 2026-11-24: Speicher-Anzeige in der Kopfzeile
+- Vor dem Dateinamen steht immer ein Symbol für deine Klassendatei (wird nicht mehr abgeschnitten):
+  ✓ grün = alles gespeichert (Maus darauf bzw. antippen: „zuletzt gespeichert 10:42 Uhr“)
+  ● orange = ungespeicherte Änderungen (antippen = speichern)
+  ↻ grau = wird gerade gespeichert (OneDrive)
+  ! rot = Speichern fehlgeschlagen bzw. Anmeldung abgelaufen (antippen = erneut speichern)
+- Ist die Klasse über OneDrive oder GitHub mit den Schüler-iPads verbunden, zeigt 📤 den Stand der
+  Schülerdatei: 📤✓ aktuell (mit Uhrzeit der letzten Übertragung), 📤↻ Änderungen werden gleich
+  übertragen, 📤! Übertragung fehlgeschlagen bzw. auf diesem Gerät kein Zugang. Antippen öffnet
+  „📲 An Schüler“ im passenden Reiter.
