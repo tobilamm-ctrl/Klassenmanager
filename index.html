@@ -274,6 +274,148 @@
   .cn-snips button { padding: 3px 9px; border-radius: 999px; font-size: .8rem; font-weight: 600; border: 1.5px solid #cbd5e1; background: #f8fafc; color: #334155; }
   .cn-snips button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
   .cn-snips .cn-ed { border-style: dashed; color: var(--muted); }
+
+  /* ===== v26: Klassenziel ===== */
+  #goalParty { position: fixed; inset: 0; z-index: 6000; background: rgba(15,23,42,.55); display: grid; place-items: center; }
+  #goalParty[hidden] { display: none; }
+  #goalParty canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  #goalParty .gp-box { position: relative; background: #fff; border-radius: 22px; padding: 28px 40px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.35); animation: gpIn .5s cubic-bezier(.2,1.6,.4,1); max-width: 90vw; }
+  #goalParty .gp-ic { font-size: 70px; line-height: 1; }
+  #goalParty h2 { margin: 8px 0 4px; font-size: clamp(24px, 4vw, 44px); }
+  #goalParty p { margin: 0 0 16px; font-size: clamp(18px, 2.4vw, 28px); color: #475569; }
+  #goalParty button { font-size: 1.1rem; padding: 10px 24px; }
+  @keyframes gpIn { from { transform: scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
+  #goalAsk { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 5900; background: #fff; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.25); padding: 10px 14px; display: flex; gap: 10px; align-items: center; border: 2px solid var(--sun); max-width: calc(100vw - 32px); }
+  #goalAsk[hidden] { display: none; }
+  .bw-goal { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; gap: 4px; min-height: 0; }
+  .bw-goal .g-hd { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: .95em; }
+  .bw-goal .g-hd span { color: #64748b; }
+  .g-teams { display: flex; gap: 8px; flex: 1; min-height: 0; }
+  .g-one { flex: 1; display: flex; flex-direction: column; align-items: center; min-height: 0; min-width: 0; gap: 2px; }
+  .g-tn { font-weight: 800; color: var(--gc); border-bottom: 3px solid var(--gc); padding: 0 4px; }
+  .g-vis { flex: 1; min-height: 0; width: 100%; display: flex; justify-content: center; }
+  .g-svg { width: 100%; height: 100%; max-height: 100%; display: block; }
+  .st-gv .g-svg { width: 64px; height: 56px; }
+  .g-cnt { font-size: 1.05em; } .g-cnt b { font-size: 1.3em; }
+  .g-btn { display: flex; gap: 6px; } .g-btn button { min-width: 44px; font-size: 1.1em; padding: 4px 12px; }
+  .g-why { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; background: rgba(255,255,255,.96); border-radius: 10px; box-shadow: 0 -2px 10px rgba(0,0,0,.12); padding: 6px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; font-size: .8em; }
+  .g-why button { padding: 2px 8px; font-size: 1em; }
+  .g-drop { animation: gDrop .7s cubic-bezier(.3,1.4,.5,1); transform-box: fill-box; }
+  @keyframes gDrop { from { transform: translateY(-60px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .g-pop { animation: gPop .6s ease-out; transform-box: fill-box; transform-origin: center; }
+  @keyframes gPop { 0% { transform: scale(.2); opacity: 0; } 70% { transform: scale(1.25); } 100% { transform: none; opacity: 1; } }
+  .g-fill { transition: y .6s, height .6s; }
+  .st-goal h3 { display: flex; align-items: center; gap: 6px; }
+  .st-gset { margin-left: auto; padding: 2px 8px; }
+  .st-g { display: flex; align-items: center; gap: 10px; padding: 6px 0; cursor: pointer; border-top: 1px solid #f1f5f9; }
+  .st-g:first-of-type { border-top: 0; }
+  .st-g > div:nth-child(2) { flex: 1; min-width: 0; }
+  .g-form { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .g-form label, .g-opts > label:not(.chk) { display: flex; flex-direction: column; gap: 3px; font-size: .8rem; font-weight: 700; color: var(--muted); }
+  .g-form input, .g-form select { font: inherit; font-size: .95rem; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 8px; color: var(--ink); font-weight: 400; }
+  .g-colors { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+  .g-colors button { width: 28px; height: 28px; border-radius: 50%; padding: 0; border: 2px solid #fff; box-shadow: 0 0 0 1px #cbd5e1; }
+  .g-colors button.cur { box-shadow: 0 0 0 3px var(--ink); }
+  .g-opts { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 6px 0; }
+  .g-sec { border: 1px solid #e5e7eb; border-radius: 10px; padding: 6px 10px; margin-top: 8px; }
+  .g-sec summary { cursor: pointer; font-weight: 700; }
+  .g-sec[open] summary { margin-bottom: 6px; }
+  .gr-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px; padding: 4px 0; border-top: 1px solid #f1f5f9; font-size: .88rem; }
+  .gr-opt { color: var(--muted); font-size: .82rem; white-space: nowrap; }
+  .gr-opt input { width: 52px; font: inherit; padding: 2px 4px; border: 1px solid #d1d5db; border-radius: 6px; }
+  .g-log { max-height: 200px; overflow: auto; font-size: .82rem; display: flex; flex-direction: column; gap: 2px; }
+  .bw-ph { width: 100%; height: 100%; display: grid; place-items: center; text-align: center; color: #94a3b8; cursor: pointer; border: 2px dashed #cbd5e1; border-radius: 10px; }
+
+  /* ===== Glücksrad ===== */
+  .bw-wheel { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 0; }
+  .bw-wheel .wh-box { flex: 1; min-height: 0; width: 100%; display: flex; justify-content: center; cursor: pointer; }
+  .wh-svg { height: 100%; max-width: 100%; display: block; }
+  .wh-rot { transform-origin: 0 0; transform-box: view-box; }
+  .wh-res { min-height: 1.4em; font-size: 1.2em; text-align: center; }
+  .wh-res b { font-size: 1.3em; }
+  .wh-ctl { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; align-items: center; }
+  .wh-ctl button { padding: 3px 10px; }
+  #wheelFull { position: fixed; inset: 0; z-index: 3970; background: #fff; display: flex; }
+  #wheelFull[hidden] { display: none; }
+  #wheelFull .whf-in { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 2vh 2vw; gap: 1.5vh; min-height: 0; }
+  #wheelFull .wh-box { flex: 1; min-height: 0; width: 100%; display: flex; justify-content: center; cursor: pointer; }
+  #wheelFull .wh-res { font-size: clamp(24px, 5vh, 64px); font-weight: 800; }
+  #wheelFull .wh-ctl button { font-size: 1.1rem; padding: 8px 18px; }
+
+  /* ===== Kopfrechnen ===== */
+  .bw-math { width: 100%; height: 100%; display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+  .bw-math .mh { font-weight: 800; color: #64748b; font-size: .85em; }
+  .bw-math .mt { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 2.2em; gap: .2em; min-height: 0; }
+  .bw-math .mt.many { font-size: 1.3em; display: grid; grid-template-columns: repeat(auto-fit, minmax(7em, 1fr)); align-content: center; width: 100%; }
+  .bw-math .mq { display: flex; gap: .3em; justify-content: center; white-space: nowrap; }
+  .bw-math .mq b { color: var(--accent); min-width: 1.5em; text-align: left; }
+
+  /* ===== Klangkulisse als Baustein ===== */
+  .bw-noise { width: 100%; height: 100%; display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+  .nz-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(74px, 1fr)); gap: 6px; align-content: start; overflow: auto; }
+  .nz-grid button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 4px; border-radius: 10px; }
+  .nz-grid button span { font-size: 1.6em; line-height: 1; }
+  .nz-grid button small { font-size: .72em; }
+  .nz-grid button.on { background: var(--accent-soft); border-color: var(--accent); box-shadow: inset 0 -3px 0 var(--accent); }
+  .nz-v { min-width: 3.5em; text-align: center; font-weight: 700; }
+  .nz-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px 10px; font-weight: 400; margin-top: 4px; }
+
+  /* ===== Foto & Zeiger ===== */
+  #photoFull { position: fixed; inset: 0; z-index: 3980; background: #0b0f14; display: flex; flex-direction: column; }
+  #photoFull[hidden] { display: none; }
+  #photoFull img { flex: 1; min-height: 0; width: 100%; object-fit: contain; }
+  #photoFull .ph-bar { display: flex; gap: 10px; justify-content: center; padding: 10px; }
+  #photoFull .ph-bar button { font-size: 1rem; padding: 8px 16px; }
+  #rcPtr { position: fixed; z-index: 7000; width: 34px; height: 34px; border-radius: 50%; background: rgba(239,68,68,.85); box-shadow: 0 0 0 6px rgba(239,68,68,.25), 0 0 24px 8px rgba(239,68,68,.45); transform: translate(-50%, -50%); pointer-events: none; transition: left .06s linear, top .06s linear; }
+  #rcPtr[hidden] { display: none; }
+
+  /* ===== Stundenplan: Änderungen für einzelne Tage ===== */
+  #ttChgPop, #tagPop { position: fixed; z-index: 2500; width: 330px; max-width: calc(100vw - 16px); background: #fff; border-radius: 10px; box-shadow: 0 8px 28px rgba(0,0,0,.25); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  #ttChgPop[hidden], #tagPop[hidden] { display: none; }
+  #ttChgPop .row button.on { border-color: var(--accent); background: var(--accent-soft); }
+  #ttChgPop input, #ttChgPop select { font: inherit; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 8px; }
+  .tt-chg { font-size: .7rem; font-weight: 700; border-radius: 5px; padding: 1px 4px; margin-top: 2px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+  .tt-chg.c-aus { background: #fee2e2; color: #b91c1c; }
+  .tt-chg.c-vt { background: #ffedd5; color: #9a3412; }
+  .tt-chg.c-raum { background: #dbeafe; color: #1e40af; }
+  .tt-chg.c-info { background: #fef9c3; color: #854d0e; }
+  .tt-cell.has-chg-aus > :not(.tt-chg) { text-decoration: line-through; opacity: .55; }
+  body.tt-chgmode .tt-cell { cursor: copy; outline: 1px dashed #f59e0b; outline-offset: -2px; }
+  body.tt-chgmode #ttChgBtn { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+
+  /* ===== Lehrer-Symbole & Platzwünsche ===== */
+  .tg-list { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; font-size: .9rem; }
+  .seat .tgs { position: absolute; left: 2px; bottom: 0; font-size: clamp(7px, .95cqw, 11px); line-height: 1; letter-spacing: -1px; }
+  body.present .seat .tgs, body.print-fit .seat .tgs { display: none; }
+  @media print { .seat .tgs { display: none !important; } }
+  .rule .tag.pos { background: #e0e7ff; color: #3730a3; }
+  .ck-rep { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; padding: 8px 10px; border: 1px dashed #cbd5e1; border-radius: 10px; font-size: .88rem; }
+  .ck-rep:empty { display: none; }
+  .ck-rep select { font: inherit; padding: 4px 6px; border: 1px solid #d1d5db; border-radius: 8px; }
+
+  /* ===== Fernbedienung: Abhaken, Zeiger, Ansicht unter der Kopfzeile ===== */
+  body:not(.view-rc) #rcPanel { display: none; }
+  body.view-rc .layout, body.view-rc .view-pane, body.view-rc #startView { display: none !important; }
+  body.view-rc #rcPanel { top: 64px; z-index: 900; }
+  body.view-rc #rcPanel .rc-head { top: -12px; }
+  .rc-wrap { flex-wrap: wrap; }
+  .rc-chk { display: flex; flex-direction: column; gap: 4px; }
+  .rc-ck { display: flex; align-items: center; gap: 6px; padding: 3px 0; border-top: 1px solid #f1f5f9; }
+  .rc-ck .nm { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rc-ck.ab .nm { color: var(--muted); }
+  .rc-ck button { min-width: 48px; min-height: 44px; font-size: 1.15rem; padding: 4px 8px; }
+  .rc-ck button.v-ok.on { background: #dcfce7; border-color: #16a34a; color: #166534; }
+  .rc-ck button.v-no.on { background: #fee2e2; border-color: #dc2626; color: #991b1b; }
+  .rc-ck button.v-ex.on { background: #e5e7eb; border-color: #6b7280; color: #374151; }
+  .tl-r { min-width: 48px; }
+  .tl-r.on { background: var(--accent-soft); border-color: var(--accent); }
+  .tl-r.red { background: #fee2e2; border-color: #dc2626; color: #991b1b; }
+  .tl-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .rc-small button { font-size: .85rem !important; padding: 4px 10px !important; min-height: 34px !important; }
+  .rc-file { position: relative; display: inline-flex; align-items: center; font-size: 1.05rem; padding: 10px 14px; min-height: 46px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; cursor: pointer; overflow: hidden; }
+  .rc-file input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .rc-ptr { position: relative; width: 100%; max-height: 60vh; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; touch-action: none; overflow: hidden; }
+  .rc-ptr canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 </style>
 <style>
   :root {
@@ -313,7 +455,7 @@
   /* Schülerliste */
   .slist { max-height: 340px; overflow: auto; border: 1px solid #eceef2; border-radius: 8px; }
   .slist:empty { display: none; }
-  .srow { display: grid; grid-template-columns: 36px 1fr 1fr 44px 22px 22px 26px 22px; gap: 4px; align-items: center; padding: 4px; border-bottom: 1px solid #f1f2f5; }
+  .srow { display: grid; grid-template-columns: 36px 1fr 1fr 44px 22px 22px 26px 30px 22px; gap: 4px; align-items: center; padding: 4px; border-bottom: 1px solid #f1f2f5; }
   .srow:last-child { border-bottom: none; }
   .srow input[type=text], .srow select { padding: 3px 4px; font-size: .82rem; min-width: 0; width: 100%; }
   .srow .fr { display: flex; align-items: center; justify-content: center; cursor: pointer; }
@@ -1303,7 +1445,7 @@
   <div class="headrow">
     <img class="logo" alt="Schullogo" src="data:image/png;base64,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">
     <h1>Klassenmanager</h1>
-    <div class="viewsw" id="viewSw"><button data-v="start">🏠 Start</button><button data-v="plan" class="active">🪑 Sitzplan</button><button data-v="board">🖥 Tafel</button><button data-v="list">📋 Klassenliste</button><button data-v="tt">🗓 Stundenplan</button><button data-v="cal">📅 Kalender</button></div>
+    <div class="viewsw" id="viewSw"><button data-v="start">🏠 Start</button><button data-v="plan" class="active">🪑 Sitzplan</button><button data-v="board">🖥 Tafel</button><button data-v="list">📋 Klassenliste</button><button data-v="tt">🗓 Stundenplan</button><button data-v="cal">📅 Kalender</button><button data-v="rc" id="vsRc" hidden>📡 Fernbedienung</button></div>
     <div class="headfile"><button type="button" class="hfst" id="hfSt" hidden></button><button type="button" class="hfst" id="hfPub" hidden></button><span id="hfName"></span><select id="hfClass" title="Klasse wechseln"></select><button id="hfReload" title="Neuesten Stand aus OneDrive holen (falls an einem anderen Gerät geändert)" hidden>🔄</button><button id="hfSave" class="primary" title="Speichern (Strg+S)">💾<span class="t"> Speichern</span></button></div>
     <button id="setBtn" title="Einstellungen: Datei, Klasse, Schüler, OneDrive">⚙️</button>
   </div>
@@ -1374,6 +1516,10 @@
           <select id="ruleType">
             <option value="apart">soll NICHT neben</option>
             <option value="together">soll GERNE neben</option>
+            <option value="back">soll HINTEN sitzen</option>
+            <option value="win">soll an der FENSTERSEITE sitzen</option>
+            <option value="door">soll an der TÜRSEITE sitzen</option>
+            <option value="notfront">soll NICHT GANZ VORNE sitzen</option>
           </select>
           <div class="msel" id="ruleBBox">
             <button type="button" id="ruleBBtn" class="msel-btn">– Schüler wählen –</button>
@@ -1381,6 +1527,7 @@
           </div>
           <button id="ruleAdd">＋ Regel hinzufügen</button>
           <div class="rules" id="ruleList"></div>
+          <label class="chk">🪟 Fensterseite im Plan: <select id="ruleWin"><option value="l">links</option><option value="r">rechts</option></select></label>
           <label class="chk"><input type="checkbox" id="ruleMix"> Jungen und Mädchen möglichst gemischt</label>
           <label class="chk"><input type="checkbox" id="ruleFresh"> Neue Nachbarn: möglichst niemand neben früheren Nachbarn (aktueller Plan und die letzten 3 gespeicherten)</label>
           <p class="hint">Im dritten Feld kannst du mehrere Kinder ankreuzen – dann werden alle Regeln in einem Schritt angelegt. „Nebeneinander“ heißt: am selben Tisch oder an direkt angestellten Tischen. „Nicht neben“ meidet zusätzlich dieselbe Tischgruppe. „Nach vorne“ (⬆ in der Schülerliste) = das Drittel der Plätze, das der Tafel am nächsten ist. Die Regeln werden so gut wie möglich erfüllt; was nicht klappt, steht nach dem Verteilen unter dem Plan.</p>
@@ -1492,7 +1639,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-25</p>
+          <p class="hint" style="margin:0">Version 2026-11-26</p>
         </div>
       </details>
 
@@ -1652,7 +1799,7 @@
           <button id="ttRaster" title="Stundenraster bearbeiten">⚙ Raster</button>
           <button id="ttHwAdd" class="primary" title="Neue Hausaufgabe eintragen">＋ Hausaufgabe</button>
           <button id="ttExamAdd" class="primary" title="Probe oder Termin (Ausflug, Elternabend …) eintragen">＋ Probe/Termin</button>
-          <button id="ttSend" title="Stundenplan, Hausaufgaben und Proben per QR-Code an die Schüler-iPads">📲 An Schüler</button><button id="ttPresent" title="Stundenplan bildschirmfüllend zeigen">⛶ Präsentieren</button>
+          <button id="ttSend" title="Stundenplan, Hausaufgaben und Proben per QR-Code an die Schüler-iPads">📲 An Schüler</button><button id="ttPresent" title="Stundenplan bildschirmfüllend zeigen">⛶ Präsentieren</button><button id="ttChgBtn" class="toggle" title="Änderungen für einzelne Tage: Ausfall, Vertretung, Raum, Hinweis">✏️ Tagesänderung</button>
           <label class="chk"><input type="checkbox" id="ttSat"> Samstag</label>
           <span class="tt-week"><button id="ttPrev" title="Woche zurück">◀</button><button id="ttThis" title="Zur aktuellen Woche"></button><button id="ttNext" title="Woche vor">▶</button></span>
           <span class="spacer"></span>
@@ -1792,6 +1939,14 @@
   <div id="noiseGrid"></div>
   <p class="noise-hint">Antippen = an/aus · mehrere Geräusche lassen sich mischen · die Geräusche laufen weiter, wenn das Fenster zu ist.</p>
 </div>
+<div id="goalParty" hidden></div>
+<div id="goalAsk" hidden></div>
+<div class="cdlg-back" id="goalDlg" hidden><div class="cdlg nc" style="width:640px"><div class="cdlg-title">🎯 Klassenziel / Belohnung</div><div class="nc-body" id="goalBody"></div></div></div>
+<div id="wheelFull" hidden></div>
+<div id="photoFull" hidden></div>
+<div id="rcPtr" hidden></div>
+<div id="ttChgPop" hidden></div>
+<div id="tagPop" hidden></div>
 <div id="voteFull" hidden></div>
 <button id="voteBadge" hidden title="Abstimmungsrunde – antippen für die nächste Frage"></button>
 
@@ -1898,6 +2053,7 @@
         <button id="ckRestNo" class="small">Alle offenen → ✗</button>
         <button id="ckClear" class="small">Alle Häkchen löschen</button>
       </div>
+      <div class="ck-rep" id="ckRep"></div>
       <div class="row" style="justify-content:flex-end"><button id="ckDel" class="danger" style="margin-right:auto">Löschen</button><button id="ckCancel">Abbrechen</button><button class="primary" id="ckSave">Speichern</button></div>
     </div>
   </div>
@@ -2334,7 +2490,7 @@ function change(fn, opts = {}) {
   fn();
   cls().items.forEach(fitIn);
   pruneGroups();
-  if (snap() !== before) commit(before);
+  if (snap() !== before) { commit(before); if (!change.gq) { change.gq = 1; setTimeout(() => { change.gq = 0; try { goalCheckLists(); } catch (e) { console.warn(e); } }, 50); } }
   renderAll(opts);
 }
 function undo() {
@@ -2450,6 +2606,7 @@ function cleanupStudents() {
   c.items.forEach(it => it.seats.forEach(s => { if (s.sid && !ids.has(s.sid)) { s.sid = null; s.pinned = false; } }));
   c.rules.apart = c.rules.apart.filter(([a, b]) => ids.has(a) && ids.has(b));
   c.rules.together = c.rules.together.filter(([a, b]) => ids.has(a) && ids.has(b));
+  if (c.rules.pos) c.rules.pos = c.rules.pos.filter(([a]) => ids.has(a));
 }
 
 /* =====================================================================
@@ -2518,6 +2675,11 @@ function distribute() {
   const zoneSize = Math.min(n, Math.max(frontKids.size, Math.ceil(n * 0.34)));
   const inFront = Array(n).fill(false);
   all.map((x, k) => k).sort((a, b) => all[b].cy - all[a].cy).slice(0, zoneSize).forEach(k => inFront[k] = true);
+  // Platzwünsche: hinten, Fenster-/Türseite, nicht ganz vorne (jeweils das passende Drittel bzw. die erste Reihe)
+  const third = Math.max(1, Math.ceil(n * 0.34)), byY = all.map((x, k) => k).sort((a, b) => all[a].cy - all[b].cy), byX = all.map((x, k) => k).sort((a, b) => all[a].cx - all[b].cx);
+  const zone = { back: new Set(byY.slice(0, third)), left: new Set(byX.slice(0, third)), right: new Set(byX.slice(-third)), front1: new Set(byY.slice(-Math.max(1, Math.ceil(n * 0.2)))) };
+  const winL = (c.rules.win || 'l') === 'l', posOk = (k, w) => w === 'back' ? zone.back.has(k) : w === 'win' ? (winL ? zone.left : zone.right).has(k) : w === 'door' ? (winL ? zone.right : zone.left).has(k) : w === 'notfront' ? !zone.front1.has(k) : true;
+  const posRules = (c.rules.pos || []);
   // Zweiertische, bei denen beide Plätze frei sind
   const pairs = [], byItem = new Map();
   all.forEach((x, k) => { if (x.it.type === 'desk2') { if (!byItem.has(x.it)) byItem.set(x.it, []); byItem.get(x.it).push(k); } });
@@ -2543,6 +2705,7 @@ function distribute() {
       sum += near[i][j] ? 120 : grp[i][j] ? 80 : 500;
     }
     frontKids.forEach(id => { const k = pos[id]; if (k != null && !inFront[k]) sum += 400; });
+    for (const [id, w] of posRules) { const k = pos[id]; if (k != null && !posOk(k, w)) sum += 400; }
     for (const [p, q] of pairs) {
       const x = A[p], y = A[q];
       if (!!x !== !!y) sum += 60;                         // jemand säße allein am Zweiertisch
@@ -2719,7 +2882,7 @@ function renderStudents() {
   const c = cls();
   const gOpts = g => ['', 'm', 'w', 'd'].map(v => `<option value="${v}" ${g === v ? 'selected' : ''}>${v || '–'}</option>`).join('');
   $('slist').innerHTML = !c.students.length ? '' :
-    `<div class="srow head"><span>Farbe</span><span>Vorname</span><span>Nachname</span><span>m/w/d</span><span title="soll nach vorne">⬆</span><span title="heute abwesend">🤒</span><span title="Notiz">📝</span><span></span></div>` +
+    `<div class="srow head"><span>Farbe</span><span>Vorname</span><span>Nachname</span><span>m/w/d</span><span title="soll nach vorne">⬆</span><span title="heute abwesend">🤒</span><span title="Notiz">📝</span><span title="Lehrer-Symbole (nur für dich)">🏷</span><span></span></div>` +
     c.students.map(s => `<div class="srow${isAbsent(s) ? ' abs' : ''}" data-id="${s.id}">
       <button class="sw${colorInfo(s.color) ? '' : ' none'}" data-f="colorbtn" title="Farbmarkierung: ${colorInfo(s.color) ? colorInfo(s.color).n : 'keine'}" style="--sw:${colorInfo(s.color) ? colorInfo(s.color).fg : 'transparent'}"><i></i></button>
       <input type="text" data-f="first" value="${esc(s.first)}" placeholder="Vorname">
@@ -2728,6 +2891,7 @@ function renderStudents() {
       <label class="fr" title="soll nach vorne"><input type="checkbox" data-f="front" ${s.front ? 'checked' : ''}></label>
       <label class="fr" title="heute abwesend"><input type="checkbox" data-f="absent" ${isAbsent(s) ? 'checked' : ''}></label>
       <button class="nb${s.note ? ' has' : ''}" data-f="note" title="${s.note ? 'Notiz: ' + esc(s.note) : 'Notiz hinzufügen'}">📝</button>
+      <button class="nb tg${s.tags && s.tags.length ? ' has' : ''}" data-f="tags" title="Lehrer-Symbole: ${s.tags && s.tags.length ? s.tags.map(k => TAGS[k] ? TAGS[k][1] : '').join(', ') : 'keine'}">${s.tags && s.tags.length ? tagIcons(s) : '🏷'}</button>
       <button class="x" data-f="del" title="Schüler entfernen">✕</button></div>`).join('');
   renderStuBadge();
 }
@@ -2753,10 +2917,12 @@ function renderRules() {
   const rows = [];
   c.rules.apart.forEach((r, i) => rows.push(`<div class="rule"><span class="tag apart">nicht neben</span>${esc(dn.get(r[0]))} – ${esc(dn.get(r[1]))}<button data-kind="apart" data-i="${i}" title="Regel löschen">✕</button></div>`));
   c.rules.together.forEach((r, i) => rows.push(`<div class="rule"><span class="tag together">gerne neben</span>${esc(dn.get(r[0]))} – ${esc(dn.get(r[1]))}<button data-kind="together" data-i="${i}" title="Regel löschen">✕</button></div>`));
+  (c.rules.pos || []).forEach((r, i) => rows.push(`<div class="rule"><span class="tag pos">${esc(POS_T[r[1]] || r[1])}</span>${esc(dn.get(r[0]) || '?')}<button data-kind="pos" data-i="${i}" title="Regel löschen">✕</button></div>`));
+  $('ruleWin').value = c.rules.win || 'l'; $('ruleBBox').hidden = !!POS_T[$('ruleType').value];
   $('ruleList').innerHTML = rows.join('');
   $('ruleMix').checked = !!c.rules.mix; $('ruleFresh').checked = !!c.rules.fresh;
   const fr = c.students.filter(s => s.front).length;
-  const total = c.rules.apart.length + c.rules.together.length;
+  const total = c.rules.apart.length + c.rules.together.length + (c.rules.pos || []).length;
   $('ruleBadge').textContent = total || fr ? `${total} Regeln${fr ? ` · ${fr}× ⬆` : ''}` : '';
 }
 
@@ -2836,6 +3002,7 @@ function renderRoom(animate) {
           sd.innerHTML = `<span class="nm">${st ? esc(dn.get(st.id)) : 'frei'}</span>` +
             (st && showG && st.gender ? `<span class="g">${GENDER_SIGN[st.gender]}</span>` : '') +
             (st && st.note ? '<span class="nt">📝</span>' : '') +
+            (st && st.tags && st.tags.length ? `<span class="tgs" title="${esc(st.tags.map(k => TAGS[k] ? TAGS[k][1] : '').join(', '))}">${tagIcons(st)}</span>` : '') +
             (st && isPicked(st.id) ? '<span class="pk">👇</span>' : '') +
             (st && dutyOf.has(st.id) ? `<span class="dt">${dutyOf.get(st.id).map(d => esc(dutyIcon(d))).join('')}</span>` : '') +
             (st && teamIdx && teamIdx.has(st.id) && !ui.genderView ? `<span class="tb">${esc(teamShort(teamIdx.get(st.id)))}${roleIcons(st.id) ? ' ' + roleIcons(st.id) : ''}</span>` : '');
@@ -3429,6 +3596,8 @@ $('slist').addEventListener('click', e => {
   }
   const nb = e.target.closest('button[data-f="note"]');
   if (nb) { openNote(nb.closest('.srow').dataset.id, nb); return; }
+  const tgb = e.target.closest('button[data-f="tags"]');
+  if (tgb) { openTags(tgb.closest('.srow').dataset.id, tgb); return; }
   const b = e.target.closest('button[data-f="del"]'); if (!b) return;
   const id = b.closest('.srow').dataset.id;
   change(() => { cls().students = cls().students.filter(s => s.id !== id); cleanupStudents(); });
@@ -3462,6 +3631,13 @@ document.addEventListener('pointerdown', e => { if (!$('ruleBList').hidden && !e
 
 $('ruleAdd').addEventListener('click', () => {
   const a = $('ruleA').value, kind = $('ruleType').value, bs = [...ui.ruleB].filter(b => b !== a);
+  if (POS_T[kind]) {
+    if (!a) { setResult('Bitte ein Kind im ersten Feld auswählen.', 'warn'); return; }
+    const R0 = cls().rules; R0.pos = R0.pos || [];
+    if (R0.pos.some(([x, k]) => x === a && k === kind)) { setResult('Diese Regel gibt es schon.', 'warn'); return; }
+    change(() => { R0.pos = (R0.pos || []).filter(([x, k]) => !(x === a && (k === kind || (['win', 'door'].includes(k) && ['win', 'door'].includes(kind))))); R0.pos.push([a, kind]); }, { keepList: true });
+    setResult('Platzwunsch hinzugefügt.', 'ok'); return;
+  }
   if (!a || !bs.length) { setResult('Bitte ein Kind im ersten Feld und mindestens ein Kind im dritten Feld auswählen.', 'warn'); return; }
   const R = cls().rules, dn = displayNames(cls().students);
   const has = (list, b) => list.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
@@ -3472,6 +3648,8 @@ $('ruleAdd').addEventListener('click', () => {
   ui.ruleB = new Set(); refreshRuleB(); $('ruleBList').hidden = true;
   setResult(`${fresh.length} Regel${fresh.length > 1 ? 'n' : ''} hinzugefügt` + (skipped.length ? ` – übersprungen (gibt es schon): ${skipped.map(id => dn.get(id)).join(', ')}` : '') + '.', skipped.length ? 'warn' : 'ok');
 });
+$('ruleType').addEventListener('change', () => { $('ruleBBox').hidden = !!POS_T[$('ruleType').value]; });
+$('ruleWin').addEventListener('change', e => change(() => { cls().rules.win = e.target.value; }, { keepList: true }));
 $('ruleList').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   change(() => { cls().rules[b.dataset.kind].splice(+b.dataset.i, 1); }, { keepList: true });
@@ -4569,7 +4747,7 @@ const tmEl = t => t.acc + (t.running ? (Date.now() - t.t0) / 1000 : 0);
 const tmLeft = t => t.mode === 'up' ? tmEl(t) : Math.max(0, t.total - tmEl(t));
 function tmToggle(t) {
   if (t.mode === 'down' && t.done) return;
-  if (t.running) { t.acc = tmEl(t); t.running = false; } else { t.t0 = Date.now(); t.running = true; t.ready = false; audio(); }
+  if (t.running) { t.acc = tmEl(t); t.running = false; } else { if (t.ready) goalTimerStart(t); t.t0 = Date.now(); t.running = true; t.ready = false; audio(); }
 }
 function tmReset(t, total) { if (total != null) t.total = total; Object.assign(t, { acc: 0, running: false, ready: true, done: false }); }
 function tmAdd(t, sec) {   // Countdown verlängern / verkürzen
@@ -4577,7 +4755,7 @@ function tmAdd(t, sec) {   // Countdown verlängern / verkürzen
   const el = tmEl(t); t.total = Math.max(el + 5, t.total + sec);
   if (t.done && sec > 0) { t.done = false; t.acc = el; }
 }
-function tmCheck(t) { if (t.mode === 'down' && t.running && tmEl(t) >= t.total) { t.running = false; t.acc = t.total; t.done = true; playSound(t.sound, t.vol); return true; } return false; }
+function tmCheck(t) { if (t.mode === 'down' && t.running && tmEl(t) >= t.total) { t.running = false; t.acc = t.total; t.done = true; playSound(t.sound, t.vol); goalTimerDone(t); return true; } return false; }
 const fmtUp = s => { s = Math.max(0, s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = Math.floor(s % 60), z = Math.floor(s * 10 % 10); return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0') + ',' + z; };
 const tmText = t => t.mode === 'up' ? fmtUp(tmEl(t)) : t.done ? '0:00' : fmtT(tmLeft(t));
 const tmFrac = t => t.mode === 'up' ? (tmEl(t) % 60) / 60 : t.total ? tmLeft(t) / t.total : 0;
@@ -4833,6 +5011,8 @@ function setView(v) {
   document.body.classList.toggle('view-start', v === 'start');
   document.body.classList.toggle('view-board', v === 'board');
   document.body.classList.toggle('view-cal', v === 'cal');
+  document.body.classList.toggle('view-rc', v === 'rc');
+  if (v === 'rc') { if (!RC.remote) { v = ui.view = 'start'; document.body.classList.remove('view-rc'); document.body.classList.add('view-start'); } else setTimeout(() => { rcTop(); renderRc(); }, 0); }
   if (ui.vPresent && v !== 'tt' && v !== 'cal') setVPresent(false);
   if (v !== 'board' && ui.bdDraw) { ui.bdDraw = false; document.body.classList.remove('bd-drawing'); renderPen(); }
   $('setBtn').classList.toggle('active', v === 'set');
@@ -4862,7 +5042,7 @@ function renderListView() {
   $('lvTable').hidden = ui.listTab !== 'table'; $('lvHeft').hidden = ui.listTab !== 'heft'; $('lvTally').hidden = ui.listTab !== 'tally';
   ['lfType', 'lfSubject', 'noteModeBtn'].forEach(id => { $(id).hidden = ui.listTab === 'tally'; }); document.querySelector('.lfbar > .hint').hidden = ui.listTab === 'tally'; ['newHw', 'newList'].forEach(id => { $(id).hidden = ui.listTab === 'tally'; });
   $('undo2').disabled = !undoStack.length; $('redo2').disabled = !redoStack.length;
-  if (ui.listTab === 'tally') { renderTally(); return; }
+  if (ui.listTab === 'tally') { renderTally(); tallySeen(); return; }
   if (!c.students.length) {
     $('mxWrap').innerHTML = '<p class="hint" style="padding:16px">Noch keine Schüler – trage sie unter „⚙️ Einstellungen“ → „Schüler“ ein.</p>';
     $('heftList').innerHTML = ''; return;
@@ -4887,7 +5067,7 @@ function renderMatrix() {
   const th = k => {
     const n = chkCounts(k, studs);
     return `<th class="col${k.kind === 'hw' ? ' hwc' : ''}${isLate(k) && n.open ? ' late' : ''}" data-cid="${k.id}" title="Klicken zum Bearbeiten${k.note ? '\n' + esc(k.note) : ''}">
-      <div class="ch"><span class="ty">${k.kind === 'hw' ? '📚' : '☑'}${k.subject ? ' ' + esc(k.subject) : ''}</span>
+      <div class="ch"><span class="ty">${k.rid ? '🔁' : ''}${k.kind === 'hw' ? '📚' : '☑'}${k.subject ? ' ' + esc(k.subject) : ''}</span>
       <b>${esc(k.title || '(ohne Titel)')}</b>
       <small>${k.kind === 'hw' ? (k.due ? 'fällig ' + fmtD(k.due) : '') : (k.due ? 'bis ' + fmtD(k.due) : '')}</small>
       <span class="cnt"><i class="ok">✓${n.ok}</i> <i class="no">✗${n.no}</i>${n.ex ? ` <i class="op" title="entschuldigt">–${n.ex}</i>` : ''} <i class="op">○${n.open}</i></span></div></th>`;
@@ -4915,7 +5095,7 @@ function mxSticky() {
 }
 $('mxWrap').addEventListener('click', e => {
   const kn = e.target.closest('td.nm[data-kid]'); if (kn) { openKid(kn.dataset.kid); return; }
-  const tx = e.target.closest('th[data-tlx]'); if (tx) { ui.tally.mx[tx.dataset.tlx] = !ui.tally.mx[tx.dataset.tlx]; try { localStorage.setItem('km-tally-mx', JSON.stringify(ui.tally.mx)); } catch {} renderMatrix(); return; }
+  const tx = e.target.closest('th[data-tlx]'); if (tx) { tallySeen(); ui.tally.mx[tx.dataset.tlx] = !ui.tally.mx[tx.dataset.tlx]; try { localStorage.setItem('km-tally-mx', JSON.stringify(ui.tally.mx)); } catch {} renderMatrix(); return; }
   const tc = e.target.closest('td[data-tls]'); if (tc) { tallyToggle(tc.dataset.sid, tc.dataset.tli, tc.dataset.tls, todayStr()); return; }
   const td = e.target.closest('td.cell');
   if (td && ui.noteMode) { openCellNote(td.dataset.cid, td.dataset.sid, td); return; }
@@ -5092,6 +5272,7 @@ function openChk(id, kind) {
   $('ckNote').value = k ? (k.note || '') : '';
   document.querySelectorAll('#chkDlg .hw-only').forEach(el => el.hidden = kind !== 'hw');
   $('ckDel').hidden = $('ckAllOk').hidden = $('ckRestNo').hidden = $('ckClear').hidden = !k;
+  recurFormFill(k, kind);
   $('chkDlg').hidden = false;
   $('ckText').focus();
 }
@@ -5107,6 +5288,7 @@ $('ckSave').addEventListener('click', () => {
     let k = ed.id && c.checks.find(x => x.id === ed.id);
     if (!k) { k = { id: newId('k'), kind: ed.kind, status: {}, created: new Date().toISOString() }; c.checks.push(k); }
     Object.assign(k, { title, subject: ed.kind === 'hw' ? ($('ckSubj').value || '').replace('__new', '') : '', given: ed.kind === 'hw' ? ($('ckGiven').value || '') : '', due: $('ckDue').value || '', note: $('ckNote').value.trim() });
+    recurSave(k);
   }, { keepList: true });
   closeChk();
 });
@@ -5353,7 +5535,7 @@ function renderTimetable() {
       const who = whoIn(tt, key, monday);
       const parts = ss.map((s, i) => { const w = who.groups ? null : who.get(s.id); return `<div class="tt-part" data-i="${i}" style="--sc:${s.color}" title="${esc(s.name)}${w ? ' – ' + w.length + ' Schüler' : ''} · Klick = wer hat dieses Fach">${g1 ? `<em class="grp">Gr. ${s.id === g1 ? 1 : 2}</em>` : ''}<span>${esc(s.name)}</span>${w ? `<em class="cnt">👥${w.length}</em>` : who.groups ? `<em class="cnt" title="in zwei Gruppen">👥${who.groups[0].length}|${who.groups[1].length}</em>` : ''}<button class="tt-x" title="Fach entfernen">✕</button></div>`; }).join('');
       const abBtn = ss.length > 1 ? `<button class="tt-ab${g1 ? ' on' : ''}" title="${g1 ? '14-täglicher Wechsel – Klick = ändern' : 'Klick = 14-täglichen Wechsel einstellen'}">⇄${g1 ? ' 14-tägig' : ''}</button>` : '';
-      return `<td class="tt-cell${ss.length ? ' full' : ''}${g1 ? ' ab' : ''}${off ? ' off' : ''}${td ? ' today' : ''}${td && cur && !off ? ' now' : ''}" data-key="${key}">${ss.length ? `<div class="tt-parts${ss.length > 1 ? ' two' : ''}">${parts}</div>` : ''}${abBtn}${ss.length === 1 ? '<div class="tt-add">＋ 2. Gruppe</div>' : ''}</td>`;
+      return `<td class="tt-cell${chgOf(tt, addDays(monday, d), sl.id) ? ' chg c-' + chgOf(tt, addDays(monday, d), sl.id).t : ''}${ss.length ? ' full' : ''}${g1 ? ' ab' : ''}${off ? ' off' : ''}${td ? ' today' : ''}${td && cur && !off ? ' now' : ''}" data-key="${key}">${chgBadge(tt, chgOf(tt, addDays(monday, d), sl.id))}${ss.length ? `<div class="tt-parts${ss.length > 1 ? ' two' : ''}">${parts}</div>` : ''}${abBtn}${ss.length === 1 ? '<div class="tt-add">＋ 2. Gruppe</div>' : ''}</td>`;
     }).join('')}</tr>`;
   }).join('');
   $('ttGrid').innerHTML = `<table class="tt">${head}${body}</table>`;
@@ -5368,7 +5550,7 @@ function renderTimetable() {
 /* ---------- Ziehen: Fach aus der Leiste in eine Stunde, oder von Stunde zu Stunde ---------- */
 let ttDrag = null;
 document.addEventListener('pointerdown', e => {
-  if (ui.view !== 'tt' || e.button > 0) return;
+  if (ui.view !== 'tt' || e.button > 0 || ui.ttChg) return;
   if (e.target.closest('.tt-x')) return;
   const tile = e.target.closest('.tt-tile'), part = e.target.closest('.tt-part');
   if (!tile && !part) return;
@@ -5424,6 +5606,7 @@ document.addEventListener('pointerup', () => {
   }, { keepList: true });
 });
 $('ttGrid').addEventListener('click', e => {
+  if (ui.ttChg) { const cell = e.target.closest('.tt-cell'); if (cell) { e.stopPropagation(); openChg(cell.dataset.key, cell); } return; }
   const x = e.target.closest('.tt-x');
   if (x) { const key = x.closest('.tt-cell').dataset.key, i = +x.closest('.tt-part').dataset.i; change(() => { const tt = timetable(); setCell(tt, key, cellArr(tt, key).filter((v, j) => j !== i)); }, { keepList: true }); return; }
   const ab = e.target.closest('.tt-ab');
@@ -6787,7 +6970,7 @@ function renderStart() {
       const g1 = ss.length > 1 ? abGroup1(tt, key, mon) : null;
       const name = ss.length ? ss.map(s => esc(s.name)).join(' / ') + (g1 ? ` <small class="hint">(G1: ${esc((ttSubj(tt, g1) || {}).name || '')})</small>` : '') : '–';
       const ex = ss.length ? exs.filter(x => x.kind !== 'ev' && ss.some(s => s.name === x.subject)) : [];
-      return `<div class="st-les${cur ? ' now' : ''}${past ? ' past' : ''}${ss.length ? '' : ' empty'}" style="--sc:${ss[0] ? ss[0].color : '#e2e8f0'}"><span class="t"><b>${esc(sl.label)}</b>${esc(sl.start || '')}</span><span class="n">${name}${ex.map(x => ` <span class="tag" style="color:var(--red)">📝 ${esc(x.title)}</span>`).join('')}</span><span class="tag">${cur ? '◀ jetzt' : ''}</span></div>`;
+      return `<div class="st-les${cur ? ' now' : ''}${past ? ' past' : ''}${ss.length ? '' : ' empty'}" style="--sc:${ss[0] ? ss[0].color : '#e2e8f0'}"><span class="t"><b>${esc(sl.label)}</b>${esc(sl.start || '')}</span><span class="n">${name}${ex.map(x => ` <span class="tag" style="color:var(--red)">📝 ${esc(x.title)}</span>`).join('')}${chgBadge(tt, chgOf(tt, day, sl.id))}</span><span class="tag">${cur ? '◀ jetzt' : ''}</span></div>`;
     }).join('') + '</div>';
     const evs = exs.filter(x => x.kind === 'ev');
     if (evs.length) left += evs.map(x => `<div class="st-it" data-ex="${x.id}" style="--sc:var(--sun);margin-top:6px"><span class="s" style="color:#7a5b00">📅 Termin</span><span class="x">${esc((x.time ? x.time + ' · ' : '') + x.title)}</span></div>`).join('');
@@ -6805,6 +6988,7 @@ function renderStart() {
   right += `<div class="st-card"><h3>📝 Demnächst <small>(14 Tage)</small></h3>` + (soon.length || hwSoon.length ? soon.map(x => `<div class="st-it" data-ex="${x.id}" style="--sc:${x.kind === 'ev' ? 'var(--sun)' : (subjColor(x.subject) || 'var(--red)')}"><span class="d">${fmtDW(x.date < t ? t : x.date)}</span><span class="s"${x.kind === 'ev' ? ' style="color:#7a5b00"' : ''}>${x.kind === 'ev' ? '📅' : '📝 ' + esc(x.subject || 'Probe')}</span><span class="x">${esc((x.time ? x.time + ' · ' : '') + x.title)}</span></div>`).join('') +
     hwSoon.map(k => `<div class="st-it" data-chk="${k.id}" style="--sc:${subjColor(k.subject) || 'var(--accent)'}"><span class="d">${fmtDW(k.due)}</span><span class="s">📚 ${esc(k.subject || 'HA')}</span><span class="x">${esc(k.title || '')}</span></div>`).join('') : '<p class="st-none">Keine Proben, Termine oder Hausaufgaben.</p>') + '</div>';
   right += tallyStartHtml(c);
+  right += goalStartHtml(c);
   // Mitteilungen, Dienste
   const msgs = (c.msgs || []).filter(msgCurrent), dn = displayNames(c.students), duties = (c.duties || []).filter(d => (d.sids || []).some(Boolean));
   let info = '';
@@ -6814,7 +6998,7 @@ function renderStart() {
   html += `<div class="st-grid"><div class="st-col">${left}</div><div class="st-col">${right}</div></div>`;
   // Schnellzugriff
   html += `<div class="st-card" style="margin-top:14px"><div class="st-tiles"><button data-go="plan"><span>🪑</span>Sitzplan</button><button data-go="board"><span>🖥</span>Tafel</button><button data-go="list"><span>📋</span>Klassenliste</button><button data-go="tt"><span>🗓</span>Stundenplan</button></div>
-    <div class="st-acts"><button data-act="hw">＋ Hausaufgabe</button><button data-act="ex">＋ Probe/Termin</button><button data-act="present">⛶ Sitzplan präsentieren</button><button data-act="board">🖥 Tafel präsentieren</button><button data-act="send">📲 An Schüler</button><button data-act="vote">📊 Abstimmung</button><button data-act="rc">📡 Fernbedienung</button></div></div>`;
+    <div class="st-acts"><button data-act="hw">＋ Hausaufgabe</button><button data-act="ex">＋ Probe/Termin</button><button data-act="present">⛶ Sitzplan präsentieren</button><button data-act="board">🖥 Tafel präsentieren</button><button data-act="send">📲 An Schüler</button><button data-act="vote">📊 Abstimmung</button><button data-act="goal">🎯 Klassenziel</button><button data-act="rc">📡 Fernbedienung</button></div></div>`;
   // Status
   const st = [];
   if (od) st.push(snap() !== odLast ? (odNeedLogin ? '<span class="warn">☁️ Nicht gespeichert – Anmeldung bei Microsoft abgelaufen</span>' : `☁️ ${esc(od.name)} – wird gespeichert …`) : `☁️ ${esc(od.name)} – in OneDrive gespeichert`);
@@ -6829,6 +7013,8 @@ $('startView').addEventListener('click', e => {
   const g = e.target.closest('[data-go]'); if (g) { setView(g.dataset.go); return; }
   const k = e.target.closest('[data-chk]'); if (k) { openChk(k.dataset.chk); return; }
   const x = e.target.closest('[data-ex]'); if (x) { openExam(x.dataset.ex); return; }
+  const gp = e.target.closest('[data-goalp]'); if (gp) { goalAdd(gp.dataset.goalp, 1, '', ''); return; }
+  if (e.target.closest('[data-goalset]') || e.target.closest('[data-goal]')) { openGoal((e.target.closest('[data-goal]') || {}).dataset?.goal || null); return; }
   const tl = e.target.closest('[data-tally]'); if (tl) { ui.listTab = 'tally'; ui.tally.list = tl.dataset.tally; setView('list'); return; }
   const a = e.target.closest('[data-act]'); if (!a) return;
   const act = a.dataset.act;
@@ -6839,6 +7025,7 @@ $('startView').addEventListener('click', e => {
   if (act === 'send') openSend();
   if (act === 'rc') openRc();
   if (act === 'vote') openVoteSetup();
+  if (act === 'goal') openGoal();
   if (act === 'open') openFile();
   if (act === 'odopen') odPick('open');
 });
@@ -6900,6 +7087,7 @@ function bdAddItem(t) {
   ui.bdSel = it.id; if (ui.bdPresent) ui.bdEdit = true;
   renderBoard(); syncBdBar();
   if (t === 'text' || t === 'img' || t === 'qr' || t === 'score') bdSettings(it.id);
+  if (t === 'goal' && !goals().length) openGoal();
 }
 // freier Platz für einen neuen Baustein (sonst null)
 function bdFreeSpot(b, w, h) {
@@ -6911,6 +7099,7 @@ const bdItem = id => { const b = curBoard(); return b ? b.items.find(i => i.id =
 
 /* ---------- Bausteine darstellen ---------- */
 function bwHtml(it) {
+  if (BDX[it.t]) return BDX[it.t].html(it);
   const p = it.p || {};
   if (it.t === 'clock' && p.analog) return `<div class="bw-clock an">${aClockSvg()}${p.date ? '<small data-live="date"></small>' : ''}</div>`;
   if (it.t === 'clock') return `<div class="bw-clock"><b data-live="time"></b>${p.date ? '<small data-live="date"></small>' : ''}</div>`;
@@ -7063,6 +7252,7 @@ $('bdStage').addEventListener('click', e => {
   const bw = ctl.closest('.bw'), it = bw && bdItem(bw.dataset.id); if (it) bdCtl(it, ctl, bw);
 });
 function bdCtl(it, ctl, bw) {
+  if (BDX[it.t] && BDX[it.t].ctl(it, ctl, bw)) return;
   if (ctl.dataset.tm) {
     const t = bdTm(it), k = ctl.dataset.tm;
     if (k === 'full') { tmFull(t); return; }
@@ -7130,6 +7320,7 @@ function bdSettings(id) {
     <p class="hint" style="margin:0">Zeigt den Sitzplan der gewählten Klasse (nur Anzeige). Ändern im Reiter „🪑 Sitzplan“.</p>`;
   if (it.t === 'score') f = `<label class="nc-name">Teams (ein Name pro Zeile)<textarea data-k="teams" style="min-height:110px">${esc((p.teams || []).map(t => t.n).join('\n'))}</textarea></label>
     <div class="row">${ui.teams && ui.teams.list && ui.teams.list.length ? '<button type="button" id="bdTeamsFrom">👥 Aus der Gruppeneinteilung</button>' : ''}<label class="chk"><input type="checkbox" data-k="reset"> Punkte auf 0 setzen</label></div>`;
+  if (BDX[it.t]) f = BDX[it.t].form(p);
   $('bdDlgTitle').textContent = T.i + ' ' + T.n;
   $('bdForm').innerHTML = f;
   $('bdDlg').hidden = false;
@@ -7139,6 +7330,7 @@ $('bdForm').addEventListener('click', e => {
   const c = e.target.closest('.bd-colors button'); if (c) { c.parentElement.querySelectorAll('button').forEach(x => x.classList.toggle('cur', x === c)); return; }
   if (e.target.id === 'bdSndTest') { const vv = $('bdForm').querySelector('[data-k="vol"]'); playSound($('bdForm').querySelector('[data-k="sound"]').value, vv ? +vv.value : 5); return; }
   if (e.target.id === 'bdWarnTest') { playSound('alarm', +$('bdForm').querySelector('[data-k="wvol"]').value); return; }
+  if (e.target.id === 'bdGoalSet') { $('bdDlg').hidden = true; openGoal((bdItem(bdEditId) || { p: {} }).p.gid || null); return; }
   if (e.target.id === 'bdTeamsFrom') { $('bdForm').querySelector('[data-k="teams"]').value = ui.teams.list.map((_, i) => teamTitle(i)).join('\n'); }
 });
 $('bdForm').addEventListener('change', async e => {
@@ -7169,6 +7361,7 @@ $('bdDlgOk').addEventListener('click', () => {
     if (it.t === 'timer') { p.mode = v.mode; p.min = clamp(parseInt(v.min) || 0, 0, 180); p.sec = clamp(parseInt(v.sec) || 0, 0, 59); if (!p.min && !p.sec) p.min = 5; p.vis = v.vis; p.sound = v.sound; p.vol = +v.vol || 5; }
     if (it.t === 'dice') { p.n = +v.n || 1; p.sides = +v.sides || 6; }
     if (it.t === 'seat') { p.lay = v.lay; p.flip = v.flip; p.teams = v.teams; }
+    if (BDX[it.t]) BDX[it.t].save(p, v);
     if (it.t === 'score') { const names = v.teams.split('\n').map(x => x.trim()).filter(Boolean).slice(0, 8); p.teams = names.map((n, i) => { const old = (p.teams || []).find(t => t.n === n) || (p.teams || [])[i]; return { n, c: SCORE_COL[i % SCORE_COL.length], s: v.reset ? 0 : (old ? old.s || 0 : 0) }; }); }
   }, { keepList: true });
 });
@@ -7502,7 +7695,7 @@ function noiseWarn(key, phase, sens, vol) {
   if (now < (MIC.mute || 0)) { w.since = 0; return; }
   if (MIC.db >= micTh(phase, sens)[1]) {
     if (!w.since) w.since = now;
-    if (now - w.since >= 5000 && now - w.last >= 10000) { w.last = now; w.since = 0; MIC.mute = now + 1800; playSound('alarm', vol || 6); }
+    if (now - w.since >= 5000 && now - w.last >= 10000) { w.last = now; w.since = 0; MIC.mute = now + 1800; GOAL.warns++; playSound('alarm', vol || 6); }
   } else w.since = 0;
 }
 const boardPhase = () => { const b = curBoard(), ph = b && b.items.find(i => i.t === 'phase'); return ph ? ph.p.ph : ''; };
@@ -7797,6 +7990,7 @@ function rcHostStart(newCode) {
     conn.on('open', () => { RC.conns.push(conn); });
     conn.on('data', d => {
       if (!conn.ok) { if (d && d.c === 'hello') rcHello(conn, d); return; }   // erst nach Freigabe werden Befehle angenommen
+      if (d && d.c === 'ptr') { ptrShow(d); return; }   // Zeiger: schnell, ohne Zustand zurückzuschicken
       const before = $('result').textContent;
       try { if (d && d.c === 'ink') rcInkHost(d); else rcHandle(d); } catch (err) { console.warn(err); }
       const after = $('result').textContent;
@@ -7859,6 +8053,8 @@ function rcItem(it) {
   if (it.t === 'dice') { const d = ui.dice[it.id]; return { id: it.id, t: 'dice', n: p.n || 1, sides: p.sides || 6, vals: d ? d.vals : [] }; }
   if (it.t === 'score') return { id: it.id, t: 'score', teams: (p.teams || []).map(x => ({ n: x.n, c: x.c, s: x.s || 0 })) };
   if (it.t === 'clock') return { id: it.id, t: 'clock', analog: !!p.analog };
+  if (it.t === 'wheel') return { id: it.id, t: 'wheel', win: (ui.wheel[it.id] || {}).winName || '' };
+  if (it.t === 'math') return { id: it.id, t: 'math', show: !!(ui.math[it.id] || {}).show };
   return null;
 }
 function rcState() {
@@ -7876,7 +8072,7 @@ function rcState() {
     sets: (c.teamSets || []).map(t => ({ id: t.id, name: t.name })),
     cur: ui.bdPresent ? 'board' : ui.present ? 'plan' : ui.vPresent ? ui.view : '',
     layout: ui.bdPresent && b ? b.items.map(i => [i.x, i.y, i.w, i.h, (BD_TYPES[i.t] || {}).i || '']) : null, ink: ui.bdPresent && b ? (b.ink || []) : null,
-    subj: ((c.tt && c.tt.subjects) || []).map(x => x.name), ttW: ui.ttWeek || 0, calM: ui.calMon || todayStr().slice(0, 7), ack: RC.ack || null, vote: voteState(), noise: noiseState() };
+    subj: ((c.tt && c.tt.subjects) || []).map(x => x.name), ttW: ui.ttWeek || 0, calM: ui.calMon || todayStr().slice(0, 7), ack: RC.ack || null, vote: voteState(), noise: noiseState(), ...rcxState() };
 }
 function rcBroadcast(force) {
   if (!rcOk().length) return;
@@ -7897,6 +8093,7 @@ function rcShow(v) {   // Ansicht an der Tafel umschalten (Vollbild bleibt erhal
 function rcHandle(d) {
   if (!d || typeof d !== 'object') return;
   $('rcDlg').hidden = true;
+  if (rcxHandle(d)) return;
   if (d.c === 'view') rcShow(d.v);
   if (d.c === 'board') { ui.boardId = d.id; ui.bdSel = null; if (ui.view !== 'board' || !ui.bdPresent) rcShow('board'); else renderBoard(); }
   if (d.c === 'item') {
@@ -7912,6 +8109,8 @@ function rcHandle(d) {
     if (it.t === 'dice') { if (d.a === 'n') change(() => { it.p.n = clamp(+d.v || 1, 1, 6); }, { keepList: true }); else if (d.a === 'sides') change(() => { it.p.sides = +d.v || 6; }, { keepList: true }); else if (bw) diceRoll(it.id, bw); }
     if (it.t === 'score') change(() => { const tm = (it.p.teams || [])[d.i]; if (tm) tm.s = Math.max(0, (tm.s || 0) + (d.d > 0 ? 1 : -1)); }, { keepList: true });
     if (it.t === 'clock') change(() => { it.p.analog = !!d.v; }, { keepList: true });
+    if (it.t === 'wheel' && bw) { if (d.a === 'spin') wheelSpin(it.id, it.p, bw); if (d.a === 'reset') { ui.wheel[it.id] = { rot: (ui.wheel[it.id] || {}).rot || 0, out: [] }; bw.querySelector('.bx').innerHTML = bwHtml(it); } }
+    if (it.t === 'math' && bw) { mathCtl(it, d.a); bw.querySelector('.bx').innerHTML = bwHtml(it); bdFitText(); }
   }
   if (d.c === 'pick') { if (d.n) $('pickN').value = d.n; if (ui.view !== 'plan' || !ui.present) { rcShow('plan'); setTimeout(pickSomeone, 400); } else pickSomeone(); }
   if (d.c === 'pickN') $('pickN').value = d.v;
@@ -7977,6 +8176,7 @@ function setVPresent(on) {
   if (ui.view === 'tt') renderTimetable(); else renderCal();
 }
 $('ttPresent').addEventListener('click', () => setVPresent(true));
+$('ttChgBtn').addEventListener('click', () => { ui.ttChg = !ui.ttChg; $('ttChgBtn').classList.toggle('on', ui.ttChg); document.body.classList.toggle('tt-chgmode', ui.ttChg); if (ui.ttChg) setResult('✏️ Tagesänderung: eine Stunde anklicken (mit ◀ ▶ zur gewünschten Woche blättern). Nochmal „✏️ Tagesänderung“ = fertig.', 'ok'); });
 $('vpBar').addEventListener('click', e => { const b = e.target.closest('[data-vp]'); if (!b) return; if (b.dataset.vp === 'exit') setVPresent(false); else rcShow(b.dataset.vp); });
 document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && ui.vPresent && !ui.keepFs) setVPresent(false); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && ui.vPresent && document.querySelector('.cdlg-back:not([hidden])') == null) setVPresent(false); });
@@ -8129,7 +8329,7 @@ function rcConnect(code, keep) {
   rcDisconnect(true);
   let P; try { P = loadPeer(); } catch (e) { setResult('Fernbedienung wird von diesem Browser nicht unterstützt.', 'warn'); return; }
   const r = RC.remote = { code, st: keep ? keep.st : 'connecting', why: keep ? keep.why : '', type: '', state: null, stop: false, tries: prevTries };
-  $('rcPanel').hidden = false; renderRc();
+  $('rcPanel').hidden = false; $('vsRc').hidden = false; if (ui.view !== 'rc') setView('rc'); renderRc();
   const peer = r.peer = new P(rcOpts());
   const fail = (st, why) => { if (r.stop || RC.remote !== r) return; r.st = st; r.why = why; renderRc(); };
   peer.on('open', () => {
@@ -8161,8 +8361,11 @@ function rcDisconnect(silent) {
   r.stop = true; clearTimeout(r.timer);
   try { if (r.conn) r.conn.close(); } catch {} try { if (r.peer) r.peer.destroy(); } catch {}
   RC.remote = null;
-  if (!silent) $('rcPanel').hidden = true;
+  if (!silent) { $('rcPanel').hidden = true; $('vsRc').hidden = true; if (ui.view === 'rc') setView('start'); }
 }
+// Fernbedienung unter der Kopfzeile (App-Titel und Menü bleiben bedienbar)
+function rcTop() { const h = document.querySelector('.headrow'); if (h) $('rcPanel').style.top = Math.max(0, h.getBoundingClientRect().bottom + 4) + 'px'; }
+window.addEventListener('resize', () => { if (ui.view === 'rc') rcTop(); });
 async function rcConnType(conn) {
   try {
     const pc = conn.peerConnection; if (!pc) return '';
@@ -8218,7 +8421,8 @@ function renderRc() {
       h += `<div class="rc-sec"><h3>${cur === 'tt' ? '🗓 Stundenplan' : '📅 Kalender'}</h3>${nav}
         <div class="rc-row rc-wrap" style="margin-top:8px"><button class="primary" data-rform="hw"${on(r.form === 'hw')}>＋ Hausaufgabe</button><button class="primary" data-rform="ex"${on(r.form === 'ex')}>＋ Probe/Termin</button></div>${rcFormHtml(r, s)}</div>`;
     }
-    // immer verfügbar: Abstimmung, Arbeitsphase und Vollbild
+    // immer verfügbar: Abhaken, Klassenziel, Glücksrad/Foto/Zeiger, Abstimmung, Arbeitsphase und Vollbild
+    h += rcxHtml(r, s);
     h += rcVoteHtml(r, s);
     h += rcNoiseHtml(s);
     h += `<div class="rc-sec"><h3>Arbeitsphase einblenden</h3><div class="rc-row rc-wrap">${Object.entries(PHASES).map(([k, ph]) => `<button data-rph="${k}" style="--pc:${ph[2]}" class="ph${s.phs === k ? ' on' : ''}">${ph[0]} ${esc(ph[1])}</button>`).join('')}<button data-rph="off"${on(!s.phs)}>aus</button></div></div>`;
@@ -8227,7 +8431,7 @@ function renderRc() {
       `<div class="rc-sub">🕒 Uhr bildschirmfüllend</div><div class="rc-row"><button data-rclk="digital"${on(s.clk === 'digital')}>🔢 digital</button><button data-rclk="analog"${on(s.clk === 'analog')}>🕒 analog</button><button data-rclk="off"${on(!s.clk)}>aus</button></div></div>`;
   } else if (r.st !== 'ok') h += `<div class="rc-sec"><div class="rc-row"><button class="primary" data-rretry="1">↻ Nochmal versuchen</button><button data-rnew="1">Anderen Code eingeben</button></div></div>`;
   el.innerHTML = h; el.scrollTop = keepY;
-  rcInkDraw();
+  rcInkDraw(); rcPtrDraw(); rcTop();
 }
 const rcMonth = m => { const [y, mo] = String(m || '').split('-').map(Number); return y ? MONTHS[mo - 1] + ' ' + y : ''; };
 // Eingabeformular (Hausaufgabe bzw. Probe/Termin) – Werte bleiben beim Neuzeichnen erhalten
@@ -8252,6 +8456,8 @@ function rcItemHtml(i) {
   if (i.t === 'dice') return `<div class="rc-card"><b>🎲 Würfel</b><div class="rc-row"><button class="primary" data-ri="${i.id}" data-a="roll">🎲 Würfeln</button><span class="rc-dv">${(i.vals || []).join(' · ')}</span></div>
     <div class="rc-row rc-small"><select data-rdice="${i.id}" data-k="n">${[1, 2, 3, 4, 5, 6].map(n => `<option value="${n}"${+i.n === n ? ' selected' : ''}>${n} Würfel</option>`).join('')}</select><select data-rdice="${i.id}" data-k="sides">${DICE_SIDES.map(n => `<option value="${n}"${+i.sides === n ? ' selected' : ''}>W${n}</option>`).join('')}</select></div></div>`;
   if (i.t === 'score') return `<div class="rc-card"><b>🏆 Punktestand</b>${i.teams.map((t, k) => `<div class="rc-row"><span class="rc-team" style="--tc:${t.c}">${esc(t.n)}</span><button data-ri="${i.id}" data-i="${k}" data-d="-1">−</button><b>${t.s}</b><button data-ri="${i.id}" data-i="${k}" data-d="1">＋</button></div>`).join('')}</div>`;
+  if (i.t === 'wheel') return `<div class="rc-card"><b>🎡 Glücksrad</b><div class="rc-row"><button class="primary" data-ri="${i.id}" data-a="spin">🎡 Drehen</button><button data-ri="${i.id}" data-a="reset">↺</button>${i.win ? `<b>${esc(i.win)}</b>` : ''}</div></div>`;
+  if (i.t === 'math') return `<div class="rc-card"><b>🧮 Kopfrechnen</b><div class="rc-row"><button data-ri="${i.id}" data-a="show">${i.show ? '🙈 Lösung verbergen' : '👁 Lösung'}</button><button data-ri="${i.id}" data-a="new">🔀 Neu</button></div></div>`;
   if (i.t === 'clock') return `<div class="rc-card"><b>🕒 Uhr</b><div class="rc-row"><button data-ri="${i.id}" data-a="clk" data-v=""${i.analog ? '' : ' class="on"'}>🔢 digital</button><button data-ri="${i.id}" data-a="clk" data-v="1"${i.analog ? ' class="on"' : ''}>🕒 analog</button></div></div>`;
   return '';
 }
@@ -8504,7 +8710,7 @@ function voteStart(cfg) {
   return true;
 }
 function voteShow(on) { if (!VOTE) return; VOTE.show = on === undefined ? !VOTE.show : !!on; renderVote(); }
-function voteReveal() { if (!VOTE || VOTE.correct == null) return; VOTE.revealed = true; VOTE.show = true; renderVote(); }
+function voteReveal() { if (!VOTE || VOTE.correct == null) return; VOTE.revealed = true; VOTE.show = true; renderVote(); goalQuiz(VOTE); }
 function voteDisp(d) { if (!VOTE) return; VOTE.disp = vtDisp = d === 'pie' ? 'pie' : 'bars'; renderVote(); }
 function voteSort(on) { if (!VOTE) return; VOTE.sort = on === undefined ? !VOTE.sort : !!on; renderVote(); }
 function voteEnd() {
@@ -9277,7 +9483,7 @@ $('tlDlg').addEventListener('change', e => {
 $('tlDlg').addEventListener('keydown', e => { if (e.key === 'Escape') $('tlDlg').hidden = true; });
 $('lvTally').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  if (b.dataset.ts) { tallyToggle(b.dataset.ts, b.dataset.ti); renderTally(); return; }
+  if (b.dataset.ts) { tallyToggle(b.dataset.ts, b.dataset.ti); tallySeen(); renderTally(); return; }
   if (b.dataset.tl) { ui.tally.list = b.dataset.tl; if (!ui.tally.open) { ui.tally.open = true; try { localStorage.setItem('km-tally-open', '1'); } catch {} } renderTally(); return; }
   if (b.dataset.tfold) { ui.tally.open = !ui.tally.open; try { localStorage.setItem('km-tally-open', ui.tally.open ? '1' : '0'); } catch {} renderTally(); return; }
   if (b.dataset.ttoday) { ui.tally.day = null; renderTally(); return; }
@@ -9298,7 +9504,637 @@ function tallyStartHtml(c) {
   return out.length ? `<div class="st-card"><h3>📋 Strichliste – rote Schwelle erreicht</h3>${out.join('')}</div>` : '';
 }
 
+/* ---------- 🎯 Klassenziel / Belohnung ----------
+   c.goals = [{ id, name, reward, target, n, style, color, img, sound, vol, minus, show, mode, rules, groups, log, done, aw }]
+   Darstellungen: Murmelglas, Sterne, Thermometer, Puzzle, Rakete. Regeln vergeben Punkte automatisch oder schlagen sie vor. */
+const GOAL_STYLES = { jar: '🫙 Murmelglas', stars: '⭐ Sternenreihe', thermo: '🌡️ Thermometer', puzzle: '🧩 Puzzlebild', rocket: '🚀 Rakete zum Mond' };
+const GOAL_COLORS = ['#2563eb', '#16a34a', '#f59e0b', '#db2777', '#7c3aed', '#0891b2', '#dc2626'];
+const GOAL_WHY = ['ruhig gearbeitet', 'super aufgeräumt', 'gut zusammengearbeitet', 'Lob von Fachlehrkraft', 'alle Hausaufgaben da', 'pünktlich angefangen', 'hilfsbereit'];
+const GOAL_RULES = {
+  hwAll: { n: '📚 Hausaufgabe bei allen erledigt (✓, entschuldigte zählen nicht dagegen)', pts: 1, max: 2 },
+  hwQuote: { n: '📚 Hausaufgaben-Quote erreicht', pts: 1, max: 2, pct: 90, unit: '% ✓' },
+  matDay: { n: '🔋 Material-Tag: kontrollierter Schultag ohne Strich in der Strichliste', pts: 1, max: 1 },
+  quiet: { n: '🤫 Leise gearbeitet: Ampel/Schallpegel mit Mikrofon am Stück grün', pts: 1, max: 3, min: 10, unit: 'Minuten' },
+  phase: { n: '⏱ Arbeitsphase geschafft: Countdown (ab 3 Min.) mit Mikrofon ohne Lautstärke-Warnung', pts: 1, max: 3 },
+  listDue: { n: '☑ Abhakliste bis zur Frist bei allen erledigt', pts: 1, max: 2 },
+  quiz: { n: '📊 Quiz gut gelöst (A–D-Abstimmung mit richtiger Antwort)', pts: 1, max: 2, pct: 80, unit: '% richtig' }
+};
+const goals = (c = cls()) => (c.goals || []);
+const goalById = (id, c = cls()) => goals(c).find(g => g.id === id) || null;
+const goalNew = () => ({ id: newId('g'), name: 'Klassenziel', reward: 'Spielestunde', target: 30, n: 0, style: 'jar', color: GOAL_COLORS[0], img: '', sound: true, vol: 5, minus: false, show: true, mode: 'ask', rules: {}, groups: null, log: [], done: [], aw: {} });
+const GOAL = { warns: 0, quiet: {}, asks: [], celebrate: null };
+const goalTotal = g => g.groups ? g.groups.reduce((a, x) => a + (x.n || 0), 0) : g.n;
+
+// Punkte vergeben (gi = Gruppe bei Gruppenwettbewerb)
+function goalAdd(gid, d, why, auto, gi) {
+  const c = cls(), g = goalById(gid, c); if (!g) return;
+  if (d < 0 && !g.minus && !auto) { setResult('Abziehen ist bei diesem Ziel ausgeschaltet (⚙).', 'warn'); return; }
+  const was = g.groups ? (g.groups[gi] || {}).n || 0 : g.n;
+  change(() => {
+    if (g.groups) { const x = g.groups[gi || 0]; if (!x) return; x.n = Math.max(0, (x.n || 0) + d); }
+    else g.n = Math.max(0, g.n + d);
+    g.log.push({ t: Date.now(), d, why: why || '', auto: auto || '', gi: g.groups ? gi || 0 : undefined });
+    if (g.log.length > 500) g.log = g.log.slice(-500);
+  }, { keepList: true });
+  GOAL.last = { gid, t: Date.now(), d, gi };
+  const now = g.groups ? g.groups[gi || 0].n : g.n;
+  if (d > 0 && g.sound) goalPling(g.vol);
+  if (d > 0 && was < g.target && now >= g.target) goalCelebrate(g, gi);
+  goalRefresh();
+}
+function goalRefresh() { if (ui.view === 'board') document.querySelectorAll('#bdStage .bw').forEach(bw => { const it = bdItem(bw.dataset.id); if (it && it.t === 'goal') bw.querySelector('.bx').innerHTML = bwHtml(it); }); if (ui.view === 'start') renderStart(); }
+function goalPling(vol) { const ac = audio(); if (!ac) return; sndMul = Math.pow((vol || 5) / 5, 1.6); const t = ac.currentTime + 0.02; tone(ac, 1568, t, 0.25, { vol: 0.18, att: 0.003 }); tone(ac, 2093, t + 0.08, 0.35, { vol: 0.14, att: 0.003 }); }
+function goalFanfare(vol) {
+  const ac = audio(); if (!ac) return; sndMul = Math.pow((vol || 5) / 5, 1.6); const t = ac.currentTime + 0.05;
+  [[523.25, 0, .18], [659.25, .18, .18], [783.99, .36, .18], [1046.5, .54, .5], [783.99, 1.1, .16], [1046.5, 1.28, .9]].forEach(([f, d, l]) => { tone(ac, f, t + d, l + .3, { type: 'triangle', vol: 0.22 }); tone(ac, f / 2, t + d, l + .3, { type: 'sine', vol: 0.12 }); });
+}
+// 🎉 Ziel erreicht: Konfetti, Fanfare, großer Hinweis
+function goalCelebrate(g, gi) {
+  if (g.sound) goalFanfare(g.vol);
+  const el = $('goalParty'); if (!el) return;
+  const who = g.groups ? ` – ${esc(g.groups[gi || 0].name)}` : '';
+  el.innerHTML = `<canvas></canvas><div class="gp-box"><div class="gp-ic">🎉</div><h2>Geschafft${who}!</h2><p>${esc(g.reward || g.name)}</p><button class="primary" data-gp="ok">Super!</button></div>`;
+  el.hidden = false; confetti(el.querySelector('canvas'), 6000);
+}
+$('goalParty').addEventListener('click', e => { if (e.target.closest('[data-gp]') || e.target === $('goalParty')) $('goalParty').hidden = true; });
+function confetti(cv, ms) {
+  const W = cv.width = innerWidth, H = cv.height = innerHeight, g = cv.getContext('2d'), cols = ['#ef4444', '#f59e0b', '#22c55e', '#3b82f6', '#a855f7', '#ec4899', '#facc15'];
+  const P = Array.from({ length: 180 }, () => ({ x: Math.random() * W, y: -Math.random() * H * .6, vx: (Math.random() - .5) * 3, vy: 2 + Math.random() * 4, s: 6 + Math.random() * 8, r: Math.random() * 6, vr: (Math.random() - .5) * .3, c: cols[Math.floor(Math.random() * cols.length)] }));
+  const t0 = performance.now();
+  (function step(t) { g.clearRect(0, 0, W, H); P.forEach(p => { p.x += p.vx; p.y += p.vy; p.r += p.vr; if (p.y > H + 20 && t - t0 < ms - 1500) { p.y = -20; p.x = Math.random() * W; } g.save(); g.translate(p.x, p.y); g.rotate(p.r); g.fillStyle = p.c; g.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); g.restore(); }); if (t - t0 < ms && !cv.closest('[hidden]')) requestAnimationFrame(step); else g.clearRect(0, 0, W, H); })(t0);
+}
+
+/* ---- Darstellung (SVG) ---- */
+function goalRand(seed) { let h = 2166136261; for (const ch of String(seed)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return () => { h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; }; }
+function goalSvg(g, n, target, col, seed, fresh) {
+  const f = Math.min(1, target ? n / target : 0), st = g.style;
+  if (st === 'stars') {
+    const T = Math.min(target, 60), cols = T <= 10 ? T : T <= 24 ? Math.ceil(T / 2) : Math.ceil(T / 3), rows = Math.ceil(T / cols), on = Math.round(f * T);
+    let s = ''; for (let i = 0; i < T; i++) { const x = (i % cols) * 12 + 6, y = Math.floor(i / cols) * 12 + 6; s += `<path d="${starPath(x, y, 5.2)}" fill="${i < on ? '#facc15' : '#e5e7eb'}" stroke="${i < on ? '#ca8a04' : '#cbd5e1'}" stroke-width=".6"${fresh && i === on - 1 ? ' class="g-pop"' : ''}/>`; }
+    return `<svg viewBox="0 0 ${cols * 12} ${rows * 12}" class="g-svg">${s}</svg>`;
+  }
+  if (st === 'thermo') {
+    const h = 80 * f;
+    return `<svg viewBox="0 0 60 110" class="g-svg"><rect x="22" y="6" width="16" height="84" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/><circle cx="30" cy="96" r="11" fill="${col}" stroke="#94a3b8" stroke-width="1.5"/>
+      <rect x="25" y="${(88 - h).toFixed(1)}" width="10" height="${(h + 6).toFixed(1)}" rx="5" fill="${col}" class="g-fill"/>${[0.25, 0.5, 0.75, 1].map(q => `<line x1="40" x2="45" y1="${(88 - 80 * q).toFixed(1)}" y2="${(88 - 80 * q).toFixed(1)}" stroke="#94a3b8"/><text x="47" y="${(90 - 80 * q).toFixed(1)}" font-size="5" fill="#64748b">${Math.round(target * q)}</text>`).join('')}<text x="30" y="4.5" font-size="5" text-anchor="middle" fill="#64748b">🏁</text></svg>`;
+  }
+  if (st === 'rocket') {
+    const y = 92 - 78 * f, rnd = goalRand(seed + 's');
+    let stars = ''; for (let i = 0; i < 26; i++) stars += `<circle cx="${(rnd() * 100).toFixed(1)}" cy="${(rnd() * 110).toFixed(1)}" r="${(rnd() * .7 + .3).toFixed(2)}" fill="#fff" opacity="${(rnd() * .6 + .3).toFixed(2)}"/>`;
+    return `<svg viewBox="0 0 100 110" class="g-svg"><rect width="100" height="110" rx="6" fill="#0f172a"/>${stars}<circle cx="50" cy="12" r="9" fill="#fde68a"/><circle cx="46" cy="10" r="2" fill="#fcd34d"/><circle cx="54" cy="15" r="1.4" fill="#fcd34d"/>
+      <line x1="50" y1="24" x2="50" y2="100" stroke="#334155" stroke-dasharray="2 3"/>${[0.25, 0.5, 0.75].map(q => `<circle cx="50" cy="${(92 - 78 * q).toFixed(1)}" r="1.6" fill="${f >= q ? col : '#475569'}"/>`).join('')}
+      <text x="50" y="${y.toFixed(1)}" font-size="13" text-anchor="middle" dominant-baseline="middle" class="g-rocket">🚀</text></svg>`;
+  }
+  if (st === 'puzzle') {
+    const T = Math.max(4, Math.min(target, 64)), cols = Math.ceil(Math.sqrt(T * 4 / 3)), rows = Math.ceil(T / cols), on = Math.round(f * T), w = 100 / cols, h = 75 / rows;
+    const order = Array.from({ length: cols * rows }, (_, i) => i), rnd = goalRand(seed);
+    for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+    const hidden = new Set(order.slice(on));
+    const img = g.img ? `<image href="${g.img}" x="0" y="0" width="100" height="75" preserveAspectRatio="xMidYMid slice"/>` : `<rect width="100" height="75" fill="url(#gpz)"/><text x="50" y="44" font-size="26" text-anchor="middle">🎁</text>`;
+    let tiles = ''; for (let k = 0; k < cols * rows; k++) if (hidden.has(k)) tiles += `<rect x="${(k % cols * w).toFixed(2)}" y="${(Math.floor(k / cols) * h).toFixed(2)}" width="${(w + .2).toFixed(2)}" height="${(h + .2).toFixed(2)}" fill="${col}" stroke="#fff" stroke-width=".5"/><text x="${(k % cols * w + w / 2).toFixed(2)}" y="${(Math.floor(k / cols) * h + h / 2 + 1.6).toFixed(2)}" font-size="${Math.min(w, h) * .45}" text-anchor="middle" fill="#fff" opacity=".7">?</text>`;
+    return `<svg viewBox="0 0 100 75" class="g-svg"><defs><linearGradient id="gpz" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fde68a"/><stop offset="1" stop-color="#f9a8d4"/></linearGradient></defs>${img}${tiles}</svg>`;
+  }
+  // Murmelglas: Murmeln von unten nach oben gestapelt
+  const cap = Math.max(target, 1), per = cap <= 20 ? 5 : cap <= 45 ? 7 : 9, r = 34 / per, rnd = goalRand(seed), cols = ['#ef4444', '#3b82f6', '#22c55e', '#f59e0b', '#a855f7', '#ec4899', '#14b8a6', col];
+  let m = ''; const shown = Math.min(n, cap);
+  for (let i = 0; i < shown; i++) { const row = Math.floor(i / per), k = i % per, x = 33 + r + k * 2 * r + (row % 2 ? r * .5 : 0) - (row % 2 && k === per - 1 ? r : 0), y = 102 - r - row * r * 1.75, c = cols[Math.floor(rnd() * cols.length)];
+    m += `<g${fresh && i === shown - 1 ? ' class="g-drop"' : ''}><circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${(r * .92).toFixed(2)}" fill="${c}"/><circle cx="${(x - r * .3).toFixed(2)}" cy="${(y - r * .3).toFixed(2)}" r="${(r * .28).toFixed(2)}" fill="#fff" opacity=".55"/></g>`; }
+  const top = Math.max(22, 102 - Math.ceil(cap / per) * r * 1.75 - 4);
+  return `<svg viewBox="0 0 136 110" class="g-svg"><path d="M30 ${top} L30 98 Q30 106 38 106 L98 106 Q106 106 106 98 L106 ${top}" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>${m}<rect x="26" y="${top - 6}" width="84" height="7" rx="3" fill="#cbd5e1"/><line x1="36" y1="${top + 6}" x2="36" y2="96" stroke="#fff" stroke-width="3" opacity=".7" stroke-linecap="round"/></svg>`;
+}
+function starPath(cx, cy, R) { let d = ''; for (let i = 0; i < 10; i++) { const a = Math.PI / 5 * i - Math.PI / 2, r = i % 2 ? R * .45 : R; d += (i ? 'L' : 'M') + (cx + r * Math.cos(a)).toFixed(2) + ' ' + (cy + r * Math.sin(a)).toFixed(2); } return d + 'Z'; }
+// Inhalt eines Ziels (für Baustein, Startseite)
+function goalHtml(g, opts = {}) {
+  const fresh = GOAL.last && GOAL.last.gid === g.id && Date.now() - GOAL.last.t < 1500 && GOAL.last.d > 0;
+  const one = (n, col, name, gi) => `<div class="g-one" style="--gc:${col}">${name ? `<div class="g-tn">${esc(name)}</div>` : ''}<div class="g-vis">${goalSvg(g, n, g.target, col, g.id + (gi ?? ''), fresh && (gi == null || GOAL.last.gi === gi))}</div><div class="g-cnt"><b>${n}</b> / ${g.target}${n >= g.target ? ' 🎉' : ''}</div>
+    ${opts.ctl ? `<div class="g-btn">${g.minus ? `<button class="bd-ctl" data-gd="-1" data-gi="${gi ?? ''}" title="−1">−</button>` : ''}<button class="bd-ctl primary" data-gd="1" data-gi="${gi ?? ''}" title="+1">＋1</button></div>` : ''}</div>`;
+  const body = g.groups ? `<div class="g-teams">${g.groups.map((x, i) => one(x.n || 0, x.color || GOAL_COLORS[i % GOAL_COLORS.length], x.name, i)).join('')}</div>` : one(g.n, g.color);
+  const why = opts.ctl && GOAL.why && GOAL.why.gid === g.id && Date.now() - GOAL.why.t < 5000 ? `<div class="g-why">Wofür? ${GOAL_WHY.slice(0, 5).map((w, i) => `<button class="bd-ctl" data-gw="${i}">${esc(w)}</button>`).join('')}</div>` : '';
+  return `<div class="bw-goal"><div class="g-hd"><b>🎯 ${esc(g.name)}</b><span>🎁 ${esc(g.reward || '')}</span></div>${body}${why}</div>`;
+}
+
+/* ---- Regeln ---- */
+const goalRule = (g, k) => { const r = (g.rules || {})[k]; return r && r.on ? Object.assign({}, GOAL_RULES[k], r) : null; };
+function goalAward(g, k, why, keyOnce) {
+  const r = goalRule(g, k); if (!r || g.groups) return;
+  const d = todayStr(), cntKey = d + '|' + k;
+  g.aw = g.aw || {};
+  if (keyOnce && g.aw[keyOnce]) return;
+  if ((g.aw[cntKey] || 0) >= (r.max || 99)) return;
+  const mark = () => change(() => { g.aw[cntKey] = (g.aw[cntKey] || 0) + 1; if (keyOnce) g.aw[keyOnce] = 1; }, { keepList: true });
+  if (g.mode === 'auto') { mark(); goalAdd(g.id, r.pts || 1, why, k); setResult(`🎯 ${g.name}: +${r.pts || 1} – ${why}`, 'ok'); return; }
+  if (keyOnce) change(() => { g.aw[keyOnce] = 1; }, { keepList: true });
+  GOAL.asks.push({ gid: g.id, k, why, pts: r.pts || 1, cntKey });
+  goalAskRender();
+}
+function goalAskRender() {
+  const el = $('goalAsk'), a = GOAL.asks[0]; el.hidden = !a; if (!a) return;
+  const g = goalById(a.gid); if (!g) { GOAL.asks.shift(); goalAskRender(); return; }
+  el.innerHTML = `<span>🎉 ${esc(a.why)} – <b>+${a.pts}</b> für „${esc(g.name)}“?</span><button class="primary" data-ga="yes">✓ Ja</button><button data-ga="no">✕</button>`;
+}
+function goalAsk(yes) {
+  const a = GOAL.asks.shift(); if (!a) return;
+  const g = goalById(a.gid);
+  if (yes && g) { change(() => { g.aw = g.aw || {}; g.aw[a.cntKey] = (g.aw[a.cntKey] || 0) + 1; }, { keepList: true }); goalAdd(g.id, a.pts, a.why, a.k); }
+  goalAskRender();
+}
+$('goalAsk').addEventListener('click', e => { const b = e.target.closest('[data-ga]'); if (b) goalAsk(b.dataset.ga === 'yes'); });
+const sinceOk = (g, k, date) => { const r = (g.rules || {})[k]; return r && r.on && (!r.since || (date || '') >= r.since); };
+// Hausaufgaben / Abhaklisten fertig?
+function goalCheckLists() {
+  const c = cls(); if (!goals(c).length) return;
+  const studs = c.students; if (!studs.length) return;
+  (c.checks || []).forEach(k => {
+    const n = chkCounts(k, studs); if (n.open) return;
+    goals(c).forEach(g => {
+      const d = (k.due || k.given || '').slice(0, 10), key = 'k:' + k.id + ':';
+      if (k.kind === 'hw') {
+        if (sinceOk(g, 'hwAll', d) && !n.no && !(g.aw || {})[key + 'a']) goalAward(g, 'hwAll', `Hausaufgabe „${k.title}“ bei allen erledigt`, key + 'a');
+        const q = goalRule(g, 'hwQuote');
+        if (q && sinceOk(g, 'hwQuote', d) && !(g.aw || {})[key + 'q'] && n.ok + n.no && n.ok / (n.ok + n.no) * 100 >= (q.pct || 90)) goalAward(g, 'hwQuote', `Hausaufgaben-Quote ${Math.round(n.ok / (n.ok + n.no) * 100)} % bei „${k.title}“`, key + 'q');
+      }
+      if (k.kind === 'list' && k.due && sinceOk(g, 'listDue', d) && !n.no && todayStr() <= k.due && !(g.aw || {})[key + 'l']) goalAward(g, 'listDue', `Abhakliste „${k.title}“ rechtzeitig vollständig`, key + 'l');
+    });
+  });
+}
+// Material-Tag: Strichliste an diesem Tag angesehen/benutzt und kein einziger Strich
+function goalCheckMat() {
+  const c = cls(); if (!goals(c).some(g => goalRule(g, 'matDay')) || !c.tally) return;
+  const td = c.tally, seen = td.seen || {}, t = todayStr();
+  const tt = c.tt, lastEnd = tt ? (tt.slots.filter(s => !s.pause && s.end).map(s => s.end).sort().pop() || '') : '', hm = new Date().toTimeString().slice(0, 5);
+  Object.keys(seen).forEach(d => {
+    if (d > t || (d === t && !(lastEnd && hm >= lastEnd))) return;
+    if (td.marks.some(m => m.d === d)) return;
+    goals(c).forEach(g => { if (sinceOk(g, 'matDay', d) && !(g.aw || {})['m:' + d]) goalAward(g, 'matDay', `Material-Tag ${fmtD(d)}: alle mit iPad und Stift`, 'm:' + d); });
+  });
+}
+function tallySeen() { const c = cls(), t = todayStr(); if (c.tally && (c.tally.seen || {})[t]) return; if (!goals(c).some(g => goalRule(g, 'matDay'))) return; setTimeout(() => change(() => { const td = tallyEnsure(c); td.seen = td.seen || {}; td.seen[t] = 1; const ks = Object.keys(td.seen).sort(); if (ks.length > 60) ks.slice(0, ks.length - 60).forEach(k => delete td.seen[k]); }, { keepList: true }), 0); }
+// Mikrofon: grün am Stück / Arbeitsphase ohne Warnung
+function goalMicTick() {
+  const c = cls(); const gs = goals(c).filter(g => goalRule(g, 'quiet') || goalRule(g, 'phase')); if (!gs.length) return;
+  const b = ui.view === 'board' && curBoard(), li = b && b.items.find(i => i.t === 'light' && i.p.mic);
+  const key = li ? li.id : (OV.mic && OV.on.light && ovVisible()) ? 'ov' : null, on = !!(MIC.an && key);
+  const s = on ? micS(key) : null, now = Date.now();
+  gs.forEach(g => {
+    const r = goalRule(g, 'quiet'); if (!r) return;
+    const q = GOAL.quiet[g.id] || (GOAL.quiet[g.id] = { since: 0 });
+    if (!on || s !== 'g') { q.since = 0; return; }
+    if (!q.since) q.since = now;
+    if (now - q.since >= (r.min || 10) * 60000) { q.since = now; goalAward(g, 'quiet', `${r.min || 10} Minuten leise gearbeitet`); }
+  });
+  [timer, tmFullRef].concat(ui.view === 'board' && b ? b.items.filter(i => i.t === 'timer').map(bdTm) : []).forEach(t => { if (t && t.running && t.mode === 'down' && !on) t.gmic = false; });
+}
+setInterval(goalMicTick, 1000);
+function goalTimerStart(t) { if (t.mode !== 'down') return; t.gmic = !!MIC.an; t.gw = GOAL.warns; }
+function goalTimerDone(t) {
+  if (!t.gmic || t.gw !== GOAL.warns || (t.total || 0) < 180) return;
+  goals().forEach(g => { if (goalRule(g, 'phase')) goalAward(g, 'phase', `Arbeitsphase (${Math.round(t.total / 60)} Min.) ohne Lautstärke-Warnung geschafft`); });
+}
+function goalQuiz(v) {
+  if (!v || v.type !== 'abcd' || v.correct == null) return;
+  const c = vtCounts(v), tot = c.reduce((a, b) => a + b, 0); if (!tot) return;
+  const pct = c[v.correct] / tot * 100;
+  goals().forEach(g => { const r = goalRule(g, 'quiz'); if (r && pct >= (r.pct || 80) && !(g.aw || {})['v:' + v.pid]) goalAward(g, 'quiz', `Quiz: ${Math.round(pct)} % richtig`, 'v:' + v.pid); });
+}
+setInterval(() => { if (document.visibilityState === 'visible') { try { goalCheckMat(); } catch (e) {} } }, 60000);
+
+/* ---- Einstellungen ---- */
+let goalEd = null;
+function openGoal(id) {
+  const c = cls();
+  if (!id && !goals(c).length) { const g = goalNew(); change(() => { c.goals = [g]; }, { keepList: true }); id = g.id; }
+  goalEd = id || goals(c)[0].id; goalForm(); $('goalDlg').hidden = false;
+}
+function goalForm() {
+  const c = cls(), g = goalById(goalEd); if (!g) { $('goalDlg').hidden = true; return; }
+  const sel = (k, o, v) => `<select data-gf="${k}">${Object.entries(o).map(([a, b]) => `<option value="${a}"${String(v) === a ? ' selected' : ''}>${esc(b)}</option>`).join('')}</select>`;
+  const rules = Object.entries(GOAL_RULES).map(([k, R]) => { const r = (g.rules || {})[k] || {}; return `<div class="gr-row"><label class="chk"><input type="checkbox" data-gr="${k}" data-rf="on"${r.on ? ' checked' : ''}> ${esc(R.n)}</label>
+      <span class="gr-opt">${R.unit ? `<input type="number" data-gr="${k}" data-rf="${R.min != null ? 'min' : 'pct'}" value="${r[R.min != null ? 'min' : 'pct'] ?? (R.min ?? R.pct)}" min="1" max="${R.min != null ? 120 : 100}"> ${esc(R.unit)} · ` : ''}+<input type="number" data-gr="${k}" data-rf="pts" value="${r.pts ?? R.pts}" min="1" max="10"> · max. <input type="number" data-gr="${k}" data-rf="max" value="${r.max ?? R.max}" min="1" max="20">/Tag</span></div>`; }).join('');
+  $('goalBody').innerHTML = `
+    <div class="tl-chips">${goals(c).map(x => `<button data-gsel="${x.id}"${x === g ? ' class="on"' : ''}>🎯 ${esc(x.name)}</button>`).join('')}<button data-gnew="1">＋ Weiteres Ziel</button></div>
+    <div class="g-form">
+      <label>Name<input data-gf="name" value="${esc(g.name)}" maxlength="40"></label>
+      <label>Belohnung<input data-gf="reward" value="${esc(g.reward)}" maxlength="60" placeholder="z. B. Spielestunde"></label>
+      <label>Ziel (Anzahl)<input type="number" data-gf="target" value="${g.target}" min="1" max="500"></label>
+      <label>Darstellung${sel('style', GOAL_STYLES, g.style)}</label>
+    </div>
+    <div class="g-colors">${GOAL_COLORS.map(cc => `<button data-gcol="${cc}" style="background:${cc}"${g.color === cc ? ' class="cur"' : ''}></button>`).join('')}</div>
+    ${g.style === 'puzzle' ? `<label class="nc-name">Puzzlebild (eigenes Foto, optional)<input type="file" accept="image/*" id="goalImg"></label>${g.img ? '<button data-gimgdel="1">Bild entfernen</button>' : ''}` : ''}
+    <div class="g-opts"><label class="chk"><input type="checkbox" data-gf="sound"${g.sound ? ' checked' : ''}> 🔔 Ton und Animation</label><label>Lautstärke <input type="range" min="1" max="10" data-gf="vol" value="${g.vol || 5}"></label>
+      <label class="chk"><input type="checkbox" data-gf="minus"${g.minus ? ' checked' : ''}> Abziehen erlaubt</label>
+      <label class="chk"><input type="checkbox" data-gf="show"${g.show ? ' checked' : ''}> 📲 bei den Schülern anzeigen</label></div>
+    <details class="g-sec"${g.groups ? ' open' : ''}><summary>👥 Gruppenwettbewerb ${g.groups ? '(an)' : '(aus)'}</summary>
+      <label class="chk"><input type="checkbox" data-gf="groupsOn"${g.groups ? ' checked' : ''}> Mehrere Gläser nebeneinander – jede Gruppe sammelt selbst</label>
+      ${g.groups ? `<label class="nc-name">Gruppen (ein Name pro Zeile)<textarea data-gf="groups" rows="4">${esc(g.groups.map(x => x.name).join('\n'))}</textarea></label>${ui.teams && ui.teams.list && ui.teams.list.length ? '<button data-gteams="1">👥 Aus der Gruppeneinteilung</button>' : ''}<p class="hint">Bei den Schülern erscheint nur die Summe aller Gruppen. Automatische Regeln gelten nur ohne Gruppenwettbewerb.</p>` : ''}</details>
+    <details class="g-sec"><summary>🤖 Automatische Punkte (Regeln)</summary>
+      <label class="nc-name">Vergeben${sel('mode', { ask: 'nur vorschlagen – an der Tafel bestätigen', auto: 'automatisch' }, g.mode)}</label>${rules}
+      <p class="hint">Regeln zählen ab dem Tag, an dem sie eingeschaltet werden. Minuspunkte werden nie automatisch vergeben.</p></details>
+    <details class="g-sec"><summary>📜 Verlauf (${g.log.length})</summary><div class="g-log">${g.log.slice(-60).reverse().map(x => `<div>${new Date(x.t).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' })} ${new Date(x.t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} · <b class="${x.d > 0 ? 'ok' : 'no'}">${x.d > 0 ? '+' : ''}${x.d}</b>${g.groups && x.gi != null && g.groups[x.gi] ? ' ' + esc(g.groups[x.gi].name) : ''} ${x.auto ? '🤖 ' : ''}${esc(x.why || '')}</div>`).join('') || '<div class="hint">Noch keine Punkte.</div>'}</div></details>
+    ${g.done.length ? `<p class="hint">🏆 Erreicht: ${g.done.map(x => `${esc(x.reward || x.name)} (${new Date(x.at).toLocaleDateString('de-DE')})`).join(' · ')}</p>` : ''}
+    <div class="row"><button data-gnext="1">🏁 Neues Ziel starten (Stand auf 0)</button><span class="spacer"></span><button class="danger" data-gdel="1">Ziel löschen</button><button class="primary" data-gclose="1">Fertig</button></div>`;
+}
+function goalEdit(fn) { const g = goalById(goalEd); if (!g) return; change(() => fn(g), { keepList: true }); goalRefresh(); }
+$('goalDlg').addEventListener('click', e => {
+  if (e.target === $('goalDlg')) { $('goalDlg').hidden = true; return; }
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.gclose) { $('goalDlg').hidden = true; return; }
+  if (b.dataset.gsel) { goalEd = b.dataset.gsel; goalForm(); }
+  if (b.dataset.gnew) { const g = goalNew(); g.name = 'Ziel ' + (goals().length + 1); change(() => { cls().goals = goals().concat([g]); }, { keepList: true }); goalEd = g.id; goalForm(); }
+  if (b.dataset.gcol) { goalEdit(g => { g.color = b.dataset.gcol; }); goalForm(); }
+  if (b.dataset.gimgdel) { goalEdit(g => { g.img = ''; }); goalForm(); }
+  if (b.dataset.gteams) { goalEdit(g => { g.groups = ui.teams.list.map((_, i) => ({ name: teamTitle(i), color: GOAL_COLORS[i % GOAL_COLORS.length], n: 0 })); }); goalForm(); }
+  if (b.dataset.gnext) { const g = goalById(goalEd); if (!window.confirm(`Neues Ziel starten? Der Stand von „${g.name}“ (${goalTotal(g)}) wird auf 0 gesetzt; das bisherige Ziel kommt in die Liste „Erreicht“.`)) return; goalEdit(x => { x.done.push({ name: x.name, reward: x.reward, target: x.target, n: goalTotal(x), at: Date.now() }); x.n = 0; if (x.groups) x.groups.forEach(y => y.n = 0); x.log.push({ t: Date.now(), d: 0, why: '— neues Ziel —' }); }); goalForm(); }
+  if (b.dataset.gdel) { const g = goalById(goalEd); if (!window.confirm(`Ziel „${g.name}“ löschen?`)) return; change(() => { cls().goals = goals().filter(x => x !== g); }, { keepList: true }); goalEd = (goals()[0] || {}).id; if (!goalEd) $('goalDlg').hidden = true; else goalForm(); goalRefresh(); }
+});
+$('goalDlg').addEventListener('change', async e => {
+  const t = e.target, k = t.dataset.gf, v = t.type === 'checkbox' ? t.checked : t.value;
+  if (t.id === 'goalImg' && t.files[0]) { try { const src = await shrinkImage(t.files[0], 900); goalEdit(g => { g.img = src; }); } catch { setResult('Bild konnte nicht gelesen werden.', 'warn'); } goalForm(); return; }
+  if (t.dataset.gr) { const rk = t.dataset.gr, f = t.dataset.rf; goalEdit(g => { g.rules = g.rules || {}; const r = g.rules[rk] = g.rules[rk] || {}; r[f] = f === 'on' ? v : Math.max(1, +v || 1); if (f === 'on' && v && !r.since) r.since = todayStr(); }); return; }
+  if (!k) return;
+  goalEdit(g => {
+    if (k === 'target') g.target = clamp(parseInt(v) || 1, 1, 500);
+    else if (k === 'vol') g.vol = +v;
+    else if (k === 'groupsOn') g.groups = v ? [{ name: 'Gruppe 1', color: GOAL_COLORS[0], n: 0 }, { name: 'Gruppe 2', color: GOAL_COLORS[1], n: 0 }] : null;
+    else if (k === 'groups') { const names = String(v).split('\n').map(x => x.trim()).filter(Boolean).slice(0, 8); g.groups = names.map((nm, i) => ({ name: nm, color: GOAL_COLORS[i % GOAL_COLORS.length], n: ((g.groups || []).find(x => x.name === nm) || {}).n || 0 })); }
+    else if (k === 'name' || k === 'reward') g[k] = String(v).trim();
+    else g[k] = v;
+  });
+  if (['style', 'groupsOn', 'groups'].includes(k)) goalForm();
+});
+$('goalDlg').addEventListener('keydown', e => { if (e.key === 'Escape') $('goalDlg').hidden = true; });
+// Startseite: kleine Karte(n)
+function goalStartHtml(c) {
+  const gs = goals(c); if (!gs.length) return '';
+  return `<div class="st-card st-goal"><h3>🎯 Klassenziel<button class="st-gset" data-goalset="1" title="Einstellungen">⚙</button></h3>${gs.map(g => `<div class="st-g" data-goal="${g.id}"><div class="st-gv">${goalSvg(g, goalTotal(g), g.groups ? g.target * g.groups.length : g.target, g.color, g.id)}</div><div><b>${esc(g.name)}</b> · ${goalTotal(g)} / ${g.groups ? g.target * g.groups.length : g.target}<br><small>🎁 ${esc(g.reward)}</small></div>${g.groups ? '' : `<button data-goalp="${g.id}" class="primary">＋1</button>`}</div>`).join('')}</div>`;
+}
+// für die Schüler-iPads: nur Name, Belohnung, Stand – keine Namen, keine Gründe
+function goalPayload(c) { const gs = goals(c).filter(g => g.show); return gs.length ? gs.map(g => [g.name, g.reward, goalTotal(g), g.groups ? g.target * g.groups.length : g.target, g.style, g.color]) : null; }
+
+/* ---------- Neue Tafel-Bausteine: 🎡 Glücksrad, 🧮 Kopfrechnen, 🎧 Klangkulisse, 🎯 Klassenziel ---------- */
+Object.assign(BD_TYPES, {
+  wheel: { n: 'Glücksrad', i: '🎡', w: 34, h: 56, p: () => ({ src: 'class', list: '', rm: true }) },
+  math: { n: 'Kopfrechnen', i: '🧮', w: 34, h: 34, p: () => ({ ops: '+-', max: 100, cnt: 1, day: true }) },
+  noise: { n: 'Klangkulisse', i: '🎧', w: 30, h: 30, p: () => ({ fav: ['rain', 'waves', 'forest', 'birds', 'fire', 'pink'] }) },
+  goal: { n: 'Klassenziel', i: '🎯', w: 26, h: 52, p: () => ({ gid: '' }) }
+});
+ui.wheel = {}; ui.math = {};
+const WHEEL_COL = ['#ef4444', '#f59e0b', '#22c55e', '#3b82f6', '#a855f7', '#ec4899', '#14b8a6', '#eab308', '#6366f1', '#f97316'];
+// Namen für das Rad: anwesende Kinder der Klasse oder eigene Liste; schon gezogene fallen raus (falls gewünscht)
+function wheelNames(p, key) {
+  const c = cls(), dn = displayNames(c.students), st = ui.wheel[key] || {};
+  let all = p.src === 'list' ? String(p.list || '').split('\n').map(x => x.trim()).filter(Boolean).map((n, i) => ({ id: 'l' + i, n })) : present().map(s => ({ id: s.id, n: dn.get(s.id) }));
+  if (p.rm && st.out) all = all.filter(x => !st.out.includes(x.id));
+  return all;
+}
+function wheelSvg(names, rot, win) {
+  const N = Math.max(1, names.length), R = 100, seg = 360 / N, fs = Math.max(5, Math.min(13, 190 / N + 3));
+  let s = '';
+  if (!names.length) s = `<circle r="${R}" fill="#e2e8f0"/><text y="5" text-anchor="middle" font-size="12" fill="#64748b">alle gezogen – ↺</text>`;
+  names.forEach((x, i) => {
+    const a0 = (i * seg - 90) * Math.PI / 180, a1 = ((i + 1) * seg - 90) * Math.PI / 180, big = seg > 180 ? 1 : 0;
+    const p0 = [R * Math.cos(a0), R * Math.sin(a0)], p1 = [R * Math.cos(a1), R * Math.sin(a1)], am = (i + .5) * seg;
+    s += N === 1 ? `<circle r="${R}" fill="${WHEEL_COL[0]}"/>` : `<path d="M0 0L${p0[0].toFixed(2)} ${p0[1].toFixed(2)}A${R} ${R} 0 ${big} 1 ${p1[0].toFixed(2)} ${p1[1].toFixed(2)}Z" fill="${WHEEL_COL[i % WHEEL_COL.length]}"${win === x.id ? ' class="win"' : ''} stroke="#fff" stroke-width="1"/>`;
+    s += `<text transform="rotate(${(am - 90).toFixed(2)}) translate(${R - 8} 0)" text-anchor="end" dominant-baseline="middle" font-size="${fs.toFixed(1)}" fill="#fff" font-weight="700">${esc(x.n.length > 14 ? x.n.slice(0, 13) + '…' : x.n)}</text>`;
+  });
+  return `<svg viewBox="-110 -116 220 228" class="wh-svg"><g class="wh-rot" style="transform:rotate(${rot || 0}deg)">${s}<circle r="11" fill="#fff" stroke="#cbd5e1" stroke-width="2"/></g><path d="M-9 -114 L9 -114 L0 -96 Z" fill="#0f172a"/></svg>`;
+}
+function wheelSpin(key, p, root) {
+  const st = ui.wheel[key] = ui.wheel[key] || { rot: 0, out: [] };
+  if (st.spinning) return;
+  const names = wheelNames(p, key);
+  if (!names.length) { st.out = []; st.win = null; wheelPaint(key, p, root); return; }
+  const k = Math.floor(Math.random() * names.length), seg = 360 / names.length;
+  const target = 360 - ((k + .2 + Math.random() * .6) * seg);   // gewähltes Feld unter den Zeiger
+  st.rot = st.rot - (st.rot % 360) + 360 * 6 + target; st.spinning = true; st.win = null; st.cur = names;
+  const g = root && root.querySelector('.wh-rot'); if (g) { g.style.transition = 'transform 4.2s cubic-bezier(.12,.6,.14,1)'; g.style.transform = `rotate(${st.rot}deg)`; }
+  tickSound(4200);
+  setTimeout(() => {
+    st.spinning = false; st.win = names[k].id; st.winName = names[k].n;
+    playSound('glocke', 4);
+    if (p.rm) { st.out = (st.out || []).concat([names[k].id]); }
+    wheelPaint(key, p, root, names, names[k]);
+  }, 4300);
+  const r = root && root.querySelector('.wh-res'); if (r) r.textContent = '…';
+}
+function tickSound(ms) { const ac = audio(); if (!ac) return; const t0 = ac.currentTime; let t = 0, gap = 0.04; while (t < ms / 1000 - 0.2) { tone(ac, 1800, t0 + t, 0.02, { vol: 0.05, att: 0.001 }); t += gap; gap *= 1.07; } }
+function wheelPaint(key, p, root, shownNames, winner) {
+  if (!root) return; const st = ui.wheel[key] || { rot: 0 };
+  const names = shownNames || wheelNames(p, key);
+  root.querySelector('.wh-box').innerHTML = wheelSvg(names, st.rot, st.win);
+  root.querySelector('.wh-res').innerHTML = winner ? `<b>${esc(winner.n)}</b>` : st.winName ? `<b>${esc(st.winName)}</b>` : `<span class="hint">${names.length} im Rad</span>`;
+}
+function bwWheelHtml(it) {
+  const st = ui.wheel[it.id] || { rot: 0 }, names = st.spinning ? st.cur : wheelNames(it.p, it.id);
+  return `<div class="bw-wheel"><div class="wh-box bd-ctl" data-wh="spin">${wheelSvg(names, st.rot, st.win)}</div><div class="wh-res">${st.winName ? `<b>${esc(st.winName)}</b>` : `<span class="hint">${names.length} im Rad · antippen</span>`}</div>
+    <div class="wh-ctl"><button class="bd-ctl" data-wh="spin">🎡 Drehen</button><button class="bd-ctl" data-wh="reset" title="Alle wieder ins Rad">↺</button><button class="bd-ctl" data-wh="full" title="Bildschirmfüllend">⛶</button></div></div>`;
+}
+// Vollbild-Glücksrad (auch ohne Baustein, z. B. über die Fernbedienung)
+const WHF = { p: { src: 'class', list: '', rm: true } };
+function wheelFull(on, p) {
+  const el = $('wheelFull');
+  if (!on) { el.hidden = true; return; }
+  if (p) WHF.p = p;
+  el.innerHTML = `<div class="whf-in"><div class="wh-box">${''}</div><div class="wh-res"></div><div class="wh-ctl"><button data-whf="spin" class="primary">🎡 Drehen</button><label class="chk"><input type="checkbox" id="whfRm"${WHF.p.rm ? ' checked' : ''}> Gezogene entfernen</label><button data-whf="reset">↺ Alle wieder rein</button><button data-whf="close">✕ Schließen</button></div></div>`;
+  el.hidden = false; wheelPaint('full', WHF.p, el);
+}
+$('wheelFull').addEventListener('click', e => { const b = e.target.closest('[data-whf]') || e.target.closest('.wh-box'); if (!b) return; const a = b.dataset ? b.dataset.whf || 'spin' : 'spin'; if (a === 'close') wheelFull(false); else if (a === 'reset') { ui.wheel.full = { rot: (ui.wheel.full || {}).rot || 0, out: [] }; wheelPaint('full', WHF.p, $('wheelFull')); } else wheelSpin('full', WHF.p, $('wheelFull')); });
+$('wheelFull').addEventListener('change', e => { if (e.target.id === 'whfRm') WHF.p.rm = e.target.checked; });
+
+/* ---- 🧮 Kopfrechnen / Aufgabe des Tages ---- */
+function mathTasks(p, seed) {
+  const rnd = goalRand(seed), R = (a, b) => a + Math.floor(rnd() * (b - a + 1)), max = +p.max || 100, ops = String(p.ops || '+').split('').filter(o => '+-×:'.includes(o)), out = [];
+  for (let i = 0; i < clamp(+p.cnt || 1, 1, 6); i++) {
+    const o = ops[Math.floor(rnd() * ops.length)] || '+'; let a, b, r;
+    if (o === '+') { r = R(Math.min(10, max), max); a = R(1, r - 1); b = r - a; }
+    else if (o === '-') { a = R(Math.min(10, max), max); b = R(1, a); r = a - b; }
+    else if (o === '×') { if (max <= 100) { a = R(2, 10); b = R(2, 10); } else { a = R(2, Math.min(20, Math.floor(max / 2))); b = R(2, Math.max(2, Math.floor(max / a))); } r = a * b; }
+    else { if (max <= 100) { b = R(2, 10); r = R(2, 10); } else { b = R(2, 20); r = R(2, Math.max(2, Math.floor(max / b))); } a = b * r; }
+    out.push({ q: `${a} ${o === '-' ? '−' : o} ${b}`, r });
+  }
+  return out;
+}
+function bwMathHtml(it) {
+  const p = it.p, st = ui.math[it.id] || {}, seed = p.day ? todayStr() + it.id + (st.n || 0) : (st.seed || it.id), ts = mathTasks(p, seed);
+  return `<div class="bw-math"><div class="mh">${p.day ? '🧮 Aufgabe des Tages' : '🧮 Kopfrechnen'}</div><div class="mt${ts.length > 1 ? ' many' : ''}">${ts.map(t => `<div class="mq"><span>${t.q} =</span><b>${st.show ? t.r : '?'}</b></div>`).join('')}</div>
+    <div class="wh-ctl"><button class="bd-ctl" data-mt="show">${st.show ? '🙈 Lösung verbergen' : '👁 Lösung'}</button><button class="bd-ctl" data-mt="new">🔀 Neue Aufgabe${ts.length > 1 ? 'n' : ''}</button></div></div>`;
+}
+
+/* ---- 🎧 Klangkulisse als Baustein ---- */
+function bwNoiseHtml(it) {
+  const st = noiseState(), on = new Set(st.on.map(x => x.id)), fav = (it.p.fav || []).map(id => NOISE_SOUNDS.find(s => s.id === id)).filter(Boolean);
+  return `<div class="bw-noise"><div class="nz-grid">${fav.map(s => `<button class="bd-ctl${on.has(s.id) ? ' on' : ''}" data-nz="${s.id}" title="${esc(s.n)}"><span>${s.i}</span><small>${esc(s.n)}</small></button>`).join('')}</div>
+    <div class="wh-ctl"><button class="bd-ctl" data-nz="-" title="leiser">🔉</button><span class="nz-v">${Math.round(st.mv * 100)} %</span><button class="bd-ctl" data-nz="+" title="lauter">🔊</button><button class="bd-ctl" data-nz="all" title="Alle Geräusche">🎧 Alle</button>${st.playing ? '<button class="bd-ctl" data-nz="stop">⏹</button>' : ''}</div></div>`;
+}
+document.addEventListener('noisechange', () => { if (ui.view === 'board') document.querySelectorAll('#bdStage .bw').forEach(bw => { const it = bdItem(bw.dataset.id); if (it && it.t === 'noise') bw.querySelector('.bx').innerHTML = bwHtml(it); }); });
+
+/* ---- Bausteine: Darstellung, Bedienung, Einstellungen ---- */
+const BDX = {
+  wheel: {
+    html: bwWheelHtml,
+    form: p => `<label class="nc-name">Im Rad<select data-k="src"><option value="class"${p.src !== 'list' ? ' selected' : ''}>anwesende Kinder der Klasse</option><option value="list"${p.src === 'list' ? ' selected' : ''}>eigene Liste (z. B. Themen, Aufgaben)</option></select></label>
+      <label class="nc-name">Eigene Liste (eine Zeile je Feld)<textarea data-k="list" placeholder="Thema 1&#10;Thema 2">${esc(p.list || '')}</textarea></label>
+      <label class="chk"><input type="checkbox" data-k="rm"${p.rm ? ' checked' : ''}> Gezogene kommen aus dem Rad (↺ = alle wieder rein)</label>`,
+    save: (p, v) => { p.src = v.src; p.list = v.list; p.rm = v.rm; },
+    ctl: (it, ctl, bw) => { const a = ctl.dataset.wh; if (!a) return false; if (a === 'spin') wheelSpin(it.id, it.p, bw); if (a === 'reset') { ui.wheel[it.id] = { rot: (ui.wheel[it.id] || {}).rot || 0, out: [] }; bw.querySelector('.bx').innerHTML = bwHtml(it); } if (a === 'full') wheelFull(true, it.p); return true; }
+  },
+  math: {
+    html: bwMathHtml,
+    form: p => `<label class="nc-name">Rechenarten<select data-k="ops">${[['+', '＋ Plus'], ['-', '− Minus'], ['+-', '＋ und −'], ['×', '× Mal'], [':', ': Geteilt'], ['×:', '× und :'], ['+-×:', 'alle vier']].map(([k, l]) => `<option value="${k}"${p.ops === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+      <label class="nc-name">Zahlenraum<select data-k="max">${[10, 20, 100, 1000, 10000].map(k => `<option value="${k}"${+p.max === k ? ' selected' : ''}>bis ${k}${k === 100 ? ' (× und : = Einmaleins)' : ''}</option>`).join('')}</select></label>
+      <label class="nc-name">Anzahl Aufgaben<select data-k="cnt">${[1, 2, 3, 4, 5, 6].map(k => `<option value="${k}"${+p.cnt === k ? ' selected' : ''}>${k}</option>`).join('')}</select></label>
+      <label class="chk"><input type="checkbox" data-k="day"${p.day ? ' checked' : ''}> „Aufgabe des Tages“: den ganzen Tag dieselbe Aufgabe (🔀 = trotzdem neue)</label>`,
+    save: (p, v) => { p.ops = v.ops; p.max = +v.max; p.cnt = +v.cnt; p.day = v.day; },
+    ctl: (it, ctl, bw) => { const a = ctl.dataset.mt; if (!a) return false; mathCtl(it, a); bw.querySelector('.bx').innerHTML = bwHtml(it); bdFitText(); return true; }
+  },
+  noise: {
+    html: bwNoiseHtml,
+    form: p => `<div class="nc-name">Geräusche auf dem Baustein<div class="nz-pick">${NOISE_SOUNDS.map(s => `<label class="chk"><input type="checkbox" data-nzf="${s.id}"${(p.fav || []).includes(s.id) ? ' checked' : ''}> ${s.i} ${esc(s.n)}</label>`).join('')}</div></div><p class="hint" style="margin:0">„🎧 Alle“ auf dem Baustein öffnet das Fenster mit allen Geräuschen und Reglern.</p>`,
+    save: p => { p.fav = [...$('bdForm').querySelectorAll('[data-nzf]')].filter(x => x.checked).map(x => x.dataset.nzf).slice(0, 12); },
+    ctl: (it, ctl) => { const a = ctl.dataset.nz; if (!a) return false; if (a === '-') noiseMaster(NOISE.mv - 0.1); else if (a === '+') noiseMaster(NOISE.mv + 0.1); else if (a === 'all') openNoise(); else if (a === 'stop') noiseStopAll(); else noiseToggle(a); return true; }
+  },
+  goal: {
+    html: it => { const g = goalById(it.p.gid) || goals()[0]; return g ? goalHtml(g, { ctl: true }) : '<div class="bw-ph bd-ctl" data-gset="1">🎯<br>Klassenziel anlegen (⚙)</div>'; },
+    form: p => `<label class="nc-name">Welches Ziel?<select data-k="gid"><option value="">das erste</option>${goals().map(g => `<option value="${g.id}"${p.gid === g.id ? ' selected' : ''}>${esc(g.name)}</option>`).join('')}</select></label><button type="button" id="bdGoalSet">🎯 Ziele bearbeiten (Name, Belohnung, Darstellung, Regeln …)</button>`,
+    save: (p, v) => { p.gid = v.gid; },
+    ctl: (it, ctl, bw) => {
+      const g = goalById(it.p.gid) || goals()[0];
+      if (ctl.dataset.gset || !g) { openGoal(); return true; }
+      if (ctl.dataset.gd) { const gi = ctl.dataset.gi === '' ? undefined : +ctl.dataset.gi; goalAdd(g.id, +ctl.dataset.gd, '', '', gi); if (+ctl.dataset.gd > 0) { GOAL.why = { gid: g.id, t: Date.now() }; setTimeout(goalRefresh, 5100); } goalRefresh(); return true; }
+      if (ctl.dataset.gw != null) { const w = GOAL_WHY[+ctl.dataset.gw]; change(() => { const l = g.log[g.log.length - 1]; if (l && l.d > 0 && !l.why) l.why = w; }, { keepList: true }); GOAL.why = null; goalRefresh(); return true; }
+      return false;
+    }
+  }
+};
+function mathCtl(it, a) { const st = ui.math[it.id] = ui.math[it.id] || {}; if (a === 'show') st.show = !st.show; if (a === 'new') { st.show = false; st.n = (st.n || 0) + 1; st.seed = Math.random().toString(36); } }
+
+/* ---------- 📡 Fernbedienung: Abhaken, Foto an die Tafel, Zeiger, Glücksrad, Klassenziel ---------- */
+RC.chkSel = null; RC.tlSel = null;
+// Zustand für die Fernbedienung (wird an rcState angehängt)
+function rcxState() {
+  const c = cls(), studs = listStudents(), dn = displayNames(c.students), t = todayStr();
+  const open = (c.checks || []).filter(k => !k.archived && chkCounts(k, c.students).open > 0).sort((a, b) => chkDate(b).localeCompare(chkDate(a))).slice(0, 20);
+  const chks = open.map(k => ({ id: k.id, t: k.title, s: k.subject || '', k: k.kind, d: k.due || '', n: chkCounts(k, c.students) }));
+  let chk = null;
+  const ck = RC.chkSel && (c.checks || []).find(x => x.id === RC.chkSel);
+  if (ck) chk = { id: ck.id, t: ck.title, s: ck.subject || '', n: chkCounts(ck, c.students), rows: studs.map(s => [s.id, dn.get(s.id), ck.status[s.id] || '', isAbsent(s) ? 1 : 0, (ck.notes || {})[s.id] || '']) };
+  const td = tallyData(c), tl = td.lists.find(l => l.id === RC.tlSel);
+  let tal = null;
+  if (tl) { const { cnt, today } = tallyCounts(td, tl, t); tal = { id: tl.id, name: tl.name, icon: tl.icon, items: tl.items.map(it => [it.id, it.i, it.n]), warn: tl.warn, alert: tl.alert, rows: studs.map(s => [s.id, dn.get(s.id), tl.items.map(it => [cnt[s.id + '|' + it.id] || 0, today[s.id + '|' + it.id] ? 1 : 0]), isAbsent(s) ? 1 : 0]) }; }
+  const stg = (() => { if (ui.view !== 'board' || !ui.bdPresent) return null; const r = $('bdStage').getBoundingClientRect(); return [r.left / innerWidth, r.top / innerHeight, r.width / innerWidth, r.height / innerHeight].map(v => +v.toFixed(4)); })();
+  return {
+    chks, chk, tals: td.lists.map(l => ({ id: l.id, name: l.name, icon: l.icon })), tal, scr: +(innerWidth / innerHeight).toFixed(3), stg,
+    goals: goals(c).map(g => ({ id: g.id, name: g.name, reward: g.reward, n: goalTotal(g), target: g.groups ? g.target * g.groups.length : g.target, minus: !!g.minus, groups: g.groups ? g.groups.map(x => [x.name, x.n || 0, x.color]) : null })),
+    asks: GOAL.asks.map(a => { const g = goalById(a.gid); return { why: a.why, pts: a.pts, g: g ? g.name : '' }; }),
+    photo: !$('photoFull').hidden, wheel: !$('wheelFull').hidden
+  };
+}
+function rcxHandle(d) {
+  const c = cls();
+  if (d.c === 'chkSel') { RC.chkSel = d.id || null; return true; }
+  if (d.c === 'tlSel') { RC.tlSel = d.id || null; if (d.id) setTimeout(tallySeen, 0); return true; }
+  if (d.c === 'chkSet') {
+    const k = (c.checks || []).find(x => x.id === d.id); if (!k || !c.students.some(s => s.id === d.sid)) return true;
+    change(() => { if (d.v) k.status[d.sid] = ['ok', 'no', 'ex'].includes(d.v) ? d.v : 'ok'; else delete k.status[d.sid]; if (d.note != null) { k.notes = k.notes || {}; if (d.note) k.notes[d.sid] = String(d.note).slice(0, 200); else delete k.notes[d.sid]; } }, { keepList: true });
+    return true;
+  }
+  if (d.c === 'chkAll') { const k = (c.checks || []).find(x => x.id === d.id); if (k) change(() => { c.students.forEach(s => { if (!k.status[s.id]) k.status[s.id] = isAbsent(s) ? 'ex' : 'ok'; }); }, { keepList: true }); return true; }
+  if (d.c === 'tally') { tallyToggle(d.sid, d.it, d.l, todayStr()); tallySeen(); return true; }
+  if (d.c === 'photo') {
+    if (d.a === 'show' && typeof d.src === 'string' && d.src.startsWith('data:image/') && d.src.length < 6e6) photoShow(d.src);
+    if (d.a === 'close') photoShow(null);
+    if (d.a === 'pin') photoPin();
+    return true;
+  }
+  if (d.c === 'ptr') { ptrShow(d); return true; }
+  if (d.c === 'wheel') { if (d.a === 'open') wheelFull(true, { src: 'class', list: '', rm: d.rm !== false }); if (d.a === 'spin') { if ($('wheelFull').hidden) wheelFull(true); wheelSpin('full', WHF.p, $('wheelFull')); } if (d.a === 'reset') { ui.wheel.full = { rot: (ui.wheel.full || {}).rot || 0, out: [] }; if (!$('wheelFull').hidden) wheelPaint('full', WHF.p, $('wheelFull')); } if (d.a === 'close') wheelFull(false); return true; }
+  if (d.c === 'goal') {
+    if (d.a === 'add') goalAdd(d.id, +d.d > 0 ? 1 : -1, String(d.why || '').slice(0, 60), '', d.gi == null ? undefined : +d.gi);
+    if (d.a === 'ask') goalAsk(!!d.yes);
+    return true;
+  }
+  return false;
+}
+/* ---- Foto an die Tafel ---- */
+let photoSrc = null;
+function photoShow(src) {
+  photoSrc = src; const el = $('photoFull');
+  if (!src) { el.hidden = true; el.innerHTML = ''; return; }
+  el.innerHTML = `<img src="${src}" alt=""><div class="ph-bar"><button data-ph="pin">📌 Aufs Tafelbild legen</button><button data-ph="close" class="primary">✕ Schließen</button></div>`;
+  el.hidden = false;
+}
+function photoPin() {
+  if (!photoSrc) return;
+  let b = curBoard(); if (!b) { bdPickStart(); b = curBoard() || bdNewBoard('Fotos'); }
+  const sp = bdFreeSpot(b, 34, 44) || { x: 33, y: 28 };
+  change(() => { b.items.push({ id: newId('w'), t: 'img', x: sp.x, y: sp.y, w: 34, h: 44, p: { src: photoSrc, cap: '' } }); }, { keepList: true });
+  photoShow(null); if (ui.view !== 'board') rcShow('board'); else renderBoard();
+  setResult('📌 Foto als Baustein auf das Tafelbild gelegt.', 'ok');
+}
+$('photoFull').addEventListener('click', e => { const b = e.target.closest('[data-ph]'); if (!b) return; if (b.dataset.ph === 'pin') photoPin(); else photoShow(null); });
+/* ---- Zeiger ---- */
+let ptrT = 0;
+function ptrShow(d) {
+  const el = $('rcPtr'); clearTimeout(ptrT);
+  if (d.a === 'off') { el.hidden = true; return; }
+  const x = clamp(+d.x || 0, 0, 1), y = clamp(+d.y || 0, 0, 1);
+  el.hidden = false; el.style.left = (x * innerWidth) + 'px'; el.style.top = (y * innerHeight) + 'px';
+  ptrT = setTimeout(() => { el.hidden = true; }, 2500);
+}
+
+/* ---- Fernbedienung (iPad): Abschnitte ---- */
+function rcxHtml(r, s) {
+  const on = c => c ? ' class="on"' : '', x = s;
+  let h = '';
+  // ✅ Abhaken
+  h += `<div class="rc-sec"><h3>✅ Abhaken</h3><div class="rc-row rc-wrap">${(x.chks || []).map(k => `<button data-rcs="${k.id}"${on(x.chk && x.chk.id === k.id)}>${k.k === 'hw' ? '📚' : '☑'} ${esc(k.s ? k.s + ': ' : '')}${esc(k.t.length > 26 ? k.t.slice(0, 25) + '…' : k.t)} <small>○${k.n.open}</small></button>`).join('') || '<span class="hint">Keine offenen Hausaufgaben oder Abhaklisten.</span>'}</div>
+    <div class="rc-row rc-wrap" style="margin-top:6px">${(x.tals || []).map(l => `<button data-rtl="${l.id}"${on(x.tal && x.tal.id === l.id)}>${esc(l.icon || '📋')} ${esc(l.name)}</button>`).join('')}${x.chk || x.tal ? '<button data-rcs="">✕ zuklappen</button>' : ''}</div>`;
+  if (x.chk) {
+    const k = x.chk;
+    h += `<div class="rc-sub">${esc(k.s ? k.s + ': ' : '')}${esc(k.t)} · ✓${k.n.ok} ✗${k.n.no}${k.n.ex ? ' –' + k.n.ex : ''} ○${k.n.open}</div><div class="rc-chk">${k.rows.map(([sid, nm, v, ab, nt]) => `<div class="rc-ck${ab ? ' ab' : ''}"><span class="nm">${esc(nm)}${ab ? ' 🤒' : ''}${nt ? ` <small title="${esc(nt)}">📝</small>` : ''}</span>${[['ok', '✓'], ['no', '✗'], ['ex', '–']].map(([vv, sy]) => `<button class="v-${vv}${v === vv ? ' on' : ''}" data-rcv="${vv}" data-sid="${sid}">${sy}</button>`).join('')}</div>`).join('')}</div>
+      <div class="rc-row" style="margin-top:6px"><button data-rcall="${k.id}">Übrige ✓ (Kranke –)</button></div>`;
+  }
+  if (x.tal) {
+    const T = x.tal;
+    h += `<div class="rc-sub">${esc(T.icon || '')} ${esc(T.name)} – antippen = Strich für heute</div><div class="rc-chk">${T.rows.map(([sid, nm, cells, ab]) => `<div class="rc-ck${ab ? ' ab' : ''}"><span class="nm">${esc(nm)}</span>${cells.map(([n, td], i) => `<button class="tl-r${td ? ' on' : ''}${T.alert && n >= T.alert ? ' red' : T.warn && n >= T.warn ? ' warn' : ''}" data-rtt="${T.items[i][0]}" data-sid="${sid}" title="${esc(T.items[i][2])}">${esc(T.items[i][1])}<small>${n || ''}</small></button>`).join('')}</div>`).join('')}</div>`;
+  }
+  h += '</div>';
+  // 🎯 Klassenziel
+  if ((x.goals || []).length || (x.asks || []).length) {
+    h += `<div class="rc-sec"><h3>🎯 Klassenziel</h3>${(x.asks || []).map((a, i) => `<div class="rc-row"><span>🎉 ${esc(a.why)} – +${a.pts} für „${esc(a.g)}“?</span>${i === 0 ? '<button class="primary" data-rga="1">✓ Ja</button><button data-rga="0">✕</button>' : ''}</div>`).join('')}
+      ${x.goals.map(g => g.groups ? `<div class="rc-sub">${esc(g.name)} – 🎁 ${esc(g.reward)}</div><div class="rc-row rc-wrap">${g.groups.map(([nm, n, col], i) => `<span class="rc-team" style="--tc:${col}">${esc(nm)}</span><b>${n}</b>${g.minus ? `<button data-rgo="${g.id}" data-gi="${i}" data-d="-1">−</button>` : ''}<button data-rgo="${g.id}" data-gi="${i}" data-d="1">＋1</button>`).join(' ')}</div>`
+        : `<div class="rc-row rc-wrap"><b>${esc(g.name)}</b><span>${g.n} / ${g.target} · 🎁 ${esc(g.reward)}</span>${g.minus ? `<button data-rgo="${g.id}" data-d="-1">−1</button>` : ''}<button class="primary" data-rgo="${g.id}" data-d="1">＋1</button></div><div class="rc-row rc-wrap rc-small">${GOAL_WHY.map(w => `<button data-rgo="${g.id}" data-d="1" data-why="${esc(w)}">＋1 ${esc(w)}</button>`).join('')}</div>`).join('')}</div>`;
+  }
+  // 🎡 Glücksrad, 📷 Foto, 🔴 Zeiger
+  h += `<div class="rc-sec"><h3>🎡 Glücksrad · 📷 Foto · 🔴 Zeiger</h3>
+    <div class="rc-row rc-wrap"><button class="primary" data-rwh="spin">🎡 ${x.wheel ? 'Drehen' : 'Glücksrad im Vollbild'}</button>${x.wheel ? '<button data-rwh="reset">↺ Alle wieder rein</button><button data-rwh="close">✕ Rad schließen</button>' : ''}</div>
+    <div class="rc-row rc-wrap" style="margin-top:6px"><label class="rc-file">📷 Foto an die Tafel<input type="file" accept="image/*" capture="environment" id="rcPhoto"></label><label class="rc-file">🖼 Bild aus Fotos<input type="file" accept="image/*" id="rcPhoto2"></label>${x.photo ? '<button data-rpho="pin">📌 Aufs Tafelbild</button><button data-rpho="close">✕ Foto schließen</button>' : ''}</div>
+    <div class="rc-sub">🔴 Zeiger: mit dem Finger auf der Fläche zeigen – an der Tafel erscheint ein roter Punkt</div><div class="rc-ptr" id="rcPtrPad" style="aspect-ratio:${x.scr || 1.6}"><canvas id="rcPtrCv"></canvas></div></div>`;
+  return h;
+}
+// Zeiger-Fläche: Bildschirm der Tafel, bei der Tafel-Präsentation mit Umrissen der Bausteine
+function rcPtrDraw() {
+  const cv = $('rcPtrCv'), r = RC.remote; if (!cv || !r || !r.state) return;
+  const s = r.state, W = cv.clientWidth, H = cv.clientHeight, dpr = window.devicePixelRatio || 1; if (!W) return;
+  cv.width = W * dpr; cv.height = H * dpr; const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+  if (s.stg && s.layout) { const [sx, sy, sw, sh] = s.stg; g.strokeStyle = '#94a3b8'; g.strokeRect(sx * W, sy * H, sw * W, sh * H); g.fillStyle = '#e2e8f0'; g.font = `${Math.max(10, W / 40)}px sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+    s.layout.forEach(([x, y, w, h, ic]) => { const X = (sx + x / 100 * sw) * W, Y = (sy + y / 100 * sh) * H, ww = w / 100 * sw * W, hh = h / 100 * sh * H; g.fillRect(X, Y, ww, hh); g.fillStyle = '#94a3b8'; g.fillText(ic || '', X + ww / 2, Y + hh / 2); g.fillStyle = '#e2e8f0'; }); }
+  else { g.fillStyle = '#94a3b8'; g.font = '13px sans-serif'; g.textAlign = 'center'; g.fillText('Bildschirm der Tafel', W / 2, H / 2); }
+}
+let ptrLast = 0;
+const ptrPos = e => { const R = $('rcPtrPad').getBoundingClientRect(); return [clamp((e.clientX - R.left) / R.width, 0, 1), clamp((e.clientY - R.top) / R.height, 0, 1)]; };
+$('rcPanel').addEventListener('pointerdown', e => { if (!e.target.closest('#rcPtrPad')) return; e.preventDefault(); e.target.setPointerCapture(e.pointerId); RC.remote.drawing = true; const [x, y] = ptrPos(e); rcSend({ c: 'ptr', x, y }); });
+$('rcPanel').addEventListener('pointermove', e => { if (!e.target.closest('#rcPtrPad') || !RC.remote || !RC.remote.drawing || Date.now() - ptrLast < 35) return; ptrLast = Date.now(); const [x, y] = ptrPos(e); rcSend({ c: 'ptr', x, y }); });
+const ptrEnd = e => { if (!e.target.closest || !e.target.closest('#rcPtrPad') || !RC.remote) return; RC.remote.drawing = false; rcSend({ c: 'ptr', a: 'off' }); if (RC.remote.pend) setTimeout(renderRc, 30); };
+$('rcPanel').addEventListener('pointerup', ptrEnd); $('rcPanel').addEventListener('pointercancel', ptrEnd);
+$('rcPanel').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b || !RC.remote) return;
+  const st = RC.remote.state || {};
+  if (b.dataset.rcs != null) { rcSend({ c: 'chkSel', id: b.dataset.rcs || null }); if (!b.dataset.rcs) rcSend({ c: 'tlSel', id: null }); else rcSend({ c: 'tlSel', id: null }); }
+  if (b.dataset.rtl) { rcSend({ c: 'tlSel', id: st.tal && st.tal.id === b.dataset.rtl ? null : b.dataset.rtl }); rcSend({ c: 'chkSel', id: null }); }
+  if (b.dataset.rcv) { const cur = st.chk && st.chk.rows.find(r => r[0] === b.dataset.sid); rcSend({ c: 'chkSet', id: st.chk.id, sid: b.dataset.sid, v: cur && cur[2] === b.dataset.rcv ? '' : b.dataset.rcv }); }
+  if (b.dataset.rcall) rcSend({ c: 'chkAll', id: b.dataset.rcall });
+  if (b.dataset.rtt) rcSend({ c: 'tally', l: st.tal.id, it: b.dataset.rtt, sid: b.dataset.sid });
+  if (b.dataset.rgo) rcSend({ c: 'goal', a: 'add', id: b.dataset.rgo, d: +b.dataset.d, why: b.dataset.why || '', gi: b.dataset.gi == null ? null : +b.dataset.gi });
+  if (b.dataset.rga != null) rcSend({ c: 'goal', a: 'ask', yes: b.dataset.rga === '1' });
+  if (b.dataset.rwh) rcSend({ c: 'wheel', a: b.dataset.rwh === 'spin' && !st.wheel ? 'open' : b.dataset.rwh });
+  if (b.dataset.rpho) rcSend({ c: "photo", a: b.dataset.rpho });
+});
+$('rcPanel').addEventListener('change', async e => {
+  if (e.target.id !== 'rcPhoto' && e.target.id !== 'rcPhoto2') return;
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try { const src = await shrinkImage(f, 1600); rcSend({ c: 'photo', a: 'show', src }); RC.ack = null; setResult('📷 Foto gesendet.', 'ok'); } catch { setResult('Das Foto konnte nicht gelesen werden.', 'warn'); }
+});
+
+/* ---------- 🔁 Wiederkehrende Hausaufgaben / Abhaklisten ----------
+   c.recur = [{ id, kind, title, subject, note, wd: [0..5], due: 'same'|'next'|'week'|'lesson', from }] – am passenden Wochentag wird der Eintrag automatisch angelegt */
+const REC_DUE = { same: 'am selben Tag', next: 'am nächsten Schultag', week: 'nach einer Woche', lesson: 'in der nächsten Stunde im Fach' };
+function recurRun() {
+  const t = todayStr(), wd = weekdayIdx(new Date());
+  state.classes.forEach(c => {
+    (c.recur || []).forEach(r => {
+      if (!r.wd.includes(wd) || freeDay(t) || (r.from && t < r.from)) return;
+      if ((c.checks || []).some(k => k.rid === r.id && k.rday === t)) return;
+      const due = r.due === 'same' ? t : r.due === 'week' ? addDays(t, 7) : r.due === 'lesson' && r.subject && c === cls() ? (nextLessonDate(r.subject) || schoolDayFrom(addDays(t, 1))) : schoolDayFrom(addDays(t, 1));
+      change(() => { c.checks = c.checks || []; c.checks.push({ id: newId('k'), kind: r.kind, title: r.title, subject: r.kind === 'hw' ? r.subject : '', given: r.kind === 'hw' ? t : '', due, note: r.note || '', status: {}, created: new Date().toISOString(), rid: r.id, rday: t }); }, { keepList: true });
+    });
+  });
+}
+setInterval(() => { if (document.visibilityState === 'visible') recurRun(); }, 10 * 60000);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') recurRun(); });
+function recurFormFill(k, kind) {
+  const r = k && k.rid && (cls().recur || []).find(x => x.id === k.rid);
+  const days = (cls().tt && cls().tt.sat) ? ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'] : ['Mo', 'Di', 'Mi', 'Do', 'Fr'];
+  $('ckRep').innerHTML = `<b>🔁 Wiederholen jeden</b> ${days.map((d, i) => `<label class="chk"><input type="checkbox" data-rwd="${i}"${r && r.wd.includes(i) ? ' checked' : ''}> ${d}</label>`).join('')}
+    <label class="nc-name">fällig<select id="ckRepDue">${Object.entries(REC_DUE).filter(([k2]) => kind === 'hw' || k2 !== 'lesson').map(([k2, l]) => `<option value="${k2}"${(r ? r.due : kind === 'hw' ? 'next' : 'same') === k2 ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+    <p class="hint" style="margin:0">${r ? 'Wiederkehrend – an den angekreuzten Tagen wird automatisch ein neuer Eintrag angelegt (nicht in Ferien). Alle Haken weg = Wiederholung beenden.' : 'Optional: an den angekreuzten Wochentagen legt der Klassenmanager diesen Eintrag automatisch neu an (z. B. jeden Montag „Lesetagebuch“).'}</p>`;
+}
+function recurSave(k) {
+  const wd = [...$('ckRep').querySelectorAll('[data-rwd]')].filter(x => x.checked).map(x => +x.dataset.rwd), c = cls();
+  c.recur = c.recur || [];
+  let r = k.rid && c.recur.find(x => x.id === k.rid);
+  if (!wd.length) { if (r) c.recur = c.recur.filter(x => x !== r); return; }
+  if (!r) { r = { id: newId('r'), from: todayStr() }; c.recur.push(r); k.rid = r.id; if (!k.rday) k.rday = (k.given || todayStr()); }
+  Object.assign(r, { kind: k.kind, title: k.title, subject: k.subject || '', note: k.note || '', wd, due: $('ckRepDue').value });
+}
+
+/* ---------- 🗓 Änderungen für einzelne Tage (Ausfall, Vertretung, Raum, Hinweis) ----------
+   tt.chg = { 'YYYY-MM-DD|slotId': { t: 'aus'|'vt'|'raum'|'info', x: Text, s: Fach-Id (Vertretung) } } */
+const CHG_T = { aus: ['❌', 'fällt aus'], vt: ['🔄', 'Vertretung'], raum: ['🚪', 'Raumänderung'], info: ['ℹ️', 'Hinweis'] };
+ui.ttChg = false;
+function chgOf(tt, date, sid) { return (tt.chg || {})[date + '|' + sid] || null; }
+function chgBadge(tt, ch) {
+  if (!ch) return '';
+  const s = ch.s && ttSubj(tt, ch.s);
+  return `<div class="tt-chg c-${ch.t}" title="${esc(CHG_T[ch.t][1] + (ch.x ? ': ' + ch.x : ''))}">${CHG_T[ch.t][0]} ${ch.t === 'aus' ? 'fällt aus' : ch.t === 'vt' ? esc((s ? s.name : 'Vertretung') + (ch.x ? ' · ' + ch.x : '')) : esc(ch.x || CHG_T[ch.t][1])}</div>`;
+}
+let chgAt = null;
+function openChg(key, el) {
+  const tt = timetable(), [d, sid] = key.split('|'), wk = ui.ttWeek || 0, monday = addDays(todayStr(), -weekdayIdx(new Date()) + 7 * wk), date = addDays(monday, +d), sl = tt.slots.find(x => x.id === sid);
+  chgAt = { date, sid }; const ch = chgOf(tt, date, sid) || {};
+  const pop = $('ttChgPop');
+  pop.innerHTML = `<b>${fmtDW(date)} · ${esc(sl ? sl.label : '')}</b>
+    <div class="row wrap">${Object.entries(CHG_T).map(([k, [ic, l]]) => `<button data-cht="${k}"${ch.t === k ? ' class="on"' : ''}>${ic} ${l}</button>`).join('')}</div>
+    <label class="nc-name" id="chgSubjL"${ch.t === 'vt' ? '' : ' hidden'}>Fach (Vertretung)<select id="chgSubj"><option value="">– wie Stundenplan –</option>${tt.subjects.map(s => `<option value="${s.id}"${ch.s === s.id ? ' selected' : ''}>${esc(s.name)}</option>`).join('')}</select></label>
+    <label class="nc-name">Text (optional)<input id="chgText" value="${esc(ch.x || '')}" placeholder="z. B. Raum 104, Frau Meier, Turnbeutel mitbringen"></label>
+    <div class="row"><button class="danger" data-chdel="1">Zurücksetzen</button><span class="spacer"></span><button data-chx="1">Abbrechen</button><button class="primary" data-chok="1">Speichern</button></div>`;
+  pop.dataset.t = ch.t || 'aus'; pop.hidden = false;
+  const r = el.getBoundingClientRect(); pop.style.left = clamp(r.left, 8, innerWidth - pop.offsetWidth - 8) + 'px'; pop.style.top = clamp(r.bottom + 4, 8, innerHeight - pop.offsetHeight - 8) + 'px';
+}
+$('ttChgPop').addEventListener('click', e => {
+  const b = e.target.closest('button'), pop = $('ttChgPop'); if (!b || !chgAt) return;
+  if (b.dataset.cht) { pop.dataset.t = b.dataset.cht; pop.querySelectorAll('[data-cht]').forEach(x => x.classList.toggle('on', x === b)); $('chgSubjL').hidden = b.dataset.cht !== 'vt'; return; }
+  const key = chgAt.date + '|' + chgAt.sid;
+  if (b.dataset.chok) change(() => { const tt = timetable(); tt.chg = tt.chg || {}; tt.chg[key] = { t: pop.dataset.t || 'aus', x: $('chgText').value.trim().slice(0, 80), s: pop.dataset.t === 'vt' ? $('chgSubj').value : '' }; const lim = addDays(todayStr(), -14); Object.keys(tt.chg).forEach(k2 => { if (k2.slice(0, 10) < lim) delete tt.chg[k2]; }); }, { keepList: true });
+  if (b.dataset.chdel) change(() => { const tt = timetable(); if (tt.chg) delete tt.chg[key]; }, { keepList: true });
+  pop.hidden = true; chgAt = null;
+});
+document.addEventListener('pointerdown', e => { if (!$('ttChgPop').hidden && !e.target.closest('#ttChgPop') && !e.target.closest('.tt-cell')) $('ttChgPop').hidden = true; }, true);
+// für die Schüler: Änderungen der nächsten vier Wochen
+function chgPayload(tt) {
+  const t = todayStr(), lim = addDays(t, 28), out = [];
+  Object.entries(tt.chg || {}).forEach(([k, ch]) => { const [d, sid] = [k.slice(0, 10), k.slice(11)], i = tt.slots.findIndex(s => s.id === sid); if (d < t || d > lim || i < 0) return; const s = ch.s && ttSubj(tt, ch.s); out.push([d, i, ch.t, ch.x || '', s ? s.name : '']); });
+  return out;
+}
+
+/* ---------- 🪑 Platzwünsche für die automatische Verteilung ---------- */
+const POS_T = { back: '⬇ hinten', win: '🪟 an der Fensterseite', door: '🚪 an der Türseite', notfront: '↕ nicht ganz vorne' };
+/* ---------- 🏷 Lehrer-Symbole am Platz (nur in deiner Ansicht, nie in Präsentation oder Druck) ---------- */
+const TAGS = { glasses: ['👓', 'Brille'], hear: ['🦻', 'Hörgerät / Hören'], help: ['🧩', 'Förderbedarf'], ntag: ['⚖️', 'Nachteilsausgleich'], med: ['💊', 'Allergie / Medikament'], daz: ['🌍', 'DaZ'], gift: ['⭐', 'Begabung'], left: ['✍️', 'Linkshänder'], conc: ['🎯', 'Konzentration'] };
+const tagIcons = s => (s.tags || []).map(k => TAGS[k] ? TAGS[k][0] : '').join('');
+let tagFor = null;
+function openTags(sid, el) {
+  const s = stuById(sid); if (!s) return; tagFor = sid;
+  const pop = $('tagPop');
+  pop.innerHTML = `<b>🏷 ${esc(fullName(s))}</b><div class="tg-list">${Object.entries(TAGS).map(([k, [ic, l]]) => `<label class="chk"><input type="checkbox" data-tag="${k}"${(s.tags || []).includes(k) ? ' checked' : ''}> ${ic} ${l}</label>`).join('')}</div><p class="hint" style="margin:0">Nur in deiner Sitzplan-Ansicht sichtbar – nicht in der Präsentation, im Druck oder auf Schüler-iPads.</p><div class="row" style="justify-content:flex-end"><button class="primary" data-tgok="1">Fertig</button></div>`;
+  pop.hidden = false; const r = el.getBoundingClientRect();
+  pop.style.left = clamp(r.left - 200, 8, innerWidth - pop.offsetWidth - 8) + 'px'; pop.style.top = clamp(r.bottom + 4, 8, innerHeight - pop.offsetHeight - 8) + 'px';
+}
+$('tagPop').addEventListener('change', e => { const k = e.target.dataset.tag; if (!k || !tagFor) return; change(() => { const s = stuById(tagFor); s.tags = (s.tags || []).filter(x => x !== k); if (e.target.checked) s.tags.push(k); if (!s.tags.length) delete s.tags; }, { keepList: true }); });
+$('tagPop').addEventListener('click', e => { if (e.target.closest('[data-tgok]')) { $('tagPop').hidden = true; tagFor = null; } });
+document.addEventListener('pointerdown', e => { if (!$('tagPop').hidden && !e.target.closest('#tagPop') && !e.target.closest('[data-f="tags"]')) $('tagPop').hidden = true; }, true);
+
 /* ---------- Start ---------- */
+setTimeout(() => { try { recurRun(); goalCheckMat(); } catch (e) { console.warn(e); } }, 1500);
 state = { classes: [], current: null, seq: 0 };
 const firstClass = makeClass('Meine Klasse');
 state.classes.push(firstClass);
@@ -9321,11 +10157,13 @@ function buildPayload(o, c = cls()) {
     });
     const ab = {};
     Object.keys(tt.ab || {}).forEach(k => { const [d, sid] = k.split('|'), i = tt.slots.findIndex(s => s.id === sid); if (i >= 0 && cellArr(tt, k).length > 1) ab[d + '|' + i] = [tt.ab[k].wk, tt.ab[k].g1]; });
+    P.ch = chgPayload(tt);
     P.tt = { sat: tt.sat ? 1 : 0, sl, su: tt.subjects.filter(s => used.has(s.id)).map(s => s.mat ? [s.id, s.name, s.color, s.mat] : [s.id, s.name, s.color]), c: cells };
     if (Object.keys(ab).length) P.tt.ab = ab;
   }
   if (o.hw) P.hw = (c.checks || []).filter(k => k.kind === 'hw' && (!k.due || k.due >= today)).map(k => [k.id, k.subject || '', k.title || '', k.given || '', k.due || '', k.note || '']);
   if (o.ex) P.ex = (c.exams || []).filter(x => exEnd(x) >= today).map(x => { const a = [x.id, x.date, x.subject || '', x.title || '', x.note || '']; if (x.kind === 'ev') a.push('ev', x.end || '', x.time || ''); return a; });
+  P.g = goalPayload(c) || [];
   if (o.ms) P.m = (c.msgs || []).filter(msgCurrent).map(m => m.fix ? [m.id, m.text, m.until || '', 1] : [m.id, m.text, m.until || '']);
   return P;
 }

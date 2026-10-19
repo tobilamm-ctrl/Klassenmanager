@@ -489,3 +489,36 @@ NEU in Version 2026-11-25: Textbausteine für Bemerkungen
 - Antippen = hinzufügen (mehrere werden mit Komma verbunden), nochmal antippen = entfernen.
   Doppelklick = übernehmen und sofort speichern. Eigener Text bleibt weiterhin möglich.
 - ✎ am Ende: Bausteine selbst bearbeiten (mit ; getrennt). Sie werden in der Datei gespeichert.
+
+NEU in Version 2026-11-26: Klassenziel, Glücksrad, Fernbedienung zum Abhaken und mehr
+🎯 Klassenziel / Belohnung
+- Tafel → Baustein „🎯 Klassenziel“ oder Startseite → Karte „Klassenziel“ (⚙ = Einstellungen).
+- Darstellung: Murmelglas, Sterne, Thermometer, Puzzle (auch mit eigenem Foto) oder Rakete. Name,
+  Belohnung, Zielanzahl, Farbe, Ton/Animation mit Lautstärke, „Abziehen erlaubt“ ja/nein.
+- Mehrere Ziele möglich, Gruppenwettbewerb (jede Gruppe sammelt im eigenen Glas), Verlauf mit
+  Begründung („Wofür?“), „Neues Ziel starten“ archiviert das erreichte Ziel.
+- Automatische Punkte (Regeln): alle Hausaufgaben da, Hausaufgaben-Quote, Material vollständig,
+  leise Arbeitsphase (Mikrofon + Timer), Arbeitsphase geschafft, Abhakliste rechtzeitig vollständig,
+  Quiz/Abstimmung richtig. Wahlweise automatisch oder nur als Vorschlag (an der Tafel/Fernbedienung
+  bestätigen). Minuspunkte gibt es nie automatisch.
+- „📲 bei den Schülern anzeigen“: dann erscheint das Ziel im Hausaufgabenheft. Ohne Ziel (oder ohne
+  Haken) sehen die Schüler gar nichts davon.
+🎡 Glücksrad: Tafelbaustein mit allen anwesenden Namen (Gezogene auf Wunsch entfernen), ⛶ = Vollbild.
+🧮 Kopfrechnen / Aufgabe des Tages: Tafelbaustein mit Rechenarten und Zahlenraum, Lösung einblenden.
+🎧 Klangkulisse als Tafelbaustein: Lieblingsgeräusche antippen, Lautstärke, „Alle“ öffnet das Mischpult.
+📡 Fernbedienung
+- Die Fernbedienung ist jetzt ein eigener Menüpunkt „📡 Fernbedienung“ oben in der Leiste – App-Titel
+  und alle anderen Menüpunkte bleiben bedienbar, mit „📡 Fernbedienung“ geht es zurück.
+- Neu: ✅ Abhaken (Hausaufgaben, Abhaklisten und Strichlisten direkt am Tablet), 🎯 Klassenziel
+  (+1 mit Begründung, Vorschläge bestätigen), 🎡 Glücksrad im Vollbild starten/drehen,
+  📷 Foto an die Tafel (Kamera oder Fotos, auf Wunsch aufs Tafelbild legen), 🔴 Zeiger (roter Punkt).
+🔁 Wiederkehrende Einträge: im Dialog „Hausaufgabe/Abhakliste“ Wochentage ankreuzen – der Eintrag wird
+  dann an diesen Tagen automatisch neu angelegt (nicht in den Ferien).
+🗓 Änderungen für einzelne Tage: Stundenplan → „✏️ Tagesänderung“, dann eine Stunde anklicken:
+  fällt aus, Vertretung, Raumänderung oder Hinweis. Erscheint auf der Startseite und – nach „An Schüler“ –
+  auch im Hausaufgabenheft.
+🪑 Platzwünsche beim Verteilen: Regeln „soll hinten sitzen“, „an der Fensterseite“, „an der Türseite“,
+  „nicht ganz vorne“ (Fensterseite links/rechts einstellbar).
+🏷 Lehrer-Symbole am Platz (Einstellungen → Schülerliste → 🏷): Brille, Hörgerät, Förderbedarf,
+  Nachteilsausgleich, Allergie, DaZ, Begabung, Linkshänder, Konzentration. Nur in deiner Ansicht –
+  nie in Präsentation, Druck oder auf Schüler-iPads.
