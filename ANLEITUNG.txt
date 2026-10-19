@@ -522,3 +522,16 @@ NEU in Version 2026-11-26: Klassenziel, Glücksrad, Fernbedienung zum Abhaken un
 🏷 Lehrer-Symbole am Platz (Einstellungen → Schülerliste → 🏷): Brille, Hörgerät, Förderbedarf,
   Nachteilsausgleich, Allergie, DaZ, Begabung, Linkshänder, Konzentration. Nur in deiner Ansicht –
   nie in Präsentation, Druck oder auf Schüler-iPads.
+
+NEU in Version 2026-11-27
+- 💾 Automatisch speichern: Am PC (Chrome/Edge) wird die geöffnete Datei jetzt nach jeder Änderung
+  von selbst gespeichert (● wird nach wenigen Sekunden zu ✓). Beim allerersten Mal fragt der Browser
+  einmal nach der Erlaubnis – einfach bestätigen.
+- ⏻ oben rechts neben 💾: speichert und schließt die App (im Browser-Tab bitte den Tab selbst schließen).
+- 📡 Fernbedienung – Abhaken mit Namensfeldern: Offen / Vergessen / Entschuldigt / Erledigt.
+  Name antippen: offen → ✓ → ✗ → – → offen. Strichlisten: für jede Kategorie alle Namen als Felder,
+  antippen = Strich für heute (Zahl = Anzahl im Zeitraum).
+- 📡 Reihenfolge: Glücksrad · Foto · Zeiger stehen jetzt unten, darunter „🖊 Zeichnen auf dem Tafelbild“.
+- 🎡 Glücksrad: Das zuletzt gezogene Kind verschwindet sofort beim nächsten Drehen. Daneben steht die
+  Liste der bereits Gezogenen (auch auf der Fernbedienung). ↺ leert die Liste.
+- 🎧 Klangkulisse-Baustein und Fernbedienung: „▶ Letzte“ startet die zuletzt gespielte Mischung.
