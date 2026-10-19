@@ -412,7 +412,7 @@
   .tl-r.red { background: #fee2e2; border-color: #dc2626; color: #991b1b; }
   .tl-chips { display: flex; flex-wrap: wrap; gap: 4px; }
   .rc-small button { font-size: .85rem !important; padding: 4px 10px !important; min-height: 34px !important; }
-  .rc-file { position: relative; display: inline-flex; align-items: center; font-size: 1.05rem; padding: 10px 14px; min-height: 46px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; cursor: pointer; overflow: hidden; }
+  .rc-file { position: relative; display: inline-flex; align-items: center; font-size: 1.05rem; padding: 10px 14px; min-height: 46px; border: 1px solid var(--accent); border-radius: 8px; background: #fff; color: var(--accent); font-weight: 700; cursor: pointer; overflow: hidden; }
   .rc-file input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
   .rc-ptr { position: relative; width: 100%; max-height: 60vh; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; touch-action: none; overflow: hidden; }
   .rc-ptr canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -1665,7 +1665,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-27</p>
+          <p class="hint" style="margin:0">Version 2026-11-28</p>
         </div>
       </details>
 
@@ -8495,7 +8495,8 @@ function renderRc() {
     h += `<div class="rc-sec"><h3>Vollbild</h3><div class="rc-sub">⏱ Timer bildschirmfüllend</div><div class="rc-row rc-wrap">${[1, 2, 3, 5, 10, 15, 20, 30].map(m => `<button data-rft="${m}">${m} min</button>`).join('')}<button data-rft="up">⏱ Stoppuhr</button></div>` +
       (s.full ? `<div class="rc-row"><b class="rc-time${s.full.done ? ' done' : ''}">${esc(s.full.txt)}</b><button data-rfa="go">${s.full.run ? '❚❚ Pause' : '▶ Start'}</button><button data-rfa="reset">↺</button>${s.full.mode === 'down' ? '<button data-rfa="m">−1</button><button data-rfa="p">＋1</button>' : ''}<button data-rfa="close">✕ Schließen</button></div>` : '') +
       `<div class="rc-sub">🕒 Uhr bildschirmfüllend</div><div class="rc-row"><button data-rclk="digital"${on(s.clk === 'digital')}>🔢 digital</button><button data-rclk="analog"${on(s.clk === 'analog')}>🕒 analog</button><button data-rclk="off"${on(!s.clk)}>aus</button></div></div>`;
-    h += rcxBottomHtml(r, s);
+    h = h.replace(/<\/div>$/, rcxFullHtml(s) + '</div>');   // Glücksrad und Foto gehören zu „Vollbild“
+    h += rcxPtrHtml(s);
     h += cur === 'board' ? rcInkHtml(s) : '<div class="rc-sec"><h3>🖊 Zeichnen auf dem Tafelbild</h3><div class="rc-row"><button data-rv="board">🖥 Tafelbild anzeigen und zeichnen</button></div></div>';
   } else if (r.st !== 'ok') h += `<div class="rc-sec"><div class="rc-row"><button class="primary" data-rretry="1">↻ Nochmal versuchen</button><button data-rnew="1">Anderen Code eingeben</button></div></div>`;
   el.innerHTML = h; el.scrollTop = keepY;
@@ -10084,15 +10085,14 @@ function rcxHtml(r, s) {
   }
   return h;
 }
-function rcxBottomHtml(r, s) {
-  const x = s; let h = '';
-  // 🎡 Glücksrad, 📷 Foto, 🔴 Zeiger
-  h += `<div class="rc-sec"><h3>🎡 Glücksrad · 📷 Foto · 🔴 Zeiger</h3>
-    <div class="rc-row rc-wrap"><button class="primary" data-rwh="spin">🎡 ${x.wheel ? 'Drehen' : 'Glücksrad im Vollbild'}</button>${x.wheel ? '<button data-rwh="reset">↺ Alle wieder rein</button><button data-rwh="close">✕ Rad schließen</button>' : ''}</div>
-    <div class="rc-row rc-wrap" style="margin-top:6px"><label class="rc-file">📷 Foto an die Tafel<input type="file" accept="image/*" capture="environment" id="rcPhoto"></label><label class="rc-file">🖼 Bild aus Fotos<input type="file" accept="image/*" id="rcPhoto2"></label>${x.photo ? '<button data-rpho="pin">📌 Aufs Tafelbild</button><button data-rpho="close">✕ Foto schließen</button>' : ''}</div>
-    <div class="rc-sub">🔴 Zeiger: mit dem Finger auf der Fläche zeigen – an der Tafel erscheint ein roter Punkt</div><div class="rc-ptr" id="rcPtrPad" style="aspect-ratio:${x.scr || 1.6}"><canvas id="rcPtrCv"></canvas></div></div>`;
-  if (x.whHist && x.whHist.length) h = h.replace('<div class="rc-sub">🔴', `<div class="rc-sub">🎡 Gezogen: ${x.whHist.map(esc).join(' · ')}</div><div class="rc-sub">🔴`);
-  return h;
+function rcxFullHtml(s) {
+  const x = s;
+  return `<div class="rc-sub">🎡 Glücksrad bildschirmfüllend</div><div class="rc-row rc-wrap"><button class="primary" data-rwh="spin">🎡 ${x.wheel ? 'Drehen' : 'Glücksrad starten'}</button>${x.wheel ? '<button data-rwh="reset">↺ Alle wieder rein</button><button data-rwh="close">✕ Rad schließen</button>' : ''}</div>
+    ${x.whHist && x.whHist.length ? `<div class="rc-sub" style="font-weight:600">Gezogen: ${x.whHist.map(esc).join(' · ')}</div>` : ''}
+    <div class="rc-sub">📷 Foto bildschirmfüllend</div><div class="rc-row rc-wrap"><label class="rc-file">📷 Foto an die Tafel<input type="file" accept="image/*" capture="environment" id="rcPhoto"></label><label class="rc-file">🖼 Bild aus Fotos<input type="file" accept="image/*" id="rcPhoto2"></label>${x.photo ? '<button data-rpho="pin">📌 Aufs Tafelbild</button><button data-rpho="close">✕ Foto schließen</button>' : ''}</div>`;
+}
+function rcxPtrHtml(s) {
+  return `<div class="rc-sec"><h3>🔴 Zeiger</h3><p class="hint" style="margin:0 0 6px">Mit dem Finger auf der Fläche zeigen – an der Tafel erscheint ein roter Punkt.</p><div class="rc-ptr" id="rcPtrPad" style="aspect-ratio:${s.scr || 1.6}"><canvas id="rcPtrCv"></canvas></div></div>`;
 }
 // Zeiger-Fläche: Bildschirm der Tafel, bei der Tafel-Präsentation mit Umrissen der Bausteine
 function rcPtrDraw() {

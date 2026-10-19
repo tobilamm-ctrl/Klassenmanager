@@ -535,3 +535,7 @@ NEU in Version 2026-11-27
 - 🎡 Glücksrad: Das zuletzt gezogene Kind verschwindet sofort beim nächsten Drehen. Daneben steht die
   Liste der bereits Gezogenen (auch auf der Fernbedienung). ↺ leert die Liste.
 - 🎧 Klangkulisse-Baustein und Fernbedienung: „▶ Letzte“ startet die zuletzt gespielte Mischung.
+
+NEU in Version 2026-11-28
+- 📡 Fernbedienung: Glücksrad, „📷 Foto an die Tafel“ und „🖼 Bild aus Fotos“ stehen jetzt im Bereich
+  „Vollbild“. Der 🔴 Zeiger hat einen eigenen Bereich, darunter folgt „🖊 Zeichnen auf dem Tafelbild“.
