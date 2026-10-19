@@ -269,6 +269,11 @@
   .hfst.busy { animation: hfspin 1.2s linear infinite; } .hfst.pub.busy { animation: none; }
   .hfst.pub { font-weight: 700; padding: 0 7px; } .hfst.pub i { font-style: normal; margin-left: 2px; font-weight: 900; }
   @keyframes hfspin { to { transform: rotate(360deg); } }
+
+  .cn-snips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .cn-snips button { padding: 3px 9px; border-radius: 999px; font-size: .8rem; font-weight: 600; border: 1.5px solid #cbd5e1; background: #f8fafc; color: #334155; }
+  .cn-snips button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .cn-snips .cn-ed { border-style: dashed; color: var(--muted); }
 </style>
 <style>
   :root {
@@ -1487,7 +1492,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-24</p>
+          <p class="hint" style="margin:0">Version 2026-11-25</p>
         </div>
       </details>
 
@@ -1872,6 +1877,7 @@
 
 <div id="cnPop" hidden>
   <div class="np-title" id="cnWho"></div>
+  <div class="cn-snips" id="cnSnips"></div>
   <textarea id="cnText" placeholder="z. B. Heft vergessen, nur Nr. 2 gemacht, bringt es morgen nach …"></textarea>
   <div class="row"><button class="primary" id="cnSave">Speichern</button><button id="cnCancel">Abbrechen</button><button class="danger" id="cnDel" title="Bemerkung löschen">🗑</button></div>
 </div>
@@ -4988,6 +4994,7 @@ function openCellNote(cid, sid, anchor) {
   cnFor = { cid, sid };
   $('cnWho').textContent = `${fullName(st)} – ${k.subject ? k.subject + ': ' : ''}${k.title}`;
   $('cnText').value = (k.notes && k.notes[sid]) || '';
+  renderSnips();
   const pop = $('cnPop'); pop.hidden = false;
   const r = anchor.getBoundingClientRect();
   pop.style.left = clamp(r.left, 8, window.innerWidth - pop.offsetWidth - 8) + 'px';
@@ -5000,6 +5007,32 @@ function closeCellNote(save) {
   const t = $('cnText').value.trim();
   change(() => { const k = cls().checks.find(x => x.id === f.cid); if (!k) return; k.notes = k.notes || {}; if (t) k.notes[f.sid] = t; else delete k.notes[f.sid]; }, { keepList: true });
 }
+// Textbausteine für Bemerkungen (in der Datei gespeichert, für alle Klassen gleich)
+const SNIPS_DEFAULT = ['Heft vergessen', 'nicht vollständig', 'krank gewesen', 'keine Zeit', 'nicht verstanden', 'nicht aufgeschrieben', 'Material zu Hause', 'Unterschrift fehlt', 'wird nachgereicht', 'zu spät abgegeben', 'unordentlich'];
+const snips = () => (Array.isArray(state.snips) ? state.snips : SNIPS_DEFAULT);
+function renderSnips() {
+  const cur = $('cnText').value.split(/,\s*/).map(x => x.trim().toLowerCase());
+  $('cnSnips').innerHTML = snips().map((t, i) => `<button type="button" data-snip="${i}"${cur.includes(t.toLowerCase()) ? ' class="on"' : ''}>${esc(t)}</button>`).join('') + '<button type="button" class="cn-ed" data-snipedit="1" title="Textbausteine bearbeiten">✎</button>';
+}
+$('cnSnips').addEventListener('mousedown', e => e.preventDefault());   // Fokus bleibt im Textfeld
+$('cnSnips').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.snipedit) {
+    const v = window.prompt('Textbausteine (mit ; trennen):', snips().join('; ')); if (v == null) return;
+    const list = v.split(';').map(x => x.trim()).filter(Boolean).slice(0, 20);
+    change(() => { state.snips = list.length ? list : SNIPS_DEFAULT.slice(); }, { keepList: true }); renderSnips(); $('cnText').focus(); return;
+  }
+  const t = snips()[+b.dataset.snip]; if (!t) return;
+  const ta = $('cnText'), parts = ta.value.split(/,\s*/).map(x => x.trim()).filter(Boolean), i = parts.findIndex(x => x.toLowerCase() === t.toLowerCase());
+  if (i >= 0) parts.splice(i, 1); else parts.push(t);   // antippen = hinzufügen, nochmal = wieder entfernen
+  ta.value = parts.join(', '); snipMark(); ta.focus();
+});
+function snipMark() { const cur = $('cnText').value.split(/,\s*/).map(x => x.trim().toLowerCase()); $('cnSnips').querySelectorAll('[data-snip]').forEach(b => b.classList.toggle('on', cur.includes((snips()[+b.dataset.snip] || '').toLowerCase()))); }
+$('cnSnips').addEventListener('dblclick', e => {   // Doppelklick = übernehmen und gleich speichern
+  const b = e.target.closest('[data-snip]'); if (!b) return; const t = snips()[+b.dataset.snip], ta = $('cnText');
+  const parts = ta.value.split(/,\s*/).map(x => x.trim()).filter(Boolean); if (!parts.some(x => x.toLowerCase() === t.toLowerCase())) parts.push(t); ta.value = parts.join(', '); closeCellNote(true);
+});
+$('cnText').addEventListener('input', snipMark);
 $('cnSave').addEventListener('click', () => closeCellNote(true));
 $('cnCancel').addEventListener('click', () => closeCellNote(false));
 $('cnDel').addEventListener('click', () => { $('cnText').value = ''; closeCellNote(true); });
@@ -6114,7 +6147,7 @@ document.addEventListener('keydown', e => {
 // liest auch ältere Dateien (Version 1 und 2) ein
 function migrate(data) {
   const fill = c => Object.assign({ plans: [], duties: [], dutyCount: {}, picked: [], showDuties: false, subNote: '', groups: [], checks: [], exams: [], msgs: [] }, c);
-  if (Array.isArray(data.classes) && data.classes.length) return { classes: data.classes.map(fill), current: data.current || data.classes[0].id, seq: data.seq || 10000, boards: Array.isArray(data.boards) ? data.boards : [], boardStart: data.boardStart || {}, ...(data.gh && data.gh.repo && data.gh.token ? { gh: data.gh } : {}) };
+  if (Array.isArray(data.classes) && data.classes.length) return { classes: data.classes.map(fill), current: data.current || data.classes[0].id, seq: data.seq || 10000, boards: Array.isArray(data.boards) ? data.boards : [], boardStart: data.boardStart || {}, ...(data.gh && data.gh.repo && data.gh.token ? { gh: data.gh } : {}), ...(Array.isArray(data.snips) ? { snips: data.snips } : {}) };
   const fresh = { classes: [], current: null, seq: 0 };
   state = fresh;   // damit newId() fortlaufend zählt
   const c = makeClass('Klasse 1', []);

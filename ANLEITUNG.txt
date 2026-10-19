@@ -480,3 +480,12 @@ NEU in Version 2026-11-24: Speicher-Anzeige in der Kopfzeile
   Schülerdatei: 📤✓ aktuell (mit Uhrzeit der letzten Übertragung), 📤↻ Änderungen werden gleich
   übertragen, 📤! Übertragung fehlgeschlagen bzw. auf diesem Gerät kein Zugang. Antippen öffnet
   „📲 An Schüler“ im passenden Reiter.
+
+NEU in Version 2026-11-25: Textbausteine für Bemerkungen
+- Im Bemerkungsfeld (Rechtsklick auf ein Feld der Abhak-Tabelle bzw. 📝-Modus) stehen Bausteine zum
+  Antippen: Heft vergessen · nicht vollständig · krank gewesen · keine Zeit · nicht verstanden ·
+  nicht aufgeschrieben · Material zu Hause · Unterschrift fehlt · wird nachgereicht ·
+  zu spät abgegeben · unordentlich.
+- Antippen = hinzufügen (mehrere werden mit Komma verbunden), nochmal antippen = entfernen.
+  Doppelklick = übernehmen und sofort speichern. Eigener Text bleibt weiterhin möglich.
+- ✎ am Ende: Bausteine selbst bearbeiten (mit ; getrennt). Sie werden in der Datei gespeichert.
