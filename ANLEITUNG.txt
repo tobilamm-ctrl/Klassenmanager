@@ -547,3 +547,17 @@ NEU in Version 2026-11-29: Stundenplan aufgeräumt
 - Fächerleiste: Ein Fach auf ein anderes Fach in der Liste ziehen = Reihenfolge ändern
   (die grüne Linie zeigt, wo es landet).
 - Fach bearbeiten: Die Farbe lässt sich wieder ändern (die Farbauswahl lag hinter dem Fenster).
+
+NEU in Version 2026-11-30: Übersichtlicher
+📡 Fernbedienung mit Reitern (der zuletzt benutzte Reiter bleibt gemerkt):
+  🖥 Tafel – Anzeige, Tafelbild/Sitzplan/Stundenplan, Zeiger, Zeichnen
+  ✅ Klasse – Abhaken, Strichlisten, Klassenziel
+  ⏱ Phase & Vollbild – Arbeitsphase, Timer/Stoppuhr, Uhr, Glücksrad, Foto, Klangkulisse
+  📊 Abstimmung
+  Ein roter Punkt am Reiter zeigt, dass dort etwas läuft oder wartet (z. B. ein Klassenziel-Vorschlag).
+🏠 Startseite anpassen: „⚙ Anpassen“ oben rechts auf der Startseite (oder Einstellungen → Module &
+  Startseite). Karten ein-/ausblenden, mit ↑ ↓ anordnen und links, rechts oder unten platzieren.
+🧩 Module ein- und ausschalten: Einstellungen → „Module & Startseite“. Klassenziel, Strichlisten,
+  Dienste, Lehrer-Symbole, Abstimmung, Klangkulisse, Glücksrad, Kopfrechnen, Foto, Zeiger, Zeichnen –
+  und jeder Tafel-Baustein einzeln. Ausgeschaltetes verschwindet aus Menüs, Startseite und Fernbedienung;
+  die Daten bleiben erhalten. Die Einstellung wird in der Datei gespeichert.

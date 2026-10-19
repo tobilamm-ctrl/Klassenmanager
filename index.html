@@ -456,6 +456,30 @@
   .tt-weekbar .tt-week { margin-left: 0; }
   body.vpresent #ttView .tt-card { height: 100%; } body.vpresent #ttView .tt-card .tt-grid { flex: 1; min-height: 0; }
   .tt-tile.ins-b { box-shadow: 0 -3px 0 0 var(--accent); } .tt-tile.ins-a { box-shadow: 0 3px 0 0 var(--accent); }
+
+  /* v32: Fernbedienung mit Reitern */
+  .rc-tabs { flex-basis: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 4px; background: #e8ebe6; border-radius: 12px; padding: 4px; margin-top: 6px; }
+  .rc-tabs button { position: relative; border: none; background: transparent; font-size: 1.05rem; font-weight: 700; padding: 10px 6px; min-height: 46px; border-radius: 9px; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rc-tabs button.on { background: #fff; color: var(--accent); box-shadow: 0 1px 4px rgba(0,0,0,.12), inset 0 -3px 0 var(--sun); }
+  .rc-dot { position: absolute; top: 7px; right: 9px; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; }
+  @media (max-width: 560px) { .rc-tabs button span { display: none; } .rc-tabs button { font-size: 1.4rem; } }
+  /* Module & Startseite */
+  .md-g { margin-top: 8px; } .md-g .sub { margin-bottom: 2px; }
+  details.md-g summary { cursor: pointer; }
+  .md-row { align-items: flex-start; padding: 3px 0; } .md-row span { display: flex; flex-direction: column; } .md-row small { color: var(--muted); font-size: .75rem; font-weight: 400; }
+  .md-bd { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 10px; padding: 4px 0; }
+  body.mo-vote [data-p="vote"], body.mo-vote [data-b="vote"], body.mo-vote [data-act="vote"],
+  body.mo-noise [data-p="noise"], body.mo-noise [data-b="noise"], body.mo-noise [data-act="noise"],
+  body.mo-duties #dutyBtn, body.mo-duties [data-p="duties"], body.mo-duties .card.mod-duties,
+  body.mo-tags .srow [data-f="tags"], body.mo-tags .seat .tgs,
+  body.mo-tally #listTabs [data-t="tally"], body.mo-ink [data-b="draw"], body.mo-goal [data-act="goal"] { display: none !important; }
+  .st-cfg { margin-left: 8px; padding: 4px 10px; font-size: .85rem; color: var(--muted); background: transparent; border: 1px solid #d1d5db; }
+  .st-ferien + .st-cfg { margin-left: 8px; } .st-head > .st-cfg:not(.st-ferien + .st-cfg) { margin-left: auto; }
+  .st-grid.one { grid-template-columns: minmax(0, 1fr); }
+  .st-bottom { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
+  .hm-list { display: flex; flex-direction: column; gap: 4px; }
+  .hm-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 6px; align-items: center; padding: 5px 8px; border-radius: 8px; background: #f8fafc; }
+  .hm-row.off { opacity: .55; } .hm-row select { font: inherit; font-size: .85rem; padding: 3px 6px; border: 1px solid #d1d5db; border-radius: 6px; } .hm-row button { padding: 3px 9px; }
 </style>
 <style>
   :root {
@@ -1679,7 +1703,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-29</p>
+          <p class="hint" style="margin:0">Version 2026-11-30</p>
         </div>
       </details>
 
@@ -1692,6 +1716,13 @@
             <button id="classRename">Umbenennen</button>
             <button id="classDel" class="danger">Löschen</button>
           </div>
+        </div>
+      </details>
+      <details class="card" open id="modCard">
+        <summary>🧩 Module &amp; Startseite</summary>
+        <div class="cbody">
+          <button id="homeCfgBtn">🏠 Startseite anpassen …</button>
+          <div id="modBox"></div>
         </div>
       </details>
 
@@ -1981,6 +2012,7 @@
   <p class="noise-hint">Antippen = an/aus · mehrere Geräusche lassen sich mischen · die Geräusche laufen weiter, wenn das Fenster zu ist.</p>
 </div>
 <div id="palette"></div>
+<div class="cdlg-back" id="homeDlg" hidden><div class="cdlg nc" style="width:560px"><div class="cdlg-title">🏠 Startseite anpassen</div><div class="nc-body" id="homeBody"></div></div></div>
 <div id="goalParty" hidden></div>
 <div id="goalAsk" hidden></div>
 <div class="cdlg-back" id="goalDlg" hidden><div class="cdlg nc" style="width:640px"><div class="cdlg-title">🎯 Klassenziel / Belohnung</div><div class="nc-body" id="goalBody"></div></div></div>
@@ -2882,6 +2914,7 @@ function autoGroups() {
    Darstellung
    ===================================================================== */
 function renderAll(opts = {}) {
+  applyMods();
   document.body.classList.toggle('mode-room', ui.mode === 'room');
   document.body.classList.toggle('mode-students', ui.mode === 'students');
   document.querySelectorAll('#modes button').forEach(b => {
@@ -3071,7 +3104,7 @@ function renderRoom(animate) {
   // Dienste-Kasten im Plan
   const box = $('dutyBox');
   const duties = (c.duties || []).filter(d => d.sids.some(Boolean));
-  if ((c.showDuties || ui.printSub) && duties.length) {
+  if ((c.showDuties || ui.printSub) && duties.length && modOn('duties')) {
     box.innerHTML = '<b>Dienste</b>' + duties.map(d => `<div><span>${esc(dutyIcon(d))} ${esc(d.name)}:</span> ${d.sids.filter(Boolean).map(id => esc(dn.get(id) || '?')).join(', ')}</div>`).join('');
     box.hidden = false;
   } else box.hidden = true;
@@ -4434,6 +4467,7 @@ function renderDuties() {
       <div class="row wrap">${Array.from({ length: d.n }, (_, i) => `<select data-f="slot" data-i="${i}">${opts(d.sids[i])}</select>`).join('')}</div>
       ${d.fixed ? `<label class="chk small"><input type="checkbox" data-f="shared" ${d.shared !== false ? 'checked' : ''}> bekommt trotzdem weitere Dienste</label>` : ''}</div>`).join('');
   $('dutyShow').checked = !!c.showDuties;
+  renderMods();
   $('dutyIcons').checked = c.dutyIcons !== false;
   $('dutyBadge').textContent = (c.duties || []).length || '';
 }
@@ -5869,6 +5903,7 @@ $('slSave').addEventListener('click', () => {
   $('slotDlg').hidden = true;
 });
 $('ttRaster').addEventListener('click', openSlots);
+$('homeCfgBtn').addEventListener('click', openHomeCfg);
 $('ttPlanBtn').addEventListener('click', () => { const m = $('ttPlanMenu'); m.hidden = !m.hidden; $('ttPlanBtn').classList.toggle('on', !m.hidden); });
 $('ttPlanMenu').addEventListener('click', e => { if (e.target.closest('button')) { $('ttPlanMenu').hidden = true; $('ttPlanBtn').classList.remove('on'); } });
 document.addEventListener('pointerdown', e => { if (!$('ttPlanMenu').hidden && !e.target.closest('.ttm-wrap')) { $('ttPlanMenu').hidden = true; $('ttPlanBtn').classList.remove('on'); } });
@@ -6428,7 +6463,7 @@ document.addEventListener('keydown', e => {
 // liest auch ältere Dateien (Version 1 und 2) ein
 function migrate(data) {
   const fill = c => Object.assign({ plans: [], duties: [], dutyCount: {}, picked: [], showDuties: false, subNote: '', groups: [], checks: [], exams: [], msgs: [] }, c);
-  if (Array.isArray(data.classes) && data.classes.length) return { classes: data.classes.map(fill), current: data.current || data.classes[0].id, seq: data.seq || 10000, boards: Array.isArray(data.boards) ? data.boards : [], boardStart: data.boardStart || {}, ...(data.gh && data.gh.repo && data.gh.token ? { gh: data.gh } : {}), ...(Array.isArray(data.snips) ? { snips: data.snips } : {}) };
+  if (Array.isArray(data.classes) && data.classes.length) return { classes: data.classes.map(fill), current: data.current || data.classes[0].id, seq: data.seq || 10000, boards: Array.isArray(data.boards) ? data.boards : [], boardStart: data.boardStart || {}, ...(data.gh && data.gh.repo && data.gh.token ? { gh: data.gh } : {}), ...(Array.isArray(data.snips) ? { snips: data.snips } : {}), ...(data.mods && Array.isArray(data.mods.off) ? { mods: data.mods } : {}), ...(data.home && typeof data.home === 'object' ? { home: data.home } : {}) };
   const fresh = { classes: [], current: null, seq: 0 };
   state = fresh;   // damit newId() fortlaufend zählt
   const c = makeClass('Klasse 1', []);
@@ -7044,7 +7079,7 @@ function renderStart() {
   const dateTxt = now.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' }) + ' · KW ' + isoWeek(t);
   const ci = countdownInfo({ mode: 'ferien' });
   const fer = ci.fe ? `🏖 ${ci.top} ${ci.big} – ${ci.sub}` : ci.big !== '–' ? `🏖 Noch ${ci.big} ${ci.sub}` : '';
-  let html = `<div class="st-head"><h2>${greet}!</h2><span class="st-date">${esc(dateTxt)} · Klasse ${esc(c.name)}</span>${fer ? `<span class="st-ferien">${esc(fer)}</span>` : ''}</div>`;
+  let html = `<div class="st-head"><h2>${greet}!</h2><span class="st-date">${esc(dateTxt)} · Klasse ${esc(c.name)}</span>${fer ? `<span class="st-ferien">${esc(fer)}</span>` : ''}<button class="st-cfg" data-act="homecfg" title="Startseite anpassen: Karten ein-/ausblenden und anordnen">⚙ Anpassen</button></div>`;
   // erster Start: noch nichts angelegt
   if (!c.students.length && !fileName && !od && state.classes.length === 1) {
     html += `<div class="st-card st-welcome"><h2>👋 Willkommen im Klassenmanager</h2><p class="hint">Lege deine Klasse an oder öffne eine vorhandene Datei.</p>
@@ -7081,21 +7116,21 @@ function renderStart() {
   const open = (c.checks || []).filter(k => k.kind === 'hw' && k.due && k.due < t && !hwFinished(k)).length;
   if (open) right += `<div class="st-it" data-go="list" style="--sc:var(--red)"><span class="s" style="color:var(--red)">⚠</span><span class="x">${open} ältere Hausaufgabe${open === 1 ? '' : 'n'} noch nicht von allen erledigt</span></div>`;
   right += '</div>';
+  const C_due = right; right = '';
   const lim = addDays(t, 14), soon = (c.exams || []).filter(x => exCurrent(x) && x.date <= lim && exEnd(x) >= t).sort((a, b) => a.date.localeCompare(b.date));
   const hwSoon = (c.checks || []).filter(k => k.kind === 'hw' && k.due > t && k.due <= addDays(t, 7) && !hwFinished(k)).sort((a, b) => a.due.localeCompare(b.due));
   right += `<div class="st-card"><h3>📝 Demnächst <small>(14 Tage)</small></h3>` + (soon.length || hwSoon.length ? soon.map(x => `<div class="st-it" data-ex="${x.id}" style="--sc:${x.kind === 'ev' ? 'var(--sun)' : (subjColor(x.subject) || 'var(--red)')}"><span class="d">${fmtDW(x.date < t ? t : x.date)}</span><span class="s"${x.kind === 'ev' ? ' style="color:#7a5b00"' : ''}>${x.kind === 'ev' ? '📅' : '📝 ' + esc(x.subject || 'Probe')}</span><span class="x">${esc((x.time ? x.time + ' · ' : '') + x.title)}</span></div>`).join('') +
     hwSoon.map(k => `<div class="st-it" data-chk="${k.id}" style="--sc:${subjColor(k.subject) || 'var(--accent)'}"><span class="d">${fmtDW(k.due)}</span><span class="s">📚 ${esc(k.subject || 'HA')}</span><span class="x">${esc(k.title || '')}</span></div>`).join('') : '<p class="st-none">Keine Proben, Termine oder Hausaufgaben.</p>') + '</div>';
-  right += tallyStartHtml(c);
-  right += goalStartHtml(c);
+  const C_soon = right; right = '';
+  const C_tally = tallyStartHtml(c), C_goal = goalStartHtml(c);
   // Mitteilungen, Dienste
-  const msgs = (c.msgs || []).filter(msgCurrent), dn = displayNames(c.students), duties = (c.duties || []).filter(d => (d.sids || []).some(Boolean));
+  const msgs = (c.msgs || []).filter(msgCurrent), dn = displayNames(c.students), duties = modOn('duties') ? (c.duties || []).filter(d => (d.sids || []).some(Boolean)) : [];
   let info = '';
   if (msgs.length) info += msgs.map(m => `<div>${m.fix ? '📌' : '📣'} ${esc(m.text)}</div>`).join('');
   if (duties.length) info += `<div><b>🧽 Dienste:</b> ${duties.map(d => `${dutyIcon(d)} ${esc(d.name)}: ${(d.sids || []).filter(Boolean).map(id => esc(dn.get(id) || '?')).join(', ')}`).join(' · ')}</div>`;
-  if (info) right += `<div class="st-card"><h3>📣 Mitteilungen &amp; Dienste</h3><div class="st-info">${info}</div></div>`;
-  html += `<div class="st-grid"><div class="st-col">${left}</div><div class="st-col">${right}</div></div>`;
+  const C_info = info ? `<div class="st-card"><h3>📣 Mitteilungen &amp; Dienste</h3><div class="st-info">${info}</div></div>` : '';
   // Schnellzugriff
-  html += `<div class="st-card" style="margin-top:14px"><div class="st-tiles"><button data-go="plan"><span>🪑</span>Sitzplan</button><button data-go="board"><span>🖥</span>Tafel</button><button data-go="list"><span>📋</span>Klassenliste</button><button data-go="tt"><span>🗓</span>Stundenplan</button></div>
+  const C_tiles = `<div class="st-card st-tilecard"><div class="st-tiles"><button data-go="plan"><span>🪑</span>Sitzplan</button><button data-go="board"><span>🖥</span>Tafel</button><button data-go="list"><span>📋</span>Klassenliste</button><button data-go="tt"><span>🗓</span>Stundenplan</button></div>
     <div class="st-acts"><button data-act="hw">＋ Hausaufgabe</button><button data-act="ex">＋ Probe/Termin</button><button data-act="present">⛶ Sitzplan präsentieren</button><button data-act="board">🖥 Tafel präsentieren</button><button data-act="send">📲 An Schüler</button><button data-act="vote">📊 Abstimmung</button><button data-act="goal">🎯 Klassenziel</button><button data-act="rc">📡 Fernbedienung</button></div></div>`;
   // Status
   const st = [];
@@ -7104,7 +7139,13 @@ function renderStart() {
   const pc = state.classes.filter(x => x.pub && x.pub.id);
   if (pc.length) { const lt = Math.max(0, ...pc.map(x => pubTime[x.id] || 0)); st.push('📤 Schülerdatei ' + (pubErr ? '<span class="warn">Fehler beim Übertragen</span>' : lt ? 'aktuell (' + new Date(lt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ')' : 'veröffentlicht')); }
   st.push(`<label>Beim Öffnen zeigen: <select id="stPref"><option value="start"${startPref() === 'start' ? ' selected' : ''}>Startseite</option><option value="last"${startPref() === 'last' ? ' selected' : ''}>zuletzt benutzte Ansicht</option></select></label>`);
-  html += `<div class="st-status">${st.map(x => `<span>${x}</span>`).join('')}</div>`;
+  const C_status = `<div class="st-status">${st.map(x => `<span>${x}</span>`).join('')}</div>`;
+  // Karten nach den Einstellungen anordnen (⚙ Anpassen)
+  const hc = homeCfg(), P = { today: left, due: C_due, soon: C_soon, tally: C_tally, goal: C_goal, info: C_info, tiles: C_tiles, status: C_status };
+  const col = k => hc.list.filter(([id, cc]) => cc === k && !hc.off.includes(id)).map(([id]) => P[id] || '').join('');
+  const L = col('L'), R = col('R');
+  if (L || R) html += `<div class="st-grid${!L || !R ? ' one' : ''}">${L ? `<div class="st-col">${L}</div>` : ''}${R ? `<div class="st-col">${R}</div>` : ''}</div>`;
+  const B = col('B'); if (B) html += `<div class="st-bottom">${B}</div>`;
   $('startView').innerHTML = html;
 }
 $('startView').addEventListener('click', e => {
@@ -7124,11 +7165,75 @@ $('startView').addEventListener('click', e => {
   if (act === 'rc') openRc();
   if (act === 'vote') openVoteSetup();
   if (act === 'goal') openGoal();
+  if (act === 'homecfg') openHomeCfg();
   if (act === 'open') openFile();
   if (act === 'odopen') odPick('open');
 });
 $('startView').addEventListener('change', e => { if (e.target.id === 'stPref') { try { localStorage.setItem('km-startview', e.target.value); } catch {} } });
 setInterval(() => { if (ui.view === 'start' && document.visibilityState === 'visible' && !document.querySelector('.cdlg-back:not([hidden])')) renderStart(); }, 60000);
+
+
+/* ---------- 🧩 Module ein- und ausschalten (state.mods.off) ---------- */
+const MODS = [
+  ['Klasse & Unterricht', [['goal', '🎯', 'Klassenziel / Belohnung', 'Tafelbaustein, Startseite, Fernbedienung, Hausaufgabenheft'], ['tally', '📋', 'Strichlisten', 'Reiter in der Klassenliste, Spalten in der Abhak-Tabelle, Fernbedienung'], ['duties', '🧽', 'Dienste & Ämter', 'Sitzplan-Leiste, Startseite'], ['tags', '🏷', 'Lehrer-Symbole am Platz', 'Schülerliste, Sitzplan'], ['vote', '📊', 'Abstimmung', 'Tafel, Präsentation, Fernbedienung']]],
+  ['Tafel & Fernbedienung', [['noise', '🎧', 'Klangkulisse', 'Tafel, Präsentation, Fernbedienung'], ['wheel', '🎡', 'Glücksrad', 'Tafelbaustein, Fernbedienung'], ['math', '🧮', 'Kopfrechnen / Aufgabe des Tages', 'Tafelbaustein'], ['photo', '📷', 'Foto an die Tafel', 'Fernbedienung'], ['ptr', '🔴', 'Zeiger', 'Fernbedienung'], ['ink', '🖊', 'Zeichnen auf dem Tafelbild', 'Tafel, Fernbedienung']]]
+];
+const BD_MOD = { wheel: 'wheel', math: 'math', noise: 'noise', goal: 'goal' };
+const modsOff = () => (state && state.mods && Array.isArray(state.mods.off)) ? state.mods.off : [];
+const modOn = k => !modsOff().includes(k);
+const bdTypeOn = k => BD_MOD[k] ? modOn(BD_MOD[k]) : modOn('bd:' + k);
+function applyMods() {
+  const off = new Set(modsOff());
+  MODS.forEach(([, l]) => l.forEach(([k]) => document.body.classList.toggle('mo-' + k, off.has(k))));
+  const dc = $('dutyDeal') && $('dutyDeal').closest('details'); if (dc) dc.classList.add('mod-duties');
+  if (off.has('tally') && ui.listTab === 'tally') ui.listTab = 'table';
+}
+function renderMods() {
+  const box = $('modBox'); if (!box) return;
+  const dOpen = !!(box.querySelector('details.md-g') || {}).open;
+  const off = new Set(modsOff()), row = ([k, ic, n, w]) => `<label class="chk md-row"><input type="checkbox" data-mod="${k}"${off.has(k) ? '' : ' checked'}> <span><b>${ic} ${esc(n)}</b>${w ? `<small>${esc(w)}</small>` : ''}</span></label>`;
+  box.innerHTML = MODS.map(([g, l]) => `<div class="md-g"><div class="sub">${esc(g)}</div>${l.map(row).join('')}</div>`).join('') +
+    `<details class="md-g"><summary class="sub">Tafel-Bausteine einzeln (${Object.keys(BD_TYPES).filter(k => !BD_MOD[k] && !off.has('bd:' + k)).length} von ${Object.keys(BD_TYPES).filter(k => !BD_MOD[k]).length} an)</summary><div class="md-bd">${Object.entries(BD_TYPES).filter(([k]) => !BD_MOD[k]).map(([k, T]) => `<label class="chk"><input type="checkbox" data-mod="bd:${k}"${off.has('bd:' + k) ? '' : ' checked'}> ${T.i} ${esc(T.n)}</label>`).join('')}</div></details>` +
+    '' ; if (dOpen) box.querySelector('details.md-g').open = true;
+  box.insertAdjacentHTML('beforeend', `<p class="hint" style="margin:6px 0 0">Ausgeschaltete Module verschwinden aus Menüs, Startseite und Fernbedienung – die Daten bleiben erhalten und sind beim Wiedereinschalten sofort wieder da. Gespeichert wird das in der Datei.</p>`);
+}
+document.addEventListener('change', e => {
+  const k = e.target.dataset && e.target.dataset.mod; if (!k) return;
+  const keepOpen = !!e.target.closest('details.md-g');
+  change(() => { state.mods = state.mods || { off: [] }; const o = new Set(state.mods.off || []); if (e.target.checked) o.delete(k); else o.add(k); state.mods.off = [...o]; }, { keepList: true });
+  renderMods(); if (keepOpen) { const d = $('modBox').querySelector('details.md-g'); if (d) d.open = true; }
+});
+
+/* ---------- 🏠 Startseite anpassen (state.home = { order: [[id, 'L'|'R'|'B']], off: [id] }) ---------- */
+const HOME_CARDS = { today: '🗓 Stundenplan des Tages', due: '✅ Heute vorzuzeigen / abzugeben', soon: '📝 Demnächst (Proben, Termine, HA)', tally: '📋 Strichlisten-Hinweise', goal: '🎯 Klassenziel', info: '📣 Mitteilungen & Dienste', tiles: '🚀 Schnellzugriff', status: 'ℹ️ Speicherstatus & Einstellungen' };
+const HOME_DEF = [['today', 'L'], ['due', 'R'], ['soon', 'R'], ['tally', 'R'], ['goal', 'R'], ['info', 'R'], ['tiles', 'B'], ['status', 'B']];
+const HOME_COL = { L: 'links', R: 'rechts', B: 'unten (ganze Breite)' };
+function homeCfg() {
+  const h = state.home || {}, list = (Array.isArray(h.order) ? h.order : []).filter(x => Array.isArray(x) && HOME_CARDS[x[0]] && HOME_COL[x[1]]).map(x => [x[0], x[1]]);
+  HOME_DEF.forEach(d => { if (!list.some(x => x[0] === d[0])) list.push(d.slice()); });
+  return { list, off: Array.isArray(h.off) ? h.off : [] };
+}
+function openHomeCfg() { renderHomeCfg(); $('homeDlg').hidden = false; }
+function renderHomeCfg() {
+  const cfg = homeCfg(), off = new Set(cfg.off), hidden = { tally: !modOn('tally'), goal: !modOn('goal') };
+  $('homeBody').innerHTML = `<p class="hint" style="margin:0 0 8px">Haken = Karte anzeigen. Mit ↑ ↓ die Reihenfolge ändern, rechts die Spalte wählen. Leere Karten (z. B. ohne Mitteilungen) blendet die Startseite von selbst aus.</p>
+    ${Object.entries(HOME_COL).map(([ck, cl]) => { const rows = cfg.list.map((x, i) => [x, i]).filter(([x]) => x[1] === ck); return `<div class="sub" style="margin-top:8px">${ck === 'L' ? '⬅ Linke Spalte' : ck === 'R' ? '➡ Rechte Spalte' : '⬇ Unten, ganze Breite'}</div><div class="hm-list">${rows.length ? rows.map(([[id, col], i], n) => `<div class="hm-row${off.has(id) ? ' off' : ''}" data-hid="${id}"><label class="chk"><input type="checkbox" data-hon="${id}"${off.has(id) ? '' : ' checked'}> ${esc(HOME_CARDS[id])}${hidden[id] ? ' <small class="hint">(Modul aus)</small>' : ''}</label>
+      <select data-hcol="${id}" title="Spalte">${Object.entries(HOME_COL).map(([k, l]) => `<option value="${k}"${col === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
+      <button data-hmv="-1" data-i="${i}" title="nach oben"${n ? '' : ' disabled'}>↑</button><button data-hmv="1" data-i="${i}" title="nach unten"${n < rows.length - 1 ? '' : ' disabled'}>↓</button></div>`).join('') : '<p class="hint" style="margin:2px 0">– leer –</p>'}</div>`; }).join('')}
+    <div class="row" style="margin-top:10px"><button data-hreset="1">Standard wiederherstellen</button><span class="spacer"></span><button class="primary" data-hok="1">Fertig</button></div>`;
+}
+function homeEdit(fn) { change(() => { const cfg = homeCfg(); fn(cfg); state.home = { order: cfg.list, off: cfg.off }; }, { keepList: true }); renderHomeCfg(); renderStart(); }
+$('homeDlg').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) { if (e.target === $('homeDlg')) $('homeDlg').hidden = true; return; }
+  if (b.dataset.hok) { $('homeDlg').hidden = true; return; }
+  if (b.dataset.hreset) { change(() => { delete state.home; }, { keepList: true }); renderHomeCfg(); renderStart(); return; }
+  if (b.dataset.hmv) { const i = +b.dataset.i, d = +b.dataset.hmv; homeEdit(cfg => { const c = cfg.list[i][1]; let j = i + d; while (j >= 0 && j < cfg.list.length && cfg.list[j][1] !== c) j += d; if (j < 0 || j >= cfg.list.length) return; [cfg.list[i], cfg.list[j]] = [cfg.list[j], cfg.list[i]]; }); }
+});
+$('homeDlg').addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.hon) homeEdit(cfg => { cfg.off = cfg.off.filter(x => x !== t.dataset.hon); if (!t.checked) cfg.off.push(t.dataset.hon); });
+  if (t.dataset.hcol) homeEdit(cfg => { const x = cfg.list.find(r => r[0] === t.dataset.hcol); if (x) { cfg.list = cfg.list.filter(r => r !== x); cfg.list.push([x[0], t.value]); } });
+});
 
 /* ---------- 🖥 Tafel: Tafelbilder ---------- */
 const BD_TYPES = {
@@ -7234,7 +7339,7 @@ function renderBoard() {
   $('bdSel').innerHTML = boardsVis().map(x => `<option value="${x.id}"${b && x.id === b.id ? ' selected' : ''}>${esc(x.name)}${x.cls ? ' (nur ' + esc(cls().name) + ')' : ''}</option>`).join('') || '<option value="">– noch keins –</option>';
   ['bdDup', 'bdRen', 'bdDel', 'bdOnly'].forEach(id => { $(id).disabled = !b; });
   $('bdOnly').checked = !!(b && b.cls);
-  $('bdPal').innerHTML = Object.entries(BD_TYPES).map(([k, T]) => `<button data-add="${k}" title="${esc(T.n)} hinzufügen"><span>${T.i}</span>${esc(T.n)}</button>`).join('');
+  $('bdPal').innerHTML = Object.entries(BD_TYPES).filter(([k]) => bdTypeOn(k)).map(([k, T]) => `<button data-add="${k}" title="${esc(T.n)} hinzufügen"><span>${T.i}</span>${esc(T.n)}</button>`).join('');
   const bs = state.boardStart || {}, opts = sel => '<option value="">–</option>' + boardsVis().map(x => `<option value="${x.id}"${sel === x.id ? ' selected' : ''}>${esc(x.name)}</option>`).join('');
   $('bdStart').innerHTML = ['Mo', 'Di', 'Mi', 'Do', 'Fr'].map((d, i) => `<span>${d}</span><select data-wd="${i}">${opts(bs[i])}</select>`).join('');
   $('bdTitle').textContent = b ? b.name : 'Tafel';
@@ -7492,7 +7597,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && ui.bdDraw 
 function bdMenu(kind, anchor) {
   const m = $('bdMenu');
   if (kind === 'pick') m.innerHTML = '<div class="mt">Tafelbild wählen</div>' + boardsVis().map(b => `<button data-pick="${b.id}"${curBoard() && b.id === curBoard().id ? ' class="cur"' : ''}>🖼 ${esc(b.name)}</button>`).join('') + '<button data-pick="new">＋ Neues Tafelbild</button>';
-  else m.innerHTML = '<div class="mt">Baustein hinzufügen</div><div class="grid">' + Object.entries(BD_TYPES).map(([k, T]) => `<button data-addm="${k}">${T.i} ${esc(T.n)}</button>`).join('') + '</div>';
+  else m.innerHTML = '<div class="mt">Baustein hinzufügen</div><div class="grid">' + Object.entries(BD_TYPES).filter(([k]) => bdTypeOn(k)).map(([k, T]) => `<button data-addm="${k}">${T.i} ${esc(T.n)}</button>`).join('') + '</div>';
   m.hidden = false;
   const r = anchor.getBoundingClientRect();
   m.style.left = Math.max(8, Math.min(r.left, innerWidth - m.offsetWidth - 8)) + 'px'; m.style.top = Math.max(8, r.top - m.offsetHeight - 8) + 'px';
@@ -8490,6 +8595,7 @@ function renderRc() {
   if (s && r.st === 'ok') {
     const on = c => c ? ' class="on"' : '', cur = s.cur || '';
     if (s.ack && Date.now() - (r.ackAt || 0) < 4000) h += `<div class="rc-ack">✓ ${esc(s.ack.t)}</div>`;
+    const P0 = h.length, mo = k => !(s.mods || []).includes(k);
     // Anzeige
     h += `<div class="rc-sec"><h3>Anzeige an der Tafel</h3><div class="rc-row rc-wrap"><button data-rv="board"${on(cur === 'board')}>🖥 Tafelbild</button><button data-rv="plan"${on(cur === 'plan')}>🪑 Sitzplan</button><button data-rv="tt"${on(cur === 'tt')}>🗓 Stundenplan</button><button data-rv="cal"${on(cur === 'cal')}>📅 Kalender</button>${cur ? '<button data-rv="exit">✕ Präsentation beenden</button>' : ''}</div>${cur ? '' : '<p class="hint" style="margin:6px 0 0">Wähle, was die Tafel bildschirmfüllend zeigen soll – dann erscheinen hier die passenden Einstellungen.</p>'}</div>`;
     // Ansicht: Tafelbild
@@ -8519,17 +8625,23 @@ function renderRc() {
       h += `<div class="rc-sec"><h3>${cur === 'tt' ? '🗓 Stundenplan' : '📅 Kalender'}</h3>${nav}
         <div class="rc-row rc-wrap" style="margin-top:8px"><button class="primary" data-rform="hw"${on(r.form === 'hw')}>＋ Hausaufgabe</button><button class="primary" data-rform="ex"${on(r.form === 'ex')}>＋ Probe/Termin</button></div>${rcFormHtml(r, s)}</div>`;
     }
-    // immer verfügbar: Abhaken, Klassenziel, Glücksrad/Foto/Zeiger, Abstimmung, Arbeitsphase und Vollbild
-    h += rcxHtml(r, s);
-    h += rcVoteHtml(r, s);
-    h += rcNoiseHtml(s);
+    // Reiter: 🖥 Tafel · ✅ Klasse · ⏱ Phase & Vollbild · 📊 Abstimmung
+    let T_tafel = h.slice(P0); h = h.slice(0, P0);
+    const T_kl = rcxHtml(r, s), T_vote = mo('vote') ? rcVoteHtml(r, s) : '';
+    const P1 = h.length;
     h += `<div class="rc-sec"><h3>Arbeitsphase einblenden</h3><div class="rc-row rc-wrap">${Object.entries(PHASES).map(([k, ph]) => `<button data-rph="${k}" style="--pc:${ph[2]}" class="ph${s.phs === k ? ' on' : ''}">${ph[0]} ${esc(ph[1])}</button>`).join('')}<button data-rph="off"${on(!s.phs)}>aus</button></div></div>`;
     h += `<div class="rc-sec"><h3>Vollbild</h3><div class="rc-sub">⏱ Timer bildschirmfüllend</div><div class="rc-row rc-wrap">${[1, 2, 3, 5, 10, 15, 20, 30].map(m => `<button data-rft="${m}">${m} min</button>`).join('')}<button data-rft="up">⏱ Stoppuhr</button></div>` +
       (s.full ? `<div class="rc-row"><b class="rc-time${s.full.done ? ' done' : ''}">${esc(s.full.txt)}</b><button data-rfa="go">${s.full.run ? '❚❚ Pause' : '▶ Start'}</button><button data-rfa="reset">↺</button>${s.full.mode === 'down' ? '<button data-rfa="m">−1</button><button data-rfa="p">＋1</button>' : ''}<button data-rfa="close">✕ Schließen</button></div>` : '') +
       `<div class="rc-sub">🕒 Uhr bildschirmfüllend</div><div class="rc-row"><button data-rclk="digital"${on(s.clk === 'digital')}>🔢 digital</button><button data-rclk="analog"${on(s.clk === 'analog')}>🕒 analog</button><button data-rclk="off"${on(!s.clk)}>aus</button></div></div>`;
     h = h.replace(/<\/div>$/, rcxFullHtml(s) + '</div>');   // Glücksrad und Foto gehören zu „Vollbild“
-    h += rcxPtrHtml(s);
-    h += cur === 'board' ? rcInkHtml(s) : '<div class="rc-sec"><h3>🖊 Zeichnen auf dem Tafelbild</h3><div class="rc-row"><button data-rv="board">🖥 Tafelbild anzeigen und zeichnen</button></div></div>';
+    const T_ph = h.slice(P1) + (mo('noise') ? rcNoiseHtml(s) : ''); h = h.slice(0, P1);
+    if (mo('ptr')) T_tafel += rcxPtrHtml(s);
+    if (mo('ink')) T_tafel += cur === 'board' ? rcInkHtml(s) : '<div class="rc-sec"><h3>🖊 Zeichnen auf dem Tafelbild</h3><div class="rc-row"><button data-rv="board">🖥 Tafelbild anzeigen und zeichnen</button></div></div>';
+    const TABS = [['tafel', '🖥', 'Tafel', T_tafel, 0], ['klasse', '✅', 'Klasse', T_kl, (s.asks || []).length], ['phase', '⏱', 'Phase & Vollbild', T_ph, s.full || (s.noise && s.noise.on && s.noise.on.length) ? 1 : 0], ['vote', '📊', 'Abstimmung', T_vote, s.vote && (s.vote.on || s.vote.round) ? 1 : 0]].filter(t => t[3]);
+    let tab = RC.tab || (() => { try { return localStorage.getItem('km-rc-tab'); } catch { return null; } })() || 'tafel';
+    if (!TABS.some(t => t[0] === tab)) tab = TABS[0][0];
+    h = h.replace('<button id="rcOff">✕ Trennen</button></div>', `<button id="rcOff">✕ Trennen</button><div class="rc-tabs">${TABS.map(([k, ic, l, , dot]) => `<button data-rtab="${k}"${k === tab ? ' class="on"' : ''}>${ic}<span> ${l}</span>${dot && k !== tab ? '<i class="rc-dot"></i>' : ''}</button>`).join('')}</div></div>`);
+    h += TABS.find(t => t[0] === tab)[3];
   } else if (r.st !== 'ok') h += `<div class="rc-sec"><div class="rc-row"><button class="primary" data-rretry="1">↻ Nochmal versuchen</button><button data-rnew="1">Anderen Code eingeben</button></div></div>`;
   el.innerHTML = h; el.scrollTop = keepY;
   rcInkDraw(); rcPtrDraw(); rcTop();
@@ -9466,7 +9578,7 @@ function rcNoiseHtml(s) {
    Daten nur in der Klassendatei: c.tally = { lists: [...], marks: [{ l, it, s, d }] } */
 const TALLY_DEFAULT = () => ({ lists: [{ id: 'tl1', name: 'Material', icon: '📦', warn: 3, alert: 5, per: 'half', since: '', items: [
   { id: 'ti1', i: '📱', n: 'iPad vergessen' }, { id: 'ti2', i: '🔋', n: 'iPad nicht geladen' }, { id: 'ti3', i: '✏️', n: 'Stift vergessen' }, { id: 'ti4', i: '⚡', n: 'Stift nicht geladen' }] }], marks: [] });
-const tallyData = (c = cls()) => c.tally || TALLY_DEFAULT();
+const tallyData = (c = cls()) => modOn('tally') ? (c.tally || TALLY_DEFAULT()) : { lists: [], marks: [], seen: {} };
 const tallyEnsure = c => { if (!c.tally) c.tally = TALLY_DEFAULT(); return c.tally; };
 ui.tally = { list: null, day: null, open: true, mx: {} }; let tlTxt = '';
 try { ui.tally.mx = JSON.parse(localStorage.getItem('km-tally-mx') || '{}') || {}; } catch {}
@@ -9595,7 +9707,7 @@ $('lvTally').addEventListener('click', e => {
 $('lvTally').addEventListener('change', e => { if (e.target.id === 'tlDay') { const v = e.target.value; ui.tally.day = v && v !== todayStr() ? v : null; renderTally(); } });
 // Startseite: wer hat die rote Schwelle erreicht?
 function tallyStartHtml(c) {
-  if (!c.tally) return '';
+  if (!c.tally || !modOn('tally')) return '';
   const td = c.tally, out = [];
   td.lists.forEach(l => {
     if (!l.alert) return;
@@ -9621,7 +9733,7 @@ const GOAL_RULES = {
   listDue: { n: '☑ Abhakliste bis zur Frist bei allen erledigt', pts: 1, max: 2 },
   quiz: { n: '📊 Quiz gut gelöst (A–D-Abstimmung mit richtiger Antwort)', pts: 1, max: 2, pct: 80, unit: '% richtig' }
 };
-const goals = (c = cls()) => (c.goals || []);
+const goals = (c = cls()) => modOn('goal') ? (c.goals || []) : [];
 const goalById = (id, c = cls()) => goals(c).find(g => g.id === id) || null;
 const goalNew = () => ({ id: newId('g'), name: 'Klassenziel', reward: 'Spielestunde', target: 30, n: 0, style: 'jar', color: GOAL_COLORS[0], img: '', sound: true, vol: 5, minus: false, show: true, mode: 'ask', rules: {}, groups: null, log: [], done: [], aw: {} });
 const GOAL = { warns: 0, quiet: {}, asks: [], celebrate: null };
@@ -10033,7 +10145,7 @@ function rcxState() {
     chks, chk, tals: td.lists.map(l => ({ id: l.id, name: l.name, icon: l.icon })), tal, scr: +(innerWidth / innerHeight).toFixed(3), stg,
     goals: goals(c).map(g => ({ id: g.id, name: g.name, reward: g.reward, n: goalTotal(g), target: g.groups ? g.target * g.groups.length : g.target, minus: !!g.minus, groups: g.groups ? g.groups.map(x => [x.name, x.n || 0, x.color]) : null })),
     asks: GOAL.asks.map(a => { const g = goalById(a.gid); return { why: a.why, pts: a.pts, g: g ? g.name : '' }; }),
-    photo: !$('photoFull').hidden, wheel: !$('wheelFull').hidden, whHist: ((ui.wheel.full || {}).hist || []).slice(-30)
+    mods: modsOff(), photo: !$('photoFull').hidden, wheel: !$('wheelFull').hidden, whHist: ((ui.wheel.full || {}).hist || []).slice(-30)
   };
 }
 function rcxHandle(d) {
@@ -10118,10 +10230,10 @@ function rcxHtml(r, s) {
   return h;
 }
 function rcxFullHtml(s) {
-  const x = s;
-  return `<div class="rc-sub">🎡 Glücksrad bildschirmfüllend</div><div class="rc-row rc-wrap"><button class="primary" data-rwh="spin">🎡 ${x.wheel ? 'Drehen' : 'Glücksrad starten'}</button>${x.wheel ? '<button data-rwh="reset">↺ Alle wieder rein</button><button data-rwh="close">✕ Rad schließen</button>' : ''}</div>
-    ${x.whHist && x.whHist.length ? `<div class="rc-sub" style="font-weight:600">Gezogen: ${x.whHist.map(esc).join(' · ')}</div>` : ''}
-    <div class="rc-sub">📷 Foto bildschirmfüllend</div><div class="rc-row rc-wrap"><label class="rc-file">📷 Foto an die Tafel<input type="file" accept="image/*" capture="environment" id="rcPhoto"></label><label class="rc-file">🖼 Bild aus Fotos<input type="file" accept="image/*" id="rcPhoto2"></label>${x.photo ? '<button data-rpho="pin">📌 Aufs Tafelbild</button><button data-rpho="close">✕ Foto schließen</button>' : ''}</div>`;
+  const x = s, mo = k => !(s.mods || []).includes(k);
+  return (mo('wheel') ? `<div class="rc-sub">🎡 Glücksrad bildschirmfüllend</div><div class="rc-row rc-wrap"><button class="primary" data-rwh="spin">🎡 ${x.wheel ? 'Drehen' : 'Glücksrad starten'}</button>${x.wheel ? '<button data-rwh="reset">↺ Alle wieder rein</button><button data-rwh="close">✕ Rad schließen</button>' : ''}</div>
+    ${x.whHist && x.whHist.length ? `<div class="rc-sub" style="font-weight:600">Gezogen: ${x.whHist.map(esc).join(' · ')}</div>` : ''}` : '') + (mo('photo') ? `
+    <div class="rc-sub">📷 Foto bildschirmfüllend</div><div class="rc-row rc-wrap"><label class="rc-file">📷 Foto an die Tafel<input type="file" accept="image/*" capture="environment" id="rcPhoto"></label><label class="rc-file">🖼 Bild aus Fotos<input type="file" accept="image/*" id="rcPhoto2"></label>${x.photo ? '<button data-rpho="pin">📌 Aufs Tafelbild</button><button data-rpho="close">✕ Foto schließen</button>' : ''}</div>` : '');
 }
 function rcxPtrHtml(s) {
   return `<div class="rc-sec"><h3>🔴 Zeiger</h3><p class="hint" style="margin:0 0 6px">Mit dem Finger auf der Fläche zeigen – an der Tafel erscheint ein roter Punkt.</p><div class="rc-ptr" id="rcPtrPad" style="aspect-ratio:${s.scr || 1.6}"><canvas id="rcPtrCv"></canvas></div></div>`;
@@ -10143,6 +10255,7 @@ const ptrEnd = e => { if (!e.target.closest || !e.target.closest('#rcPtrPad') ||
 $('rcPanel').addEventListener('pointerup', ptrEnd); $('rcPanel').addEventListener('pointercancel', ptrEnd);
 $('rcPanel').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || !RC.remote) return;
+  if (b.dataset.rtab) { RC.tab = b.dataset.rtab; try { localStorage.setItem('km-rc-tab', RC.tab); } catch {} $('rcPanel').scrollTop = 0; renderRc(); $('rcPanel').scrollTop = 0; return; }
   const st = RC.remote.state || {};
   if (b.dataset.rcs != null) { rcSend({ c: 'chkSel', id: b.dataset.rcs || null }); if (!b.dataset.rcs) rcSend({ c: 'tlSel', id: null }); else rcSend({ c: 'tlSel', id: null }); }
   if (b.dataset.rtl) { rcSend({ c: 'tlSel', id: st.tal && st.tal.id === b.dataset.rtl ? null : b.dataset.rtl }); rcSend({ c: 'chkSel', id: null }); }
