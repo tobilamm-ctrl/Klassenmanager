@@ -521,6 +521,44 @@
   .g-clrow { display: flex; align-items: center; gap: 6px; } .g-clrow i { width: 12px; height: 12px; border-radius: 50%; background: var(--gc); flex: none; } .g-clrow span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
   .g-clrow button { padding: 1px 9px; min-width: 34px; }
   @media (prefers-reduced-motion: reduce) { .g-idle { animation: none !important; } }
+  /* neue Tafelbausteine */
+  .bw-duty, .bw-mood, .bw-budget, .bw-done, .bw-teams { width: 100%; height: 100%; display: flex; flex-direction: column; gap: 4px; min-height: 0; padding: 2px 4px; }
+  .bw-duty .mh, .bw-mood .mh, .bw-budget .mh, .bw-done .mh { font-weight: 800; color: #475569; display: flex; justify-content: space-between; gap: 6px; }
+  .bw-duty .du { display: grid; grid-template-columns: 1.6em auto 1fr; gap: 6px; align-items: baseline; padding: 3px 0; border-top: 1px solid #f1f5f9; }
+  .bw-duty .dn { color: #64748b; } .bw-duty b { text-align: right; }
+  .md-bars { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; min-height: 0; }
+  .md-c { display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 0; }
+  .md-b { flex: 1; width: 60%; background: #f1f5f9; border-radius: 6px; display: flex; align-items: flex-end; overflow: hidden; min-height: 10px; } .md-b i { display: block; width: 100%; background: var(--accent); border-radius: 6px; transition: height .5s; }
+  .md-e { font-size: 1.8em; line-height: 1; padding: 2px 6px; background: none; border: none; } .md-e:disabled { opacity: 1; cursor: default; }
+  .md-info { text-align: center; color: #64748b; font-size: .85em; }
+  .bg-bat { position: relative; flex: 1; min-height: 30px; border: 3px solid #334155; border-radius: 10px; overflow: hidden; background: #f8fafc; margin-right: 8px; }
+  .bg-bat::after { content: ''; position: absolute; right: -11px; top: 30%; width: 6px; height: 40%; background: #334155; border-radius: 0 3px 3px 0; }
+  .bg-fill { position: absolute; inset: 0 auto 0 0; transition: width .4s, background .4s; }
+  .bg-bat span { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 800; font-size: 1.5em; color: #0f172a; text-shadow: 0 0 6px #fff; }
+  .bw-budget.res-ok .bg-bat { border-color: #16a34a; } .bw-budget.res-fail .bg-bat { border-color: #dc2626; }
+  .dn-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; } .dn-bar i { display: block; height: 100%; background: #16a34a; transition: width .4s; }
+  .dn-l { flex: 1; min-height: 0; overflow: auto; display: flex; flex-wrap: wrap; gap: 4px; align-content: flex-start; }
+  .dn-c { border-radius: 999px; padding: 3px 10px; font-weight: 700; font-size: .9em; background: #fff; border: 1.5px solid #cbd5e1; }
+  .dn-c.on { background: #dcfce7; border-color: #16a34a; color: #166534; }
+  .dn-x { font-size: .85em; background: #fffbeb; border-radius: 8px; padding: 4px 8px; } .dn-x ul, .dn-x ol { margin: 2px 0; padding-left: 1.2em; }
+  .tg-grid { flex: 1; min-height: 0; overflow: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(7.5em, 1fr)); gap: 5px; align-content: start; }
+  .tg-c { border: 2px solid var(--tc); border-radius: 8px; padding: 3px 6px; display: flex; flex-direction: column; font-size: .9em; } .tg-c b { color: var(--tc); font-size: .85em; text-transform: uppercase; }
+  .bw-note { position: relative; width: 100%; height: 100%; background: var(--nc); box-shadow: 0 6px 14px rgba(0,0,0,.15); transform: rotate(-1.2deg); padding: 6% 7%; display: flex; flex-direction: column; border-radius: 2px; }
+  .bw-note::before { content: ''; position: absolute; top: -6px; left: 50%; width: 34%; height: 14px; transform: translateX(-50%) rotate(2deg); background: rgba(255,255,255,.55); }
+  .bw-note .tx { flex: 1; min-height: 0; overflow: hidden; font-size: var(--fs, 20px); line-height: 1.25; font-family: "Comic Sans MS", "Segoe Print", system-ui, sans-serif; overflow-wrap: anywhere; }
+  .bw-note .nt-ed { flex: 1; width: 100%; border: none; background: rgba(255,255,255,.4); font: inherit; font-size: 18px; resize: none; padding: 4px; }
+  .tx.fmt, .bw-note .tx { white-space: normal; } .tx.fmt > div, .bw-note .tx > div { white-space: pre-wrap; min-height: 1em; }
+  .tx.fmt ul, .tx.fmt ol, .bw-note ul, .bw-note ol { margin: .1em 0; padding-left: 1.3em; } .tx.fmt li::marker { color: var(--accent); font-weight: 800; }
+  mark { background: #fde68a; padding: 0 .1em; border-radius: 3px; } .tc-rot { color: #dc2626; } .tc-blau { color: #2563eb; } .tc-gruen { color: #16a34a; }
+  .tx-edit { display: flex; flex-direction: column; gap: 4px; font-weight: 400; } .tx-edit textarea { min-height: 120px; font: inherit; font-weight: 400; }
+  .tx-tools { display: flex; flex-wrap: wrap; gap: 3px; } .tx-tools button { padding: 2px 8px; min-width: 32px; font-weight: 400; }
+  .tx-prev { border: 1px dashed #cbd5e1; border-radius: 8px; padding: 6px 10px; max-height: 140px; overflow: auto; font-size: .9rem; background: #fff; } .tx-prev > div { white-space: pre-wrap; } .tx-prev ul, .tx-prev ol { margin: 2px 0; padding-left: 1.3em; }
+  .bw-math.fl .mh { display: flex; justify-content: space-between; } .bw-math.fl .mt { font-size: 3em; }
+  .fl-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; } .fl-bar i { display: block; height: 100%; background: var(--accent); animation: flBar linear both; } @keyframes flBar { from { width: 100%; } to { width: 0; } }
+  .fl-res { flex: 1; min-height: 0; overflow: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(8em, 1fr)); gap: 2px 12px; font-size: 1.15em; align-content: start; } .fl-res small { color: #94a3b8; } .fl-res b { color: var(--accent); }
+  .fl-idle { font-size: .45em; text-align: center; color: #475569; } .fl-idle small { font-size: .7em; color: #94a3b8; }
+  .fl-set { border: 1px dashed #cbd5e1; border-radius: 8px; padding: 6px 8px; display: flex; flex-direction: column; gap: 4px; }
+  .rc-wide { grid-column: 1 / -1; }
 </style>
 <style>
   :root {
@@ -1474,7 +1512,7 @@
   .rc-slots { display: flex; gap: 8px; align-items: center; } .rc-slots span { width: 54px; height: 54px; border: 2px dashed #cbd5e1; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; background: #f8fafc; }
   .rc-slots button { font-size: 1.3rem; padding: 6px 14px; }
   .rc-symgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; } .rc-symgrid button { font-size: 2.1rem; padding: 10px 0; background: #fff; }
-  .rc-known { display: flex; flex-direction: column; gap: 6px; } .rc-known span { display: flex; gap: 6px; } .rc-known span > button:first-child { flex: 1; text-align: left; font-size: 1.05rem; padding: 10px 12px; } .rc-known small { margin-left: 8px; letter-spacing: .1em; }
+  .rc-known { display: flex; flex-direction: column; gap: 6px; } .rc-known span { display: flex; gap: 6px; } .rc-known > span > button:first-child { flex: 1; text-align: left; font-size: 1.05rem; padding: 8px 12px; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; } .rc-known small { font-weight: 500; font-size: .78rem; opacity: .9; } .rc-known .rk-sym { display: inline; letter-spacing: .1em; margin-left: 4px; }
   .rc-trust { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: .85rem; } .rc-trust span { background: #f1f5f9; border-radius: 999px; padding: 2px 4px 2px 10px; display: inline-flex; align-items: center; gap: 4px; } .rc-trust button { border: none; background: none; padding: 0 4px; }
   #rcAsk { position: fixed; inset: 0; z-index: 4500; background: rgba(15,23,42,.45); display: flex; align-items: center; justify-content: center; }
   #rcAsk[hidden] { display: none; }
@@ -1744,7 +1782,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-12-02</p>
+          <p class="hint" style="margin:0">Version 2026-12-05</p>
         </div>
       </details>
 
@@ -1968,6 +2006,7 @@
   <button data-b="vote" title="Abstimmung starten">📊 Abstimmung</button>
   <button data-b="noise" class="toggle" title="Klangkulisse (Regen, Wald, Meer, Rauschen …)">🎧</button>
   <button data-b="rc" class="toggle" title="Fernbedienung (iPad)">📡</button>
+  <button data-b="teams" title="Gruppeneinteilung groß anzeigen (oder neu bilden)">👥 Gruppen</button>
   <button data-b="plan" title="Zum Sitzplan (Präsentation)">🪑 Sitzplan</button>
   <button data-b="exit" class="primary" title="Präsentation beenden (Esc)">✕ Beenden</button>
 </div>
@@ -4245,6 +4284,7 @@ function makeTeams() {
 }
 function teamTitle(i) { return (ui.teams.names && ui.teams.names[i]) || (ui.teams.mode === 'pairs' ? 'Paar ' : 'Gruppe ') + (i + 1); }
 function renderTeams() {
+  setTimeout(() => { try { bdRefreshType('teams'); } catch (e) {} }, 0);
   $('teamN').disabled = $('teamMode').value === 'pairs';
   const dn = displayNames(cls().students);
   $('teamRoleRow').hidden = !ui.teams; renderRoleSel(); renderTeamSets(); syncGwUi();
@@ -4851,7 +4891,7 @@ $('pmTeamMake').addEventListener('click', () => {
   $('pmTeamShow').disabled = $('pmTeamClear').disabled = !ui.teams;
   renderRoom(); syncPresentBar();
 });
-document.addEventListener('pointerdown', e => { if (!$('teamsMenu').hidden && !e.target.closest('#teamsMenu, #teamsBtn, [data-p="teams"]')) $('teamsMenu').hidden = true; });
+document.addEventListener('pointerdown', e => { if (!$('teamsMenu').hidden && !e.target.closest('#teamsMenu, #teamsBtn, [data-p="teams"], [data-b="teams"]')) $('teamsMenu').hidden = true; });
 
 /* =====================================================================
    Gruppenarbeits-Timer
@@ -7418,7 +7458,7 @@ function bdAddItem(t) {
   change(() => { it = { id: newId('w'), t, x: sp.x, y: sp.y, w: T.w, h: T.h, p: T.p() }; b.items.push(it); }, { keepList: true });
   ui.bdSel = it.id; if (ui.bdPresent) ui.bdEdit = true;
   renderBoard(); syncBdBar();
-  if (t === 'text' || t === 'img' || t === 'qr' || t === 'score') bdSettings(it.id);
+  if (t === 'text' || t === 'img' || t === 'qr' || t === 'score' || t === 'note') bdSettings(it.id);
   if (t === 'goal' && !goals().length) openGoal();
 }
 // freier Platz für einen neuen Baustein (sonst null)
@@ -7436,7 +7476,7 @@ function bwHtml(it) {
   if (it.t === 'clock' && p.analog) return `<div class="bw-clock an">${aClockSvg()}${p.date ? '<small data-live="date"></small>' : ''}</div>`;
   if (it.t === 'clock') return `<div class="bw-clock"><b data-live="time"></b>${p.date ? '<small data-live="date"></small>' : ''}</div>`;
   if (it.t === 'count') { const c = countdownInfo(p); return `<div class="bw-count${c.fe ? ' fe' : ''}" data-live="count">${c.top ? `<small>${esc(c.top)}</small>` : ''}<b${c.word ? ' style="font-size:min(26cqh,14cqw)"' : ''}>${esc(c.big)}</b><span>${esc(c.sub)}</span></div>`; }
-  if (it.t === 'text') return `<div class="bw-text" style="background:${p.bg || '#fff'}">${p.title ? `<h4>${esc(p.title)}</h4>` : ''}<div class="tx">${esc(p.text || '') || '<span class="hint">Text eingeben (⚙)</span>'}</div></div>`;
+  if (it.t === 'text') return `<div class="bw-text" style="background:${p.bg || '#fff'}">${p.title ? `<h4>${esc(p.title)}</h4>` : ''}<div class="tx fmt">${txFmt(p.text || '') || '<span class="hint">Text eingeben (⚙)</span>'}</div></div>`;
   if (it.t === 'img') return p.src ? `<div class="bw-img"><img src="${p.src}" alt="">${p.cap ? `<div class="bw-cap">${esc(p.cap)}</div>` : ''}</div>` : '<div class="bw-ph">🖼<br>Bild wählen (⚙)</div>';
   if (it.t === 'qr') {
     if (!p.url) return '<div class="bw-ph">🔗<br>Link eintragen (⚙)</div>';
@@ -7499,7 +7539,7 @@ function bdFitText() {
     const H = bw.clientHeight, W = bw.clientWidth; if (!H) return;
     const fit = (el, max) => { if (!el) return; let lo = 8, hi = Math.max(10, max); for (let k = 0; k < 12; k++) { const m = (lo + hi) / 2; bw.style.setProperty('--fs', m + 'px'); if (el.scrollHeight <= el.clientHeight + 1 && el.scrollWidth <= el.clientWidth + 1) lo = m; else hi = m; } bw.style.setProperty('--fs', Math.floor(lo) + 'px'); };
     bw.style.setProperty('--hs', Math.max(12, Math.min(H * 0.1, W * 0.07)) + 'px');
-    const tx = bw.querySelector('.bw-text .tx, .bw-due .ls'); if (tx) fit(tx, tx.classList.contains('ls') ? Math.min(H * 0.11, W * 0.075) : H * 0.2);
+    const tx = bw.querySelector('.bw-text .tx, .bw-due .ls, .bw-note .tx'); if (tx) fit(tx, tx.classList.contains('ls') ? Math.min(H * 0.11, W * 0.075) : H * 0.2);
     const sc = bw.querySelector('.bw-score'); if (sc) { const n = Math.max(1, sc.children.length); bw.style.setProperty('--fs', Math.max(10, Math.min(H / n * 0.32, W * 0.07)) + 'px'); }
   });
 }
@@ -7627,7 +7667,7 @@ function bdSettings(id) {
   if (it.t === 'count') f = `<label class="nc-name">Countdown bis${sel('mode', [['ferien', 'zu den nächsten Ferien (automatisch)'], ['date', 'zu einem eigenen Termin']], p.mode)}</label>
     <div class="row"><label class="nc-name" style="flex:1">Datum<input type="date" data-k="date" value="${esc(p.date || '')}"></label><label class="nc-name" style="flex:2">Bezeichnung<input data-k="label" value="${esc(p.label || '')}" placeholder="z. B. zum Wandertag"></label></div>
     <label class="nc-name">Zählen in${sel('unit', [['school', 'Schultagen (ohne Wochenende, Ferien, Feiertage)'], ['days', 'Tagen']], p.unit)}</label>`;
-  if (it.t === 'text') f = `<label class="nc-name">Überschrift<input data-k="title" value="${esc(p.title || '')}" placeholder="z. B. Morgenarbeit"></label><label class="nc-name">Text<textarea data-k="text" placeholder="Aufgaben, Aufträge, Informationen …">${esc(p.text || '')}</textarea></label>
+  if (it.t === 'text') f = `<label class="nc-name">Überschrift<input data-k="title" value="${esc(p.title || '')}" placeholder="z. B. Morgenarbeit"></label><div class="nc-name">Text${txEditor('text', p.text, 'Aufgaben, Aufträge, Informationen …  (Zeile mit „1. “ oder „• “ beginnen = Liste, Enter = nächster Punkt)')}</div>
     <div class="nc-name">Hintergrund<div class="bd-colors" data-k="bg">${BD_BG.map(c => `<button type="button" data-c="${c}" style="background:${c}"${(p.bg || '#fff') === c ? ' class="cur"' : ''}></button>`).join('')}</div></div>`;
   if (it.t === 'img') f = `<label class="nc-name">Bild<input type="file" accept="image/*" id="bdFile"></label><p class="hint" style="margin:0">Das Bild wird verkleinert und in der Klassendatei gespeichert.</p><label class="nc-name">Bildunterschrift (optional)<input data-k="cap" value="${esc(p.cap || '')}"></label>`;
   if (it.t === 'qr') f = `<label class="nc-name">Link<input data-k="url" value="${esc(p.url || '')}" placeholder="https://…"></label><label class="nc-name">Beschriftung (optional)<input data-k="cap" value="${esc(p.cap || '')}" placeholder="z. B. Lernvideo"></label>`;
@@ -7744,6 +7784,7 @@ $('bdBar').addEventListener('click', e => {
   if (k === 'draw') { $('bdMenu').hidden = true; setBdDraw(!ui.bdDraw); }
   if (k === 'rc') openRc();
   if (k === 'vote') openVoteSetup();
+  if (k === 'teams') { $('bdMenu').hidden = true; if (ui.teams) { $('teamsDlg').hidden = !$('teamsDlg').hidden; if (!$('teamsDlg').hidden) renderTeams(); } else openTeamsMenu(b); }
   if (k === 'noise') { toggleNoisePanel(); setTimeout(syncNoiseBtns, 0); }
   if (k === 'exit') bdPresent(false);
   if (k === 'plan') { ui.keepFs = true; bdPresent(false); setView('plan'); setPresent(true); ui.keepFs = false; }
@@ -8033,13 +8074,14 @@ function noiseWarn(key, phase, sens, vol) {
 const boardPhase = () => { const b = curBoard(), ph = b && b.items.find(i => i.t === 'phase'); return ph ? ph.p.ph : ''; };
 setInterval(() => {
   const b = ui.view === 'board' && curBoard();
-  const needBoard = !!(b && b.items.some(i => i.t === 'light' && i.p.mic));
+  const needBoard = !!(b && b.items.some(i => (i.t === 'light' && i.p.mic) || (i.t === 'budget' && BUD[i.id] && BUD[i.id].run)));
   const needOv = OV.mic && OV.on.light && ovVisible();
   const need = (needBoard || needOv) && document.visibilityState === 'visible';
   if (need && !MIC.st && !MIC.pending && Date.now() - MIC.failAt > 15000) micStart();
   if (!need && MIC.st) { if (!MIC.off) MIC.off = Date.now(); else if (Date.now() - MIC.off > 4000) micStop(); } else MIC.off = 0;
   if (!need) return;
   micSample();
+  if (needBoard) budTick();
   if (needBoard) document.querySelectorAll('#bdStage .bw').forEach(bw => {
     const it = bdItem(bw.dataset.id); if (!it || it.t !== 'light' || !it.p.mic) return;
     if (it.p.meter) meterPaint(bw.querySelector('.bw-meter')); else micPaint(bw.querySelector('.bw-light'), MIC.an ? micJudge(it.id, boardPhase(), it.p.sens) : 'g');
@@ -8386,12 +8428,14 @@ function rcItem(it) {
   if (it.t === 'score') return { id: it.id, t: 'score', teams: (p.teams || []).map(x => ({ n: x.n, c: x.c, s: x.s || 0 })) };
   if (it.t === 'clock') return { id: it.id, t: 'clock', analog: !!p.analog };
   if (it.t === 'wheel') return { id: it.id, t: 'wheel', win: (ui.wheel[it.id] || {}).winName || '' };
-  if (it.t === 'math') return { id: it.id, t: 'math', show: !!(ui.math[it.id] || {}).show };
+  if (it.t === 'math') return { id: it.id, t: 'math', show: !!(ui.math[it.id] || {}).show, flash: !!p.flash, run: !!(ui.math[it.id] || {}).run };
+  if (it.t === 'done') { const d = new Set(doneIds(it)), dn = displayNames(cls().students); return { id: it.id, t: 'done', rows: listStudents().filter(s => !isAbsent(s)).map(s => [s.id, dn.get(s.id), d.has(s.id) ? 1 : 0]) }; }
+  if (it.t === 'budget') { const b = budState(it); return { id: it.id, t: 'budget', run: b.run, left: Math.ceil(b.left / 1000), res: b.res }; }
   return null;
 }
 function rcState() {
   const b = curBoard(), ban = $('pickBanner'), c = cls(), ft = tmFullRef === timer;
-  return { t: 'state', room: rcRoom(), cls: c.name, view: ui.view, present: !!ui.present, bdPresent: !!ui.bdPresent,
+  return { t: 'state', room: rcRoom(), hd: rcDevGuess(), cls: c.name, view: ui.view, present: !!ui.present, bdPresent: !!ui.bdPresent,
     boards: boardsVis().map(x => ({ id: x.id, name: x.name })), board: b ? b.id : null,
     items: b ? b.items.map(rcItem).filter(Boolean) : [],
     timer: $('timerBox').hidden || ft ? null : { txt: tmText(timer), run: timer.running, done: timer.done, mode: timer.mode },
@@ -8443,6 +8487,8 @@ function rcHandle(d) {
     if (it.t === 'clock') change(() => { it.p.analog = !!d.v; }, { keepList: true });
     if (it.t === 'wheel' && bw) { if (d.a === 'spin') wheelSpin(it.id, it.p, bw); if (d.a === 'reset') { ui.wheel[it.id] = { rot: (ui.wheel[it.id] || {}).rot || 0, out: [] }; bw.querySelector('.bx').innerHTML = bwHtml(it); } }
     if (it.t === 'math' && bw) { mathCtl(it, d.a); bw.querySelector('.bx').innerHTML = bwHtml(it); bdFitText(); }
+    if (it.t === 'done' && d.a === 'dn' && d.v) doneToggle(it, String(d.v));
+    if (it.t === 'budget' && ['go', 'stop', 'reset'].includes(d.a)) { budCtl(it, d.a); if (bw) bw.querySelector('.bx').innerHTML = bwHtml(it); }
   }
   if (d.c === 'pick') { if (d.n) $('pickN').value = d.n; if (ui.view !== 'plan' || !ui.present) { rcShow('plan'); setTimeout(pickSomeone, 400); } else pickSomeone(); }
   if (d.c === 'pickN') $('pickN').value = d.v;
@@ -8630,7 +8676,7 @@ function renderRcDlg() {
   $('rcJoinBox').hidden = !!RC.host;   // diese Tafel ist Gastgeber – Koppel-Feld nicht nötig
   const known = lsJ('km-rc-known', []), pick = RC.pick || [];
   $('rcJoinBox').innerHTML = `<p class="hint" style="margin:0">Dieses Gerät ist die <b>Fernbedienung</b> (z. B. dein iPad).</p>
-    ${known.length ? `<div class="rc-known">${known.map(k => `<span><button class="primary" data-rk="${k.code}">📡 Mit ${esc(k.room || 'Tafel')} verbinden <small>${rcSyms(k.code)}</small></button><button data-rkdel="${k.code}" title="Vergessen">✕</button></span>`).join('')}</div>` : ''}
+    ${known.length ? `<div class="rc-known">${rcKnownLabels(known).map(([k, lbl]) => `<span><button class="primary rk-go" data-rk="${k.code}"><b>📡 ${esc(lbl)}</b><small>${esc([k.dev, k.cls ? 'Klasse ' + k.cls : '', k.t ? 'zuletzt ' + new Date(k.t).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) : ''].filter(Boolean).join(' · '))} <span class="rk-sym">${rcSyms(k.code)}</span></small></button><button data-rkren="${k.code}" title="Umbenennen (nur auf diesem Gerät)">✎</button><button data-rkdel="${k.code}" title="Vergessen">✕</button></span>`).join('')}</div>` : ''}
     <b style="font-size:.9rem">${known.length ? 'Andere Tafel koppeln' : 'Mit Tafel koppeln'}: die 3 Symbole der Tafel der Reihe nach antippen</b>
     <div class="rc-slots">${[0, 1, 2].map(i => `<span>${pick[i] != null ? RC_SYM[pick[i]] : ''}</span>`).join('')}<button id="rcPickBack" title="Zurück"${pick.length ? '' : ' disabled'}>⌫</button></div>
     <div class="rc-symgrid">${RC_SYM.map((s, i) => `<button data-sym="${i}" title="${RC_SYMN[i]}">${s}</button>`).join('')}</div>
@@ -8646,6 +8692,11 @@ $('rcDlg').addEventListener('click', e => {
   if (t.dataset && t.dataset.sym != null) { RC.pick = (RC.pick || []).concat([+t.dataset.sym]).slice(0, 3); renderRcDlg(); if (RC.pick.length === 3) { const c = RC.pick.join(''); RC.pick = []; setTimeout(() => { $('rcDlg').hidden = true; rcConnect(c); }, 250); } }
   if (t.id === 'rcPickBack') { RC.pick = (RC.pick || []).slice(0, -1); renderRcDlg(); }
   if (t.dataset && t.dataset.rk) { $('rcDlg').hidden = true; rcConnect(t.dataset.rk); }
+  if (t.dataset && t.dataset.rkren) {
+    const list = lsJ('km-rc-known', []), k = list.find(x => x.code === t.dataset.rkren); if (!k) return;
+    const nm = window.prompt('Name für diese Tafel (nur auf diesem Gerät), z. B. „Raum 12“ oder „PC Lehrerzimmer“:', k.nick || k.room || '');
+    if (nm === null) return; k.nick = nm.trim().slice(0, 30); if (!k.nick) delete k.nick; lsS('km-rc-known', list); renderRcDlg(); return;
+  }
   if (t.dataset && t.dataset.rkdel) { lsS('km-rc-known', lsJ('km-rc-known', []).filter(k => k.code !== t.dataset.rkdel)); renderRcDlg(); }
 });
 $('rcDlg').addEventListener('change', e => {
@@ -8671,7 +8722,7 @@ function rcConnect(code, keep) {
     conn.on('data', d => {
       if (d && d.t === 'wait') { r.st = 'confirm'; renderRc(); return; }
       if (d && d.t === 'denied') { r.stop = true; r.st = 'denied'; r.why = 'Die Tafel hat die Verbindung abgelehnt.'; renderRc(); return; }
-      if (d && d.t === 'state') { if (r.st !== 'ok') { r.st = 'ok'; rcRemember(code, d.room); } else if (d.room !== r.room) rcRemember(code, d.room); r.room = d.room; const an = d.ack && d.ack.n; if (r.lastAck === undefined) r.lastAck = an; else if (an && an !== r.lastAck) { r.lastAck = an; r.ackAt = Date.now(); setTimeout(renderRc, 4100); } r.state = d; renderRc(); } });
+      if (d && d.t === 'state') { if (r.st !== 'ok') { r.st = 'ok'; rcRemember(code, d.room, d); } else if (d.room !== r.room) rcRemember(code, d.room, d); r.room = d.room; const an = d.ack && d.ack.n; if (r.lastAck === undefined) r.lastAck = an; else if (an && an !== r.lastAck) { r.lastAck = an; r.ackAt = Date.now(); setTimeout(renderRc, 4100); } r.state = d; renderRc(); } });
     conn.on('close', () => { if (r.stop || RC.remote !== r) return; if (r.st === 'confirm' || r.st === 'hello') { r.st = 'denied'; r.why = 'Die Verbindung wurde an der Tafel nicht zugelassen.'; r.stop = true; renderRc(); return; } r.st = 'lost'; renderRc(); rcRetry(r); });
     conn.on('error', () => {});
   });
@@ -8682,7 +8733,13 @@ function rcConnect(code, keep) {
   });
 }
 // gekoppelte Tafeln merken (neueste zuerst)
-function rcRemember(code, room) { const k = lsJ('km-rc-known', []).filter(x => x.code !== code); k.unshift({ code, room: room || 'Tafel', t: Date.now() }); lsS('km-rc-known', k.slice(0, 6)); }
+function rcRemember(code, room, d) { const all = lsJ('km-rc-known', []), old = all.find(x => x.code === code) || {}, k = all.filter(x => x.code !== code); k.unshift(Object.assign({}, old, { code, room: room || 'Tafel', t: Date.now() }, d && d.hd ? { dev: d.hd } : {}, d && d.cls ? { cls: d.cls } : {})); lsS('km-rc-known', k.slice(0, 6)); }
+// gemerkte Tafeln: eigener Name, sonst Tafel-Name – gleiche Namen werden automatisch unterscheidbar gemacht
+function rcKnownLabels(list) {
+  const base = k => k.nick || k.room || 'Tafel', cnt = n => list.filter(x => base(x) === n).length;
+  const out = list.map(k => { let l = base(k); if (!k.nick && cnt(l) > 1) l += k.dev ? ' (' + k.dev + (k.cls ? ', ' + k.cls : '') + ')' : ''; return [k, l]; });
+  const seen = {}; return out.map(([k, l]) => { const same = out.filter(x => x[1] === l).length; if (same > 1) { seen[l] = (seen[l] || 0) + 1; return [k, l + ' ' + seen[l]]; } return [k, l]; });
+}
 function rcRetry(r, ms) {
   if (r.stop || r.retrying) return;
   r.retrying = true; r.tries = (r.tries || 0) + 1;
@@ -8798,6 +8855,8 @@ function rcItemHtml(i) {
   if (i.t === 'dice') return `<div class="rc-card"><b>🎲 Würfel</b><div class="rc-row"><button class="primary" data-ri="${i.id}" data-a="roll">🎲 Würfeln</button><span class="rc-dv">${(i.vals || []).join(' · ')}</span></div>
     <div class="rc-row rc-small"><select data-rdice="${i.id}" data-k="n">${[1, 2, 3, 4, 5, 6].map(n => `<option value="${n}"${+i.n === n ? ' selected' : ''}>${n} Würfel</option>`).join('')}</select><select data-rdice="${i.id}" data-k="sides">${DICE_SIDES.map(n => `<option value="${n}"${+i.sides === n ? ' selected' : ''}>W${n}</option>`).join('')}</select></div></div>`;
   if (i.t === 'score') return `<div class="rc-card"><b>🏆 Punktestand</b>${i.teams.map((t, k) => `<div class="rc-row"><span class="rc-team" style="--tc:${t.c}">${esc(t.n)}</span><button data-ri="${i.id}" data-i="${k}" data-d="-1">−</button><b>${t.s}</b><button data-ri="${i.id}" data-i="${k}" data-d="1">＋</button></div>`).join('')}</div>`;
+  if (i.t === 'done') return `<div class="rc-card rc-wide"><b>🙋 Wer ist fertig? ${i.rows.filter(r => r[2]).length} / ${i.rows.length}</b><div class="rc-chg">${i.rows.map(([sid, nm, on]) => `<button class="rc-chip${on ? ' s-ok' : ''}" data-ri="${i.id}" data-a="dn" data-v="${sid}">${on ? '✓ ' : ''}${esc(nm)}</button>`).join('')}</div></div>`;
+  if (i.t === 'budget') return `<div class="rc-card"><b>🔋 Geräuschbudget</b><div class="rc-row"><b>${i.res === 'ok' ? '🎉 geschafft' : i.res === 'fail' ? '😮 leer' : i.left + ' s'}</b>${i.run ? `<button data-ri="${i.id}" data-a="stop">⏹</button>` : `<button class="primary" data-ri="${i.id}" data-a="go">▶ Start</button>`}<button data-ri="${i.id}" data-a="reset">↺</button></div></div>`;
   if (i.t === 'wheel') return `<div class="rc-card"><b>🎡 Glücksrad</b><div class="rc-row"><button class="primary" data-ri="${i.id}" data-a="spin">🎡 Drehen</button><button data-ri="${i.id}" data-a="reset">↺</button>${i.win ? `<b>${esc(i.win)}</b>` : ''}</div></div>`;
   if (i.t === 'math') return `<div class="rc-card"><b>🧮 Kopfrechnen</b><div class="rc-row"><button data-ri="${i.id}" data-a="show">${i.show ? '🙈 Lösung verbergen' : '👁 Lösung'}</button><button data-ri="${i.id}" data-a="new">🔀 Neu</button></div></div>`;
   if (i.t === 'clock') return `<div class="rc-card"><b>🕒 Uhr</b><div class="rc-row"><button data-ri="${i.id}" data-a="clk" data-v=""${i.analog ? '' : ' class="on"'}>🔢 digital</button><button data-ri="${i.id}" data-a="clk" data-v="1"${i.analog ? ' class="on"' : ''}>🕒 analog</button></div></div>`;
@@ -9097,7 +9156,7 @@ function voteState() {
 /* ---- Zeichnen ---- */
 function renderVote() {
   var wait = 200 - (Date.now() - vtLast);
-  if (wait <= 0) { clearTimeout(vtTimer); vtTimer = 0; vtLast = Date.now(); vtDraw(); vtBadge(); }
+  if (wait <= 0) { clearTimeout(vtTimer); vtTimer = 0; vtLast = Date.now(); vtDraw(); vtBadge(); try { moodRefresh(); } catch (e) {} }
   else if (!vtTimer) vtTimer = setTimeout(function () { vtTimer = 0; renderVote(); }, wait);
 }
 function vtColor(v, i) {
@@ -9860,7 +9919,8 @@ const GOAL_RULES = {
   quiet: { n: '🤫 Leise gearbeitet: Ampel/Schallpegel mit Mikrofon am Stück grün', pts: 1, max: 3, min: 10, unit: 'Minuten' },
   phase: { n: '⏱ Arbeitsphase geschafft: Countdown (ab 3 Min.) mit Mikrofon ohne Lautstärke-Warnung', pts: 1, max: 3 },
   listDue: { n: '☑ Abhakliste bis zur Frist bei allen erledigt', pts: 1, max: 2 },
-  quiz: { n: '📊 Quiz gut gelöst (A–D-Abstimmung mit richtiger Antwort)', pts: 1, max: 2, pct: 80, unit: '% richtig' }
+  quiz: { n: '📊 Quiz gut gelöst (A–D-Abstimmung mit richtiger Antwort)', pts: 1, max: 2, pct: 80, unit: '% richtig' },
+  budget: { n: '🔋 Geräuschbudget eingehalten (Tafelbaustein „Geräuschbudget“)', pts: 1, max: 3 }
 };
 const goals = (c = cls()) => modOn('goal') ? (c.goals || []) : [];
 const goalById = (id, c = cls()) => goals(c).find(g => g.id === id) || null;
@@ -10330,7 +10390,7 @@ $('wheelFull').addEventListener('change', e => { if (e.target.id === 'whfRm') WH
 /* ---- 🧮 Kopfrechnen / Aufgabe des Tages ---- */
 function mathTasks(p, seed) {
   const rnd = goalRand(seed), R = (a, b) => a + Math.floor(rnd() * (b - a + 1)), max = +p.max || 100, ops = String(p.ops || '+').split('').filter(o => '+-×:'.includes(o)), out = [];
-  for (let i = 0; i < clamp(+p.cnt || 1, 1, 6); i++) {
+  for (let i = 0; i < clamp(+p.cnt || 1, 1, 30); i++) {
     const o = ops[Math.floor(rnd() * ops.length)] || '+'; let a, b, r;
     if (o === '+') { r = R(Math.min(10, max), max); a = R(1, r - 1); b = r - a; }
     else if (o === '-') { a = R(Math.min(10, max), max); b = R(1, a); r = a - b; }
@@ -10341,6 +10401,7 @@ function mathTasks(p, seed) {
   return out;
 }
 function bwMathHtml(it) {
+  if (it.p.flash) return bwFlashHtml(it);
   const p = it.p, st = ui.math[it.id] || {}, seed = p.day ? todayStr() + it.id + (st.n || 0) : (st.seed || it.id), ts = mathTasks(p, seed);
   return `<div class="bw-math"><div class="mh">${p.day ? '🧮 Aufgabe des Tages' : '🧮 Kopfrechnen'}</div><div class="mt${ts.length > 1 ? ' many' : ''}">${ts.map(t => `<div class="mq"><span>${t.q} =</span><b>${st.show ? t.r : '?'}</b></div>`).join('')}</div>
     <div class="wh-ctl"><button class="bd-ctl" data-mt="show">${st.show ? '🙈 Lösung verbergen' : '👁 Lösung'}</button><button class="bd-ctl" data-mt="new">🔀 Neue Aufgabe${ts.length > 1 ? 'n' : ''}</button></div></div>`;
@@ -10369,8 +10430,11 @@ const BDX = {
     form: p => `<label class="nc-name">Rechenarten<select data-k="ops">${[['+', '＋ Plus'], ['-', '− Minus'], ['+-', '＋ und −'], ['×', '× Mal'], [':', ': Geteilt'], ['×:', '× und :'], ['+-×:', 'alle vier']].map(([k, l]) => `<option value="${k}"${p.ops === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
       <label class="nc-name">Zahlenraum<select data-k="max">${[10, 20, 100, 1000, 10000].map(k => `<option value="${k}"${+p.max === k ? ' selected' : ''}>bis ${k}${k === 100 ? ' (× und : = Einmaleins)' : ''}</option>`).join('')}</select></label>
       <label class="nc-name">Anzahl Aufgaben<select data-k="cnt">${[1, 2, 3, 4, 5, 6].map(k => `<option value="${k}"${+p.cnt === k ? ' selected' : ''}>${k}</option>`).join('')}</select></label>
-      <label class="chk"><input type="checkbox" data-k="day"${p.day ? ' checked' : ''}> „Aufgabe des Tages“: den ganzen Tag dieselbe Aufgabe (🔀 = trotzdem neue)</label>`,
-    save: (p, v) => { p.ops = v.ops; p.max = +v.max; p.cnt = +v.cnt; p.day = v.day; },
+      <label class="chk"><input type="checkbox" data-k="day"${p.day ? ' checked' : ''}> „Aufgabe des Tages“: den ganzen Tag dieselbe Aufgabe (🔀 = trotzdem neue)</label>
+      <div class="fl-set"><label class="chk"><input type="checkbox" data-k="flash"${p.flash ? ' checked' : ''}> <b>⚡ Blitzrechnen</b>: Aufgaben nacheinander einblenden, am Ende alle Lösungen</label>
+      <label class="nc-name">Anzahl<select data-k="fcnt">${[5, 8, 10, 12, 15, 20].map(k => `<option value="${k}"${+(p.fcnt || 10) === k ? ' selected' : ''}>${k} Aufgaben</option>`).join('')}</select></label>
+      <label class="nc-name">Tempo<select data-k="fsec">${[2, 3, 4, 5, 6, 8, 10].map(k => `<option value="${k}"${+(p.fsec || 4) === k ? ' selected' : ''}>alle ${k} Sekunden</option>`).join('')}</select></label></div>`,
+    save: (p, v) => { p.ops = v.ops; p.max = +v.max; p.cnt = +v.cnt; p.day = v.day; p.flash = v.flash; p.fcnt = +v.fcnt; p.fsec = +v.fsec; },
     ctl: (it, ctl, bw) => { const a = ctl.dataset.mt; if (!a) return false; mathCtl(it, a); bw.querySelector('.bx').innerHTML = bwHtml(it); bdFitText(); return true; }
   },
   noise: {
@@ -10392,7 +10456,237 @@ const BDX = {
     }
   }
 };
-function mathCtl(it, a) { const st = ui.math[it.id] = ui.math[it.id] || {}; if (a === 'show') st.show = !st.show; if (a === 'new') { st.show = false; st.n = (st.n || 0) + 1; st.seed = Math.random().toString(36); } }
+function mathCtl(it, a) {
+  const st = ui.math[it.id] = ui.math[it.id] || {};
+  if (a === 'show') st.show = !st.show;
+  if (a === 'new') { st.show = false; st.n = (st.n || 0) + 1; st.seed = Math.random().toString(36); }
+  // ⚡ Blitzrechnen
+  if (a === 'fgo') { Object.assign(st, { run: true, done: false, fshow: false, t0: Date.now(), i: 0, fseed: Math.random().toString(36) }); audio(); }
+  if (a === 'fstop') { st.run = false; st.done = true; }
+  if (a === 'fshow') st.fshow = !st.fshow;
+  if (a === 'fagain') Object.assign(st, { run: false, done: false, fshow: false });
+}
+// ⚡ Blitzrechnen: Aufgaben nacheinander, am Ende alle Lösungen
+function bwFlashHtml(it) {
+  const p = it.p, st = ui.math[it.id] || {}, n = clamp(+p.fcnt || 10, 3, 30), sec = clamp(+p.fsec || 4, 2, 15), ts = mathTasks({ ...p, cnt: n }, st.fseed || it.id);
+  if (st.run) { const i = Math.min(n - 1, st.i || 0), t = ts[i];
+    return `<div class="bw-math fl"><div class="mh">⚡ Blitzrechnen <span>${i + 1} / ${n}</span></div><div class="mt"><div class="mq"><span>${t.q} =</span><b>?</b></div></div><div class="fl-bar"><i style="animation-duration:${sec}s" data-k="${i}"></i></div><div class="wh-ctl"><button class="bd-ctl" data-mt="fstop">⏹ Stopp</button></div></div>`; }
+  if (st.done) return `<div class="bw-math fl"><div class="mh">⚡ Blitzrechnen – ${st.fshow ? 'Lösungen' : 'fertig!'}</div><div class="fl-res">${ts.map((t, k) => `<div><small>${k + 1}.</small> ${t.q} = <b>${st.fshow ? t.r : '?'}</b></div>`).join('')}</div>
+    <div class="wh-ctl"><button class="bd-ctl primary" data-mt="fshow">${st.fshow ? '🙈 Lösungen verbergen' : '👁 Lösungen zeigen'}</button><button class="bd-ctl" data-mt="fgo">🔀 Neue Runde</button><button class="bd-ctl" data-mt="fagain">↺</button></div></div>`;
+  return `<div class="bw-math fl"><div class="mh">⚡ Blitzrechnen</div><div class="mt"><div class="fl-idle">${n} Aufgaben · alle ${sec} Sekunden eine neue<br><small>Die Kinder schreiben die Ergebnisse auf – am Ende kommen alle Lösungen.</small></div></div><div class="wh-ctl"><button class="bd-ctl primary" data-mt="fgo">▶ Start</button></div></div>`;
+}
+setInterval(() => {
+  if (ui.view !== 'board') return; const b = curBoard(); if (!b) return;
+  b.items.forEach(it => {
+    if (it.t !== 'math' || !it.p.flash) return; const st = ui.math[it.id]; if (!st || !st.run) return;
+    const n = clamp(+it.p.fcnt || 10, 3, 30), sec = clamp(+it.p.fsec || 4, 2, 15), i = Math.floor((Date.now() - st.t0) / (sec * 1000));
+    if (i >= n) { st.run = false; st.done = true; playSound('gong', 5); } else if (i === st.i) return; else { st.i = i; { const ac = audio(); if (ac) tone(ac, 880, ac.currentTime + .02, .12, { vol: .12, att: .003 }); } }
+    const bx = document.querySelector(`#bdStage .bw[data-id="${it.id}"] .bx`); if (bx) { bx.innerHTML = bwHtml(it); bdFitText(); }
+  });
+}, 200);
+/* ---------- Weitere Tafelbausteine: Dienste, Stimmung, Geräuschbudget, Fertig-Liste, Gruppen, Notizzettel ---------- */
+Object.assign(BD_TYPES, {
+  duty: { n: 'Dienste', i: '🧽', w: 28, h: 40, p: () => ({}) },
+  mood: { n: 'Stimmung', i: '😀', w: 32, h: 40, p: () => ({ q: 'Wie geht es dir heute?' }) },
+  budget: { n: 'Geräuschbudget', i: '🔋', w: 30, h: 34, p: () => ({ min: 15, sec: 30, sens: 5 }) },
+  done: { n: 'Wer ist fertig?', i: '🙋', w: 40, h: 50, p: () => ({ extra: '' }) },
+  teams: { n: 'Gruppen', i: '👥', w: 44, h: 46, p: () => ({}) },
+  note: { n: 'Notizzettel', i: '🗒', w: 20, h: 26, p: () => ({ text: '', c: '#fef08a' }) }
+});
+BD_MOD.duty = 'duties';
+const NOTE_COL = ['#fef08a', '#fbcfe8', '#bbf7d0', '#bae6fd', '#fed7aa', '#e9d5ff'];
+ui.mood = {}; const BUD = {};
+// einen Bausteintyp auf dem sichtbaren Tafelbild neu zeichnen
+function bdRefreshType(t) { if (ui.view !== 'board') return; document.querySelectorAll('#bdStage .bw').forEach(bw => { const it = bdItem(bw.dataset.id); if (it && it.t === t) { const bx = bw.querySelector('.bx'); if (bx) bx.innerHTML = bwHtml(it); } }); bdFitText(); }
+
+/* ---- 🧽 Dienste ---- */
+function bwDutyHtml() {
+  const c = cls(), dn = displayNames(c.students), ds = (c.duties || []).filter(d => d.name);
+  if (!ds.length) return '<div class="bw-ph">🧽<br>Noch keine Dienste – im Sitzplan unter „Dienste &amp; Ämter“ anlegen</div>';
+  return `<div class="bw-duty"><div class="mh">🧽 Dienste</div>${ds.map(d => `<div class="du"><span class="di">${dutyIcon(d)}</span><span class="dn">${esc(d.name)}</span><b>${(d.sids || []).filter(Boolean).map(id => esc(dn.get(id) || '?')).join(', ') || '<i class="hint">–</i>'}</b></div>`).join('')}</div>`;
+}
+
+/* ---- 😀 Stimmung (per iPad über die Abstimmung oder direkt an der Tafel antippen) ---- */
+const MOOD_E = ['😀', '🙂', '😐', '🙁'];
+function moodCounts(it) {
+  const st = ui.mood[it.id] || {};
+  if (st.mode === 'vote' && VOTE && VOTE.pid === st.pid) return vtCounts(VOTE);
+  return st.cnt || [0, 0, 0, 0];
+}
+function bwMoodHtml(it) {
+  const st = ui.mood[it.id] || {}, c = moodCounts(it), tot = c.reduce((a, b) => a + b, 0), mx = Math.max(1, ...c);
+  const live = st.mode === 'vote' && VOTE && VOTE.pid === st.pid, show = st.show || st.mode === 'tap' && false;
+  const avg = tot ? c.reduce((a, n, i) => a + n * i, 0) / tot : null;
+  const bars = MOOD_E.map((e, i) => `<div class="md-c"><div class="md-b"><i style="height:${show ? (c[i] / mx * 100).toFixed(0) : 0}%"></i></div><button class="bd-ctl md-e" data-md="tap" data-i="${i}"${st.mode === 'tap' ? '' : ' disabled'}>${e}</button><b>${show ? c[i] : '·'}</b></div>`).join('');
+  return `<div class="bw-mood"><div class="mh">${esc(it.p.q || 'Wie geht es dir?')}</div>
+    <div class="md-bars">${bars}</div>
+    <div class="md-info">${live ? `📲 Code ${rcSyms(VS && VS.code)} · ${tot} abgestimmt` : st.mode === 'tap' ? `👆 an der Tafel antippen · ${tot} Stimmen` : tot ? `${tot} Stimmen` : 'Noch keine Abfrage'}${show && avg != null ? ` · Stimmung: ${MOOD_E[Math.round(avg)]}` : ''}</div>
+    <div class="wh-ctl">${live ? '<button class="bd-ctl" data-md="end">⏹ Beenden</button><button class="bd-ctl" data-md="full" title="Code groß zeigen">⛶</button>' : `<button class="bd-ctl primary" data-md="vote">📲 Per iPad</button><button class="bd-ctl${st.mode === 'tap' ? ' on' : ''}" data-md="tapmode">👆 Antippen</button>`}<button class="bd-ctl${show ? ' on' : ''}" data-md="show">${show ? '🙈 Ergebnis verbergen' : '👁 Ergebnis'}</button>${tot ? '<button class="bd-ctl" data-md="reset" title="Neu">↺</button>' : ''}</div></div>`;
+}
+function moodCtl(it, a, i) {
+  const st = ui.mood[it.id] = ui.mood[it.id] || {};
+  if (a === 'vote') { if (VOTE && !window.confirm('Es läuft gerade eine Abstimmung. Diese beenden und die Stimmungsabfrage starten?')) return; if (VOTE) voteClose(); if (voteStart({ type: 'mood', q: it.p.q || 'Wie geht es dir heute?' })) { $('voteFull').hidden = true; st.mode = 'vote'; st.pid = VOTE.pid; st.show = false; } }
+  if (a === 'end') { if (VOTE && VOTE.pid === st.pid) { st.cnt = vtCounts(VOTE); voteClose(); } st.mode = ''; }
+  if (a === 'full') { if (VOTE && VOTE.pid === st.pid) $('voteFull').hidden = false; }
+  if (a === 'tapmode') { if (st.mode === 'vote' && VOTE && VOTE.pid === st.pid) { st.cnt = vtCounts(VOTE); voteClose(); } st.mode = st.mode === 'tap' ? '' : 'tap'; st.cnt = st.cnt || [0, 0, 0, 0]; }
+  if (a === 'tap' && st.mode === 'tap') { st.cnt = st.cnt || [0, 0, 0, 0]; st.cnt[i]++; goalPling(3); }
+  if (a === 'show') st.show = !st.show;
+  if (a === 'reset') { if (st.mode === 'vote' && VOTE && VOTE.pid === st.pid) voteClose(); ui.mood[it.id] = { mode: st.mode === 'tap' ? 'tap' : '', cnt: [0, 0, 0, 0] }; }
+}
+function moodRefresh() { if (ui.view === 'board' && curBoard() && curBoard().items.some(i => i.t === 'mood')) bdRefreshType('mood'); }
+
+/* ---- 🔋 Geräuschbudget: laute Sekunden werden vom Budget abgezogen ---- */
+function budState(it) { return BUD[it.id] || (BUD[it.id] = { run: false, left: (it.p.sec || 30) * 1000, t0: 0, used: 0, last: 0, res: '' }); }
+function bwBudgetHtml(it) {
+  const b = budState(it), tot = (it.p.sec || 30) * 1000, q = Math.max(0, b.left / tot), dur = (it.p.min || 0) * 60000;
+  const rest = b.run && dur ? Math.max(0, dur - (Date.now() - b.t0)) : dur, mm = Math.floor(rest / 60000), ss = Math.floor(rest % 60000 / 1000);
+  const col = q > .5 ? '#16a34a' : q > .2 ? '#f59e0b' : '#dc2626';
+  return `<div class="bw-budget${b.res ? ' res-' + b.res : ''}"><div class="mh">🔋 Geräuschbudget</div>
+    <div class="bg-bat"><div class="bg-fill" style="width:${(q * 100).toFixed(1)}%;background:${col}"></div><span>${b.res === 'ok' ? '🎉 Geschafft!' : b.res === 'fail' ? '😮 Budget leer' : Math.ceil(b.left / 1000) + ' s'}</span></div>
+    <div class="md-info">${b.run ? (dur ? `⏱ noch ${mm}:${String(ss).padStart(2, '0')}` : '⏱ läuft') + (MIC.an ? ` · ${micS('bud' + it.id) === 'r' ? '🔴 zu laut' : micS('bud' + it.id) === 'y' ? '🟡 etwas laut' : '🟢 gut'}` : ' · 🎤 …') : b.res ? '' : `${it.p.sec || 30} s „zu laut“ erlaubt${dur ? ' · ' + it.p.min + ' min' : ''}`}</div>
+    <div class="wh-ctl">${b.run ? '<button class="bd-ctl" data-bg="stop">⏹ Stopp</button>' : `<button class="bd-ctl primary" data-bg="go">▶ Start</button>`}${b.run || b.res || b.left < tot ? '<button class="bd-ctl" data-bg="reset">↺</button>' : ''}</div></div>`;
+}
+function budCtl(it, a) {
+  const b = budState(it);
+  if (a === 'go') { if (b.res || b.left <= 0) Object.assign(b, { left: (it.p.sec || 30) * 1000, res: '' }); b.run = true; b.t0 = Date.now(); b.last = Date.now(); audio(); }
+  if (a === 'stop') b.run = false;
+  if (a === 'reset') Object.assign(b, { run: false, left: (it.p.sec || 30) * 1000, res: '' });
+}
+function budTick() {   // vom Mikrofon-Takt (150 ms) aufgerufen
+  const bd = curBoard(); if (!bd) return;
+  bd.items.forEach(it => {
+    if (it.t !== 'budget') return; const b = BUD[it.id]; if (!b || !b.run) return;
+    const now = Date.now(), dt = now - (b.last || now); b.last = now;
+    if (MIC.an) { const s = micJudge('bud' + it.id, boardPhase(), it.p.sens); if (s === 'r') b.left -= dt; else if (s === 'y') b.left -= dt * 0.25; }
+    const dur = (it.p.min || 0) * 60000;
+    if (b.left <= 0) { b.left = 0; b.run = false; b.res = 'fail'; playSound('alarm', 5); }
+    else if (dur && now - b.t0 >= dur) { b.run = false; b.res = 'ok'; playSound('gong', 6); goals().forEach(g => goalAward(g, 'budget', 'Geräuschbudget eingehalten', 'budget|' + it.id + '|' + b.t0)); }
+    const bw = document.querySelector(`#bdStage .bw[data-id="${it.id}"] .bx`); if (bw && (!b.paint || now - b.paint > 450 || !b.run)) { b.paint = now; bw.innerHTML = bwBudgetHtml(it); }
+  });
+}
+
+/* ---- 🙋 Wer ist fertig? (gilt für heute) ---- */
+function doneIds(it) { return it.p.fd === todayStr() ? (it.p.fids || []) : []; }
+function bwDoneHtml(it) {
+  const dn = displayNames(cls().students), studs = listStudents().filter(s => !isAbsent(s)), d = new Set(doneIds(it)), n = studs.filter(s => d.has(s.id)).length;
+  return `<div class="bw-done"><div class="mh">🙋 Wer ist fertig? <b>${n} / ${studs.length}</b></div>
+    <div class="dn-bar"><i style="width:${studs.length ? (n / studs.length * 100).toFixed(0) : 0}%"></i></div>
+    <div class="dn-l">${studs.map(s => `<button class="bd-ctl dn-c${d.has(s.id) ? ' on' : ''}" data-dn="${s.id}">${d.has(s.id) ? '✓ ' : ''}${esc(dn.get(s.id))}</button>`).join('')}</div>
+    ${it.p.extra ? `<div class="dn-x"><b>Wenn du fertig bist:</b> ${txFmt(it.p.extra)}</div>` : ''}
+    ${n ? '<div class="wh-ctl"><button class="bd-ctl" data-dn="__reset">↺ Alle zurücksetzen</button></div>' : ''}</div>`;
+}
+function doneToggle(it, sid) {
+  change(() => { const t = todayStr(); if (it.p.fd !== t) { it.p.fd = t; it.p.fids = []; } if (sid === '__reset') it.p.fids = []; else { const s = new Set(it.p.fids); if (s.has(sid)) s.delete(sid); else s.add(sid); it.p.fids = [...s]; } }, { keepList: true });
+}
+
+/* ---- 👥 Gruppen kompakt ---- */
+function bwTeamsHtml() {
+  if (!ui.teams) return `<div class="bw-ph">👥<br>Noch keine Gruppeneinteilung<br><button class="bd-ctl primary" data-tg="make" style="margin-top:6px">🎲 ${$('teamMode').value === 'pairs' ? 'Paare' : 'Gruppen'} bilden</button></div>`;
+  const dn = displayNames(cls().students);
+  return `<div class="bw-teams"><div class="tg-grid">${ui.teams.list.map((t, i) => `<div class="tg-c" style="--tc:${teamColor(i)}"><b>${esc(teamTitle(i))}</b>${t.map(id => `<span>${roleIcons(id) || ''}${esc(dn.get(id) || '?')}</span>`).join('')}</div>`).join('')}</div>
+    <div class="wh-ctl"><button class="bd-ctl" data-tg="make" title="Neu bilden">🎲</button><button class="bd-ctl" data-tg="big" title="Bildschirmfüllend">⛶</button></div></div>`;
+}
+
+/* ---- 🗒 Notizzettel ---- */
+function bwNoteHtml(it) { return `<div class="bw-note" style="--nc:${it.p.c || NOTE_COL[0]}"><div class="tx">${txFmt(it.p.text || '') || '<span class="hint">Doppelklick = schreiben</span>'}</div></div>`; }
+document.getElementById('bdStage').addEventListener('dblclick', e => {
+  const nt = e.target.closest('.bw-note'); if (!nt || nt.querySelector('textarea')) return;
+  const bw = nt.closest('.bw'), it = bdItem(bw.dataset.id); if (!it) return;
+  const ta = document.createElement('textarea'); ta.className = 'nt-ed'; ta.value = it.p.text || ''; ta.placeholder = 'Notiz … (** fett **, • Liste)';
+  nt.querySelector('.tx').replaceWith(ta); ta.focus();
+  const save = () => { const v = ta.value; if (v !== (it.p.text || '')) change(() => { it.p.text = v; }, { keepList: true }); else { bw.querySelector('.bx').innerHTML = bwHtml(it); bdFitText(); } };
+  ta.addEventListener('blur', save, { once: true });
+  ta.addEventListener('keydown', ev => { if (ev.key === 'Escape' || (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey))) { ev.preventDefault(); ta.blur(); } else txListKey(ev); });
+});
+
+/* ---- ✍️ Textformatierung für „Text / Aufgabe“ und Notizzettel ----
+   **fett**  *kursiv*  __unterstrichen__  ==markiert==  [rot]…[/rot] [blau] [grün]
+   Zeilen mit „• “ oder „- “ = Aufzählung, „1. “ = nummerierte Liste */
+function txInline(t) {
+  return esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/__(.+?)__/g, '<u>$1</u>').replace(/(^|[^*])\*(?!\s)([^*]+?)\*(?!\*)/g, '$1<i>$2</i>').replace(/==(.+?)==/g, '<mark>$1</mark>')
+    .replace(/\[(rot|blau|grün)\](.+?)\[\/\1\]/g, (m, c, x) => `<span class="tc-${c === 'grün' ? 'gruen' : c}">${x}</span>`);
+}
+function txFmt(raw) {
+  const lines = String(raw || '').split('\n'); if (!String(raw || '').trim()) return '';
+  let out = '', list = null;
+  const close = () => { if (list) { out += `</${list}>`; list = null; } };
+  lines.forEach(l => {
+    const ul = l.match(/^\s*[•\-–*]\s+(.*)$/), ol = l.match(/^\s*(\d+)[.)]\s+(.*)$/);
+    if (ul) { if (list !== 'ul') { close(); out += '<ul>'; list = 'ul'; } out += `<li>${txInline(ul[1])}</li>`; }
+    else if (ol) { if (list !== 'ol') { close(); out += `<ol start="${+ol[1]}">`; list = 'ol'; } out += `<li value="${+ol[1]}">${txInline(ol[2])}</li>`; }
+    else { close(); out += `<div>${l.trim() ? txInline(l) : '&nbsp;'}</div>`; }
+  });
+  close(); return out;
+}
+// Enter in einer Listenzeile: nächsten Punkt automatisch anlegen (leerer Punkt beendet die Liste)
+function txListKey(e) {
+  if (e.key !== 'Enter' || e.shiftKey || e.ctrlKey || e.metaKey) return;
+  const ta = e.target, v = ta.value, p = ta.selectionStart; if (p !== ta.selectionEnd) return;
+  const ls = v.lastIndexOf('\n', p - 1) + 1, line = v.slice(ls, p);
+  const ul = line.match(/^(\s*)([•\-–*])\s+(.*)$/), ol = line.match(/^(\s*)(\d+)([.)])\s+(.*)$/);
+  if (!ul && !ol) return;
+  e.preventDefault();
+  if ((ul && !ul[3].trim()) || (ol && !ol[4].trim())) { ta.value = v.slice(0, ls) + v.slice(p); ta.selectionStart = ta.selectionEnd = ls; }
+  else { const ins = '\n' + (ul ? ul[1] + ul[2] + ' ' : ol[1] + (+ol[2] + 1) + ol[3] + ' '); ta.value = v.slice(0, p) + ins + v.slice(p); ta.selectionStart = ta.selectionEnd = p + ins.length; }
+  ta.dispatchEvent(new Event('input', { bubbles: true }));
+}
+function txToolbar() {
+  return `<div class="tx-tools">${[['b', '<b>F</b>', 'Fett'], ['i', '<i>K</i>', 'Kursiv'], ['u', '<u>U</u>', 'Unterstrichen'], ['m', '<mark>M</mark>', 'Markieren'], ['rot', '<span class="tc-rot">A</span>', 'Rot'], ['blau', '<span class="tc-blau">A</span>', 'Blau'], ['grün', '<span class="tc-gruen">A</span>', 'Grün'], ['ul', '• Liste', 'Aufzählung'], ['ol', '1. Liste', 'Nummerierte Liste']].map(([k, l, t]) => `<button type="button" data-fmt="${k}" title="${t}">${l}</button>`).join('')}</div>`;
+}
+function txApply(ta, k) {
+  const v = ta.value, a = ta.selectionStart, b = ta.selectionEnd, sel = v.slice(a, b);
+  const wrap = { b: ['**', '**'], i: ['*', '*'], u: ['__', '__'], m: ['==', '=='], rot: ['[rot]', '[/rot]'], blau: ['[blau]', '[/blau]'], 'grün': ['[grün]', '[/grün]'] }[k];
+  if (wrap) { const t = sel || 'Text'; ta.value = v.slice(0, a) + wrap[0] + t + wrap[1] + v.slice(b); ta.selectionStart = a + wrap[0].length; ta.selectionEnd = a + wrap[0].length + t.length; }
+  else {
+    const ls = v.lastIndexOf('\n', a - 1) + 1, le = v.indexOf('\n', b) < 0 ? v.length : v.indexOf('\n', b);
+    let n = 0; const lines = v.slice(ls, le).split('\n').map(l => { const clean = l.replace(/^\s*([•\-–*]|\d+[.)])\s+/, ''); return k === 'ul' ? '• ' + clean : (++n) + '. ' + clean; });
+    const rep = lines.join('\n'); ta.value = v.slice(0, ls) + rep + v.slice(le); ta.selectionStart = ta.selectionEnd = ls + rep.length;
+  }
+  ta.focus(); ta.dispatchEvent(new Event('input', { bubbles: true }));
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-fmt]'); if (!b) return; const ta = b.closest('.tx-edit') && b.closest('.tx-edit').querySelector('textarea'); if (ta) txApply(ta, b.dataset.fmt); });
+document.addEventListener('keydown', e => { if (e.target.matches && e.target.matches('.tx-edit textarea')) txListKey(e); });
+document.addEventListener('input', e => { const ed = e.target.closest && e.target.closest('.tx-edit'); if (!ed) return; const pv = ed.querySelector('.tx-prev'); if (pv) pv.innerHTML = txFmt(e.target.value) || '<span class="hint">Vorschau</span>'; });
+const txEditor = (key, val, ph) => `<div class="tx-edit">${txToolbar()}<textarea data-k="${key}" placeholder="${ph}">${esc(val || '')}</textarea><div class="tx-prev">${txFmt(val) || '<span class="hint">Vorschau</span>'}</div></div>`;
+
+/* ---- Einstellungen, Bedienung ---- */
+Object.assign(BDX, {
+  duty: { html: bwDutyHtml, form: () => '<p class="hint" style="margin:0">Zeigt die aktuellen Dienste aus dem Sitzplan (Dienste &amp; Ämter). Ändern und neu verteilen dort.</p>', save: () => {}, ctl: () => false },
+  mood: {
+    html: bwMoodHtml,
+    form: p => `<label class="nc-name">Frage<input data-k="q" value="${esc(p.q || '')}" maxlength="80"></label><p class="hint" style="margin:0">„📲 Per iPad“: Die Kinder antworten anonym im Hausaufgabenheft (wie bei der Abstimmung). „👆 Antippen“: Die Kinder tippen ihr Gesicht direkt an der Tafel an. Das Ergebnis erscheint erst mit „👁“.</p>`,
+    save: (p, v) => { p.q = v.q.trim().slice(0, 80) || 'Wie geht es dir heute?'; },
+    ctl: (it, ctl, bw) => { const a = ctl.dataset.md; if (!a) return false; moodCtl(it, a, +ctl.dataset.i); bw.querySelector('.bx').innerHTML = bwHtml(it); return true; }
+  },
+  budget: {
+    html: bwBudgetHtml,
+    form: p => `<label class="nc-name">Dauer der Arbeitsphase<select data-k="min">${[0, 5, 10, 15, 20, 25, 30, 45].map(m => `<option value="${m}"${+p.min === m ? ' selected' : ''}>${m ? m + ' Minuten' : 'ohne Ende (Stopp von Hand)'}</option>`).join('')}</select></label>
+      <label class="nc-name">Budget: so viele Sekunden darf es zu laut sein<select data-k="sec">${[10, 20, 30, 45, 60, 90, 120].map(s => `<option value="${s}"${+p.sec === s ? ' selected' : ''}>${s} Sekunden</option>`).join('')}</select></label>
+      <label class="nc-name">Empfindlichkeit<input type="range" min="1" max="9" data-k="sens" value="${p.sens || 5}"></label>
+      <p class="hint" style="margin:0">Rot (zu laut) zieht voll ab, Gelb nur ein Viertel. Die Grenzen richten sich nach der Arbeitsphase auf dem Tafelbild. Wird die Zeit mit Restbudget geschafft, gibt es – wenn beim Klassenziel die Regel „🔋 Geräuschbudget“ an ist – einen Punkt.</p>`,
+    save: (p, v) => { p.min = +v.min; p.sec = +v.sec || 30; p.sens = +v.sens || 5; },
+    ctl: (it, ctl, bw) => { const a = ctl.dataset.bg; if (!a) return false; budCtl(it, a); bw.querySelector('.bx').innerHTML = bwHtml(it); return true; }
+  },
+  done: {
+    html: bwDoneHtml,
+    form: p => `<div class="nc-name">„Wenn du fertig bist …“ (optional)${txEditor('extra', p.extra, 'z. B. • Lesekiste • Arbeitsheft S. 12')}</div><p class="hint" style="margin:0">Antippen = fertig (nochmal = zurück). Gilt für heute, morgen ist die Liste wieder leer. Auch über die Fernbedienung.</p>`,
+    save: (p, v) => { p.extra = v.extra; },
+    ctl: (it, ctl) => { const s = ctl.dataset.dn; if (!s) return false; doneToggle(it, s); return true; }
+  },
+  teams: {
+    html: bwTeamsHtml,
+    form: () => '<p class="hint" style="margin:0">Zeigt die aktuelle Gruppeneinteilung klein auf dem Tafelbild. 🎲 = neu bilden (Einstellungen wie im Sitzplan), ⛶ = bildschirmfüllend.</p>',
+    save: () => {},
+    ctl: (it, ctl) => { const a = ctl.dataset.tg; if (!a) return false; if (a === 'make') { makeTeams(); renderRoom(); } if (a === 'big' && ui.teams) { $('teamsDlg').hidden = false; renderTeams(); } bdRefreshType('teams'); return true; }
+  },
+  note: {
+    html: bwNoteHtml,
+    form: p => `<div class="nc-name">Notiz${txEditor('text', p.text, 'Kurze Notiz …')}</div><div class="nc-name">Farbe<div class="bd-colors" data-k="c">${NOTE_COL.map(c => `<button type="button" data-c="${c}" style="background:${c}"${(p.c || NOTE_COL[0]) === c ? ' class="cur"' : ''}></button>`).join('')}</div></div><p class="hint" style="margin:0">Tipp: Doppelklick auf den Zettel = direkt schreiben.</p>`,
+    save: (p, v) => { p.text = v.text; if (v.c) p.c = v.c; },
+    ctl: () => false
+  }
+});
+
 
 /* ---------- 📡 Fernbedienung: Abhaken, Foto an die Tafel, Zeiger, Glücksrad, Klassenziel ---------- */
 RC.chkSel = null; RC.tlSel = null;
@@ -10498,7 +10792,7 @@ function rcxHtml(r, s) {
 }
 function rcxFullHtml(s) {
   const x = s, mo = k => !(s.mods || []).includes(k);
-  return (mo('wheel') ? `<div class="rc-sub">🎡 Glücksrad bildschirmfüllend</div><div class="rc-row rc-wrap"><button class="primary" data-rwh="spin">🎡 ${x.wheel ? 'Drehen' : 'Glücksrad starten'}</button>${x.wheel ? '<button data-rwh="reset">↺ Alle wieder rein</button><button data-rwh="close">✕ Rad schließen</button>' : ''}</div>
+  return `<div class="rc-sub">👥 Gruppeneinteilung bildschirmfüllend</div><div class="rc-row rc-wrap">${s.teams ? `<button class="${s.big ? 'on' : 'primary'}" data-rteam="big">${s.big ? '✕ Große Anzeige schließen' : '⛶ Gruppen groß anzeigen'}</button><span class="hint">${s.teams.n} ${s.teams.mode === 'pairs' ? 'Paare' : 'Gruppen'}${s.teams.name ? ' · „' + esc(s.teams.name) + '“' : ''}</span>` : `<button data-rteam="make">🎲 Gruppen bilden</button><span class="hint">noch keine Gruppeneinteilung</span>`}</div>` + (mo('wheel') ? `<div class="rc-sub">🎡 Glücksrad bildschirmfüllend</div><div class="rc-row rc-wrap"><button class="primary" data-rwh="spin">🎡 ${x.wheel ? 'Drehen' : 'Glücksrad starten'}</button>${x.wheel ? '<button data-rwh="reset">↺ Alle wieder rein</button><button data-rwh="close">✕ Rad schließen</button>' : ''}</div>
     ${x.whHist && x.whHist.length ? `<div class="rc-sub" style="font-weight:600">Gezogen: ${x.whHist.map(esc).join(' · ')}</div>` : ''}` : '') + (mo('photo') ? `
     <div class="rc-sub">📷 Foto bildschirmfüllend</div><div class="rc-row rc-wrap"><label class="rc-file">📷 Foto an die Tafel<input type="file" accept="image/*" capture="environment" id="rcPhoto"></label><label class="rc-file">🖼 Bild aus Fotos<input type="file" accept="image/*" id="rcPhoto2"></label>${x.photo ? '<button data-rpho="pin">📌 Aufs Tafelbild</button><button data-rpho="close">✕ Foto schließen</button>' : ''}</div>` : '');
 }
