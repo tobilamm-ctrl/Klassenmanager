@@ -583,3 +583,54 @@ NEU in Version 2026-12-02: 🎯 Klassenziel – bewegte Darstellungen
 - „ruhige Darstellung“ schaltet die Dauerbewegung (schwimmende Fische, wiegende Blätter usw.) ab.
 - Stundenplan: Der Menüpunkt heißt jetzt „📅 Stundenpläne“; die Plan-Anzeige neben der Woche ist kleiner
   und verschiebt die Wochenauswahl nicht mehr.
+
+NEU in Version 2026-12-03: gemerkte Tafeln eindeutig benennen
+- Fernbedienung (iPad) → gemerkte Tafeln: ✎ = eigenen Namen vergeben (z. B. „Raum 12“, „PC Lehrerzimmer“) –
+  gilt nur auf diesem Gerät. Darunter steht, welches Gerät es ist, welche Klasse zuletzt offen war und
+  wann du zuletzt verbunden warst. Haben zwei Tafeln denselben Namen, macht die App sie automatisch
+  unterscheidbar. Tipp: Den Namen kannst du auch an der Tafel selbst festlegen („Name dieser Tafel“).
+
+NEU in Version 2026-12-04: Gruppeneinteilung groß – auch an der Tafel und per Fernbedienung
+- Tafel präsentieren → Leiste unten „👥 Gruppen“: zeigt die Gruppeneinteilung bildschirmfüllend
+  (gibt es noch keine, öffnet sich das Menü zum Bilden).
+- Fernbedienung → Reiter „⏱ Phase & Vollbild“ → „👥 Gruppeneinteilung bildschirmfüllend“: groß anzeigen /
+  schließen (oder Gruppen bilden) – egal, ob die Tafel gerade Tafelbild oder Sitzplan zeigt.
+
+NEU in Version 2026-12-05: neue Tafelbausteine und Textformatierung
+- 🧽 Dienste: zeigt die aktuellen Dienste aus dem Sitzplan mit Namen.
+- 🧮 Kopfrechnen → ⚙ „⚡ Blitzrechnen“: 5–20 Aufgaben nacheinander (alle 2–10 Sekunden eine neue,
+  mit Zeitbalken), am Ende alle Lösungen zum Vergleichen (👁).
+- 😀 Stimmung: „📲 Per iPad“ = anonyme Abfrage im Hausaufgabenheft (wie die Abstimmung, Code steht im
+  Baustein) oder „👆 Antippen“ = die Kinder tippen ihr Gesicht an der Tafel an. Ergebnis erst mit „👁“.
+- 🔋 Geräuschbudget: Batterie mit z. B. 30 Sekunden „zu laut“ für eine Arbeitsphase (Mikrofon). Rot zieht
+  voll ab, Gelb ein Viertel. Mit Restbudget geschafft = 🎉 und – mit der neuen Klassenziel-Regel
+  „🔋 Geräuschbudget eingehalten“ – ein Punkt.
+- 🙋 Wer ist fertig?: Namen antippen = fertig (gilt für heute), Zähler und Balken, darunter
+  „Wenn du fertig bist …“. Auch über die Fernbedienung (Reiter Tafel → Baustein).
+- 👥 Gruppen: die aktuelle Gruppeneinteilung klein auf dem Tafelbild, 🎲 neu bilden, ⛶ groß.
+- 🗒 Notizzettel: farbiger Zettel, Doppelklick = direkt schreiben (Strg+Enter oder Klick daneben = fertig).
+- 📝 Text / Aufgabe: Knöpfe für F (fett), K (kursiv), U (unterstrichen), M (markieren), rote/blaue/grüne
+  Schrift, „• Liste“ und „1. Liste“ – mit Vorschau. Automatische Aufzählung: Zeile mit „1. “ oder „• “
+  beginnen, Enter = nächster Punkt (2., 3. …), Enter in einem leeren Punkt beendet die Liste.
+  Schreibweise: **fett**, *kursiv*, __unterstrichen__, ==markiert==, [rot]…[/rot].
+
+NEU in Version 2026-12-06
+- 🪙 Neuer Baustein „Zufall“: Münzwurf (Kopf/Zahl, mit Wurf-Animation), Zufallszahl (von … bis …) oder
+  Karte ziehen (32 oder 52 Spielkarten oder eigene Karten wie Themen/Aufgaben – ohne Wiederholung, ↺ = neu
+  mischen). Auch über die Fernbedienung.
+- Notizzettel ist aus der Auswahl entfernt (vorhandene bleiben erhalten). Dafür hat „Text / Aufgabe“ jetzt
+  auch kräftige Hintergrundfarben.
+- Doppelklick auf einen Baustein = seine Einstellungen.
+- Bausteinliste: Bausteine mit der Maus ziehen = eigene Reihenfolge (gilt auch für „＋ Baustein“ in der
+  Präsentation, gespeichert in der Datei, „↺ Standard“ setzt zurück).
+- Knöpfe auf Bausteinen funktionieren jetzt auch im Anordnen-Modus beim ersten Antippen.
+- 🔋 Geräuschbudget: startet das Mikrofon direkt mit „▶ Start“ (beim ersten Mal fragt der Browser), zeigt
+  die aktuelle Lautstärke als Balken mit den Grenzen für Gelb/Rot und ca. dB. Gelb zieht jetzt die Hälfte ab.
+- Sitzplan: Reihenfolge links jetzt Dienste · Wer ist dran? · Regeln · Gruppeneinteilung · Tischgruppen ·
+  Tische & Objekte · Sitzplan-Verlauf · Anzeige · Drucken.
+
+NEU in Version 2026-12-07: Gruppeneinteilung in der Präsentation
+- Die Gruppenliste neben dem Plan hat oben rechts ⛶ = groß anzeigen.
+- Menü 👥 in der Präsentation: „⛶ Groß anzeigen“ ist jetzt auch hier da, dazu „🎭 Rollen, die verteilt
+  werden“ (antippen = ein/aus), „🎭 Rollen verteilen“ und „✕ Rollen weg“.
+- Große Ansicht: Die Rollenauswahl ist gleich aufgeklappt.

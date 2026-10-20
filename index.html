@@ -559,6 +559,22 @@
   .fl-idle { font-size: .45em; text-align: center; color: #475569; } .fl-idle small { font-size: .7em; color: #94a3b8; }
   .fl-set { border: 1px dashed #cbd5e1; border-radius: 8px; padding: 6px 8px; display: flex; flex-direction: column; gap: 4px; }
   .rc-wide { grid-column: 1 / -1; }
+  /* Zufall, Pegelanzeige, Bausteinliste ziehen */
+  .bw-rnd { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 0; }
+  .rn-coin { flex: 1; min-height: 0; aspect-ratio: 1; max-width: 80%; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fef9c3, #facc15 45%, #ca8a04); border: 4px solid #a16207; box-shadow: inset 0 0 0 6px rgba(255,255,255,.35), 0 6px 14px rgba(0,0,0,.2); display: grid; place-items: center; }
+  .rn-coin span { font-size: min(18cqh, 22cqw); font-weight: 900; color: #78350f; } .rn-coin.z { background: radial-gradient(circle at 35% 30%, #f1f5f9, #cbd5e1 45%, #64748b); border-color: #475569; } .rn-coin.z span { color: #1e293b; }
+  .rn-coin.flip { animation: rnFlip 1.25s cubic-bezier(.3,.6,.4,1); } @keyframes rnFlip { 0% { transform: translateY(0) rotateX(0); } 50% { transform: translateY(-30%) rotateX(900deg); } 100% { transform: translateY(0) rotateX(1800deg); } }
+  .rn-res { font-weight: 800; font-size: 1.3em; text-align: center; } .rn-hist { font-size: .8em; color: #64748b; text-align: center; }
+  .rn-num { flex: 1; min-height: 0; display: grid; place-items: center; font-size: min(34cqh, 30cqw); font-weight: 900; color: var(--accent); font-variant-numeric: tabular-nums; } .rn-num.roll { color: #94a3b8; }
+  .rn-cards { flex: 1; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
+  .rn-card { position: relative; height: 92%; aspect-ratio: 5 / 7; background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,.15); color: #0f172a; display: grid; place-items: center; animation: rnCard .45s ease-out; }
+  @keyframes rnCard { from { transform: translateY(-20%) rotate(-8deg); opacity: 0; } }
+  .rn-card.red { color: #dc2626; } .rn-card b { font-size: min(26cqh, 22cqw); } .rn-card i { position: absolute; left: 6%; top: 4%; font-style: normal; font-weight: 800; line-height: 1; font-size: min(7cqh, 6cqw); text-align: center; } .rn-card i.br { left: auto; top: auto; right: 6%; bottom: 4%; transform: rotate(180deg); }
+  .rn-card.back { background: repeating-linear-gradient(45deg, #1d4ed8 0 8px, #2563eb 8px 16px); border-color: #1e3a8a; color: #fff; animation: none; } .rn-card.txt span { padding: 8%; text-align: center; font-weight: 800; font-size: min(9cqh, 8cqw); overflow-wrap: anywhere; }
+  .bg-lvl { position: relative; height: 12px; border-radius: 6px; background: #e5e7eb; overflow: hidden; } .bg-lvl i { display: block; height: 100%; transition: width .15s; } .bg-lvl u { position: absolute; top: 0; bottom: 0; width: 2px; background: #f59e0b; } .bg-lvl u.r { background: #dc2626; }
+  .bd-pal [data-add].pal-drag { opacity: .55; outline: 2px dashed var(--accent); transform: scale(1.04); cursor: grabbing; }
+  .bd-pal .pal-hint { grid-column: 1 / -1; margin: 2px 0 0; font-size: .75rem; }
+  .tp-head { display: flex; align-items: center; gap: 8px; } .tp-head .tp-big { margin-left: auto; padding: 2px 9px; font-size: 1rem; line-height: 1.2; }
 </style>
 <style>
   :root {
@@ -745,7 +761,7 @@
   #teamsPanel .tm { font-size: .9em; padding: 0 6px; margin: 1px 2px 1px 0; }
   #teamsPanel .empty-hint { font-size: .8em; color: var(--muted); }
   .pb-wrap { position: relative; display: inline-flex; }
-  #teamsMenu { position: fixed; z-index: 2600; background: #fff; border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,.25); padding: 12px; display: flex; flex-direction: column; gap: 8px; width: 320px; }
+  #teamsMenu { max-height: calc(100vh - 16px); overflow: auto; position: fixed; z-index: 2600; background: #fff; border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,.25); padding: 12px; display: flex; flex-direction: column; gap: 8px; width: 320px; }
   #teamsMenu[hidden] { display: none; }
   #teamsMenu .tp-title { font-weight: 700; }
   body:not(.present) #teamsMenu .only-present, body.present #teamsMenu .not-present { display: none; }
@@ -1595,6 +1611,58 @@
   <div class="layout">
     <aside class="sidebar">
       <details class="card">
+        <summary>🧽 Dienste &amp; Ämter <span class="badge" id="dutyBadge"></span></summary>
+        <div class="cbody">
+          <div class="row"><input type="text" id="dutyName" list="dutySuggest" placeholder="z. B. Tafeldienst" style="flex:1"><button id="dutyAdd">＋</button></div>
+          <datalist id="dutySuggest"><option>Tafeldienst</option><option>Klassenbuch</option><option>Ordnungsdienst</option><option>Fegedienst</option><option>Blumendienst</option><option>Austeildienst</option><option>Lichtdienst</option><option>Mülldienst</option><option>Fensterdienst</option><option>Klassensprecher</option></datalist>
+          <div class="duties" id="dutyList"></div>
+          <button class="primary" id="dutyDeal">🎲 Dienste neu vergeben</button>
+          <label class="chk"><input type="checkbox" id="dutyShow"> Dienste-Liste im Plan anzeigen</label>
+          <label class="chk"><input type="checkbox" id="dutyIcons" checked> Dienst-Symbole auf den Tischen anzeigen</label>
+          <button id="dutyResetCount">Dienst-Zähler zurücksetzen</button>
+          <p class="hint">Beim Neu-Vergeben kommen zuerst die Kinder dran, die bisher am seltensten einen Dienst hatten (abwesende werden übersprungen). Einzelne Kinder kannst du auch direkt auswählen. 📌 fixiert einen Dienst (z. B. Klassensprecher): Er bleibt beim Neu-Vergeben unverändert. Mit „bekommt trotzdem weitere Dienste“ legst du fest, ob diese Kinder zusätzlich andere Dienste übernehmen können.</p>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary>🎯 Wer ist dran?</summary>
+        <div class="cbody">
+          <button class="primary" id="pickBtn">🎯 Zufällig auswählen</button>
+          <div class="row"><span class="hint" style="flex:none">Ziehe</span><select id="pickN" title="Wie viele Kinder auf einmal?"><option value="1">1 Kind</option><option value="2">2 Kinder</option><option value="3">3 Kinder</option></select><span class="hint" style="flex:none">aus</span><select id="pickFrom" style="flex:1;min-width:0" title="Aus welcher Gruppe?"></select></div>
+          <label class="chk"><input type="checkbox" id="pickFair" checked> Jeder kommt erst wieder dran, wenn alle dran waren</label>
+          <div class="info" id="pickInfo"></div>
+          <div class="picklog" id="pickLog"></div>
+          <div class="row"><button id="pickReset">Neue Runde starten</button><button id="rndBtn" title="Würfel und Zufallszahl">🎲 Würfel &amp; Zufallszahl</button></div>
+          <p class="hint">Abwesende Kinder werden übersprungen. Der Platz des gezogenen Kindes leuchtet im Plan auf.</p>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary>📏 Regeln <span class="badge" id="ruleBadge"></span></summary>
+        <div class="cbody">
+          <select id="ruleA"></select>
+          <select id="ruleType">
+            <option value="apart">soll NICHT neben</option>
+            <option value="together">soll GERNE neben</option>
+            <option value="back">soll HINTEN sitzen</option>
+            <option value="win">soll an der FENSTERSEITE sitzen</option>
+            <option value="door">soll an der TÜRSEITE sitzen</option>
+            <option value="notfront">soll NICHT GANZ VORNE sitzen</option>
+          </select>
+          <div class="msel" id="ruleBBox">
+            <button type="button" id="ruleBBtn" class="msel-btn">– Schüler wählen –</button>
+            <div class="msel-list" id="ruleBList" hidden></div>
+          </div>
+          <button id="ruleAdd">＋ Regel hinzufügen</button>
+          <div class="rules" id="ruleList"></div>
+          <label class="chk">🪟 Fensterseite im Plan: <select id="ruleWin"><option value="l">links</option><option value="r">rechts</option></select></label>
+          <label class="chk"><input type="checkbox" id="ruleMix"> Jungen und Mädchen möglichst gemischt</label>
+          <label class="chk"><input type="checkbox" id="ruleFresh"> Neue Nachbarn: möglichst niemand neben früheren Nachbarn (aktueller Plan und die letzten 3 gespeicherten)</label>
+          <p class="hint">Im dritten Feld kannst du mehrere Kinder ankreuzen – dann werden alle Regeln in einem Schritt angelegt. „Nebeneinander“ heißt: am selben Tisch oder an direkt angestellten Tischen. „Nicht neben“ meidet zusätzlich dieselbe Tischgruppe. „Nach vorne“ (⬆ in der Schülerliste) = das Drittel der Plätze, das der Tafel am nächsten ist. Die Regeln werden so gut wie möglich erfüllt; was nicht klappt, steht nach dem Verteilen unter dem Plan.</p>
+        </div>
+      </details>
+
+      <details class="card">
         <summary>👥 Gruppeneinteilung</summary>
         <div class="cbody">
           <div class="row fill">
@@ -1622,58 +1690,6 @@
           <div class="teams" id="teamList"></div>
           <div class="tsets" style="margin-top:6px"><div class="row fill"><button id="tsSave" title="Aktuelle Gruppeneinteilung mit Namen und Rollen in der Datei speichern">💾 Einteilung speichern</button></div><div id="tsList"></div></div>
           <p class="hint">Nur anwesende Kinder. Namen lassen sich per Ziehen umsetzen: auf einen anderen Namen = tauschen, auf eine Gruppe = dorthin verschieben (auch in der großen Ansicht). Bei ungerader Zahl entsteht eine Dreiergruppe.</p>
-        </div>
-      </details>
-
-      <details class="card">
-        <summary>🎯 Wer ist dran?</summary>
-        <div class="cbody">
-          <button class="primary" id="pickBtn">🎯 Zufällig auswählen</button>
-          <div class="row"><span class="hint" style="flex:none">Ziehe</span><select id="pickN" title="Wie viele Kinder auf einmal?"><option value="1">1 Kind</option><option value="2">2 Kinder</option><option value="3">3 Kinder</option></select><span class="hint" style="flex:none">aus</span><select id="pickFrom" style="flex:1;min-width:0" title="Aus welcher Gruppe?"></select></div>
-          <label class="chk"><input type="checkbox" id="pickFair" checked> Jeder kommt erst wieder dran, wenn alle dran waren</label>
-          <div class="info" id="pickInfo"></div>
-          <div class="picklog" id="pickLog"></div>
-          <div class="row"><button id="pickReset">Neue Runde starten</button><button id="rndBtn" title="Würfel und Zufallszahl">🎲 Würfel &amp; Zufallszahl</button></div>
-          <p class="hint">Abwesende Kinder werden übersprungen. Der Platz des gezogenen Kindes leuchtet im Plan auf.</p>
-        </div>
-      </details>
-
-      <details class="card">
-        <summary>🧽 Dienste &amp; Ämter <span class="badge" id="dutyBadge"></span></summary>
-        <div class="cbody">
-          <div class="row"><input type="text" id="dutyName" list="dutySuggest" placeholder="z. B. Tafeldienst" style="flex:1"><button id="dutyAdd">＋</button></div>
-          <datalist id="dutySuggest"><option>Tafeldienst</option><option>Klassenbuch</option><option>Ordnungsdienst</option><option>Fegedienst</option><option>Blumendienst</option><option>Austeildienst</option><option>Lichtdienst</option><option>Mülldienst</option><option>Fensterdienst</option><option>Klassensprecher</option></datalist>
-          <div class="duties" id="dutyList"></div>
-          <button class="primary" id="dutyDeal">🎲 Dienste neu vergeben</button>
-          <label class="chk"><input type="checkbox" id="dutyShow"> Dienste-Liste im Plan anzeigen</label>
-          <label class="chk"><input type="checkbox" id="dutyIcons" checked> Dienst-Symbole auf den Tischen anzeigen</label>
-          <button id="dutyResetCount">Dienst-Zähler zurücksetzen</button>
-          <p class="hint">Beim Neu-Vergeben kommen zuerst die Kinder dran, die bisher am seltensten einen Dienst hatten (abwesende werden übersprungen). Einzelne Kinder kannst du auch direkt auswählen. 📌 fixiert einen Dienst (z. B. Klassensprecher): Er bleibt beim Neu-Vergeben unverändert. Mit „bekommt trotzdem weitere Dienste“ legst du fest, ob diese Kinder zusätzlich andere Dienste übernehmen können.</p>
-        </div>
-      </details>
-
-      <details class="card">
-        <summary>📏 Regeln <span class="badge" id="ruleBadge"></span></summary>
-        <div class="cbody">
-          <select id="ruleA"></select>
-          <select id="ruleType">
-            <option value="apart">soll NICHT neben</option>
-            <option value="together">soll GERNE neben</option>
-            <option value="back">soll HINTEN sitzen</option>
-            <option value="win">soll an der FENSTERSEITE sitzen</option>
-            <option value="door">soll an der TÜRSEITE sitzen</option>
-            <option value="notfront">soll NICHT GANZ VORNE sitzen</option>
-          </select>
-          <div class="msel" id="ruleBBox">
-            <button type="button" id="ruleBBtn" class="msel-btn">– Schüler wählen –</button>
-            <div class="msel-list" id="ruleBList" hidden></div>
-          </div>
-          <button id="ruleAdd">＋ Regel hinzufügen</button>
-          <div class="rules" id="ruleList"></div>
-          <label class="chk">🪟 Fensterseite im Plan: <select id="ruleWin"><option value="l">links</option><option value="r">rechts</option></select></label>
-          <label class="chk"><input type="checkbox" id="ruleMix"> Jungen und Mädchen möglichst gemischt</label>
-          <label class="chk"><input type="checkbox" id="ruleFresh"> Neue Nachbarn: möglichst niemand neben früheren Nachbarn (aktueller Plan und die letzten 3 gespeicherten)</label>
-          <p class="hint">Im dritten Feld kannst du mehrere Kinder ankreuzen – dann werden alle Regeln in einem Schritt angelegt. „Nebeneinander“ heißt: am selben Tisch oder an direkt angestellten Tischen. „Nicht neben“ meidet zusätzlich dieselbe Tischgruppe. „Nach vorne“ (⬆ in der Schülerliste) = das Drittel der Plätze, das der Tafel am nächsten ist. Die Regeln werden so gut wie möglich erfüllt; was nicht klappt, steht nach dem Verteilen unter dem Plan.</p>
         </div>
       </details>
 
@@ -1782,7 +1798,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-12-05</p>
+          <p class="hint" style="margin:0">Version 2026-12-07</p>
         </div>
       </details>
 
@@ -2035,7 +2051,9 @@
       <button id="pmTeamMake" class="primary">🎲 Gruppen neu bilden</button>
       <div class="gwbox"><label class="chk"><input type="checkbox" id="pmGwOn"> 🪑 Tischordnung Gruppenarbeit</label><label class="chk" id="pmGwR2Row"><input type="checkbox" id="pmGwR2"> 🚪 Gruppenraum dazunehmen</label><button id="pmGwSeat">📍 Gruppen an die Tische setzen</button></div>
       <div id="pmTsBox"><div class="tp-sub">📂 Gespeicherte Einteilungen</div><div id="pmTsList"></div></div>
-      <div class="row fill"><button id="pmTeamShow" class="not-present">⛶ Groß anzeigen</button><button id="pmTeamClear" class="danger" title="Gruppeneinteilung verwerfen">✕ Verwerfen</button></div>
+      <details class="rolebox"><summary>🎭 Rollen, die verteilt werden</summary><div class="rolesel" id="roleSel3"></div></details>
+      <div class="row fill"><button id="pmTeamRoles" title="In jeder Gruppe die Rollen zufällig verteilen">🎭 Rollen verteilen</button><button id="pmTeamRolesClear" title="Alle Rollen entfernen">✕ Rollen weg</button></div>
+      <div class="row fill"><button id="pmTeamShow">⛶ Groß anzeigen</button><button id="pmTeamClear" class="danger" title="Gruppeneinteilung verwerfen">✕ Verwerfen</button></div>
 </div>
 
 <div id="timerPop" hidden>
@@ -2407,7 +2425,7 @@
     <div id="ovDlg" hidden></div>
     <div class="tgrid" id="teamsGrid"></div>
     <div class="role-legend" id="roleLegend"></div>
-    <details class="rolebox big"><summary>🎭 Rollen, die verteilt werden</summary><div class="rolesel" id="roleSel2"></div></details>
+    <details class="rolebox big" open><summary>🎭 Rollen, die verteilt werden (antippen = ein/aus)</summary><div class="rolesel" id="roleSel2"></div></details>
   </div>
 </div>
 
@@ -2496,7 +2514,7 @@ const ROLES = [
 const roleSel = () => { const c = cls(); return Array.isArray(c.roleSel) ? c.roleSel : ROLES.map(r => r.k); };
 function renderRoleSel() {
   const sel = roleSel(), html = ROLES.map(r => `<button class="rs${sel.includes(r.k) ? ' on' : ''}" data-rs="${r.k}" title="${r.n} ${sel.includes(r.k) ? 'wird verteilt – Klick = nicht verteilen' : 'wird nicht verteilt – Klick = verteilen'}">${r.i} ${r.n}</button>`).join('');
-  $('roleSel').innerHTML = html; $('roleSel2').innerHTML = html;
+  $('roleSel').innerHTML = html; $('roleSel2').innerHTML = html; if ($('roleSel3')) $('roleSel3').innerHTML = html;
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-rs]'); if (!b) return;
@@ -4443,6 +4461,8 @@ function dealRoles() {
 $('teamRoles').addEventListener('click', dealRoles);
 $('teamsRoles').addEventListener('click', dealRoles);
 $('teamRolesClear').addEventListener('click', () => { if (!ui.teams) return; ui.teams.roles = {}; renderTeams(); renderRoom(); });
+$('pmTeamRoles').addEventListener('click', () => { if (ui.teams) dealRoles(); });
+$('pmTeamRolesClear').addEventListener('click', () => { if (!ui.teams) return; ui.teams.roles = {}; renderTeams(); renderRoom(); });
 $('teamClear').addEventListener('click', () => { ui.teams = null; renderTeams(); renderRoom(); setResult(''); });
 $('teamShow').addEventListener('click', () => { $('teamsDlg').hidden = false; });
 $('teamsClose').addEventListener('click', () => { $('teamsDlg').hidden = true; });
@@ -4809,13 +4829,15 @@ function fitNames(S) {
   });
 }
 // Gruppeneinteilung als Kasten neben dem Plan (Präsentationsmodus)
+$('teamsMenu').addEventListener('toggle', () => { const m = $('teamsMenu'), r = m.getBoundingClientRect(); if (r.bottom > innerHeight - 8) m.style.top = Math.max(8, innerHeight - m.offsetHeight - 8) + 'px'; }, true);
+document.addEventListener('click', e => { if (e.target.closest('[data-tpbig]') && ui.teams) { $('teamsDlg').hidden = false; renderTeams(); } });
 function renderTeamsPanel(dn) {
   const p = $('teamsPanel');
   if (!ui.present || !ui.showTeamList) { p.hidden = true; return; }
   p.hidden = false;
-  if (!ui.teams) { p.innerHTML = '<b>Gruppeneinteilung</b><div class="empty-hint">Noch keine Gruppen gebildet – über 👥 → „Gruppen neu bilden“.</div>'; return; }
+  if (!ui.teams) { p.innerHTML = '<div class="tp-head"><b>Gruppeneinteilung</b></div><div class="empty-hint">Noch keine Gruppen gebildet – über 👥 → „Gruppen neu bilden“.</div>'; return; }
   const L = ui.teams.list, cols = L.length > 6 ? 2 : 1;
-  p.innerHTML = `<b>Gruppeneinteilung</b><div class="tgrid2" style="grid-template-columns:repeat(${cols}, auto)">` +
+  p.innerHTML = `<div class="tp-head"><b>Gruppeneinteilung</b><button class="tp-big" data-tpbig="1" title="Groß anzeigen">⛶</button></div><div class="tgrid2" style="grid-template-columns:repeat(${cols}, auto)">` +
     L.map((t, i) => `<div class="team" data-t="${i}" style="--tc:${teamColor(i)}"><b>${teamShort(i)}${GW() ? ` <span class="tpdrag" data-tdrag="${i}" title="Auf eine Tischinsel ziehen">📍</span>` : ''}</b>${t.map((id, k) => `<span class="tm" data-t="${i}" data-k="${k}">${roleIcons(id) ? `<span class="ri">${roleIcons(id)}</span>` : ''}${esc(dn.get(id) || '?')}</span>`).join('') || '<i class="empty-hint">leer</i>'}</div>`).join('') + '</div>';
 }
 function syncPresentBar() {
@@ -4865,8 +4887,8 @@ function openTeamsMenu(anchor) {
   $('pmTeamColor').checked = $('teamColor').checked; $('pmTeamList').checked = !!ui.showTeamList;
   $('pmTeamMode').value = $('teamMode').value; $('pmTeamN').value = $('teamN').value; $('pmTeamN').disabled = $('teamMode').value === 'pairs';
   $('pmTeamRules').checked = $('teamRules').checked; $('pmTeamMix').checked = $('teamMix').checked;
-  $('pmTeamShow').disabled = $('pmTeamClear').disabled = !ui.teams;
-  renderTeamSets(); syncGwUi();
+  $('pmTeamShow').disabled = $('pmTeamClear').disabled = $('pmTeamRoles').disabled = $('pmTeamRolesClear').disabled = !ui.teams;
+  renderRoleSel(); renderTeamSets(); syncGwUi();
   m.hidden = false; m.anchor = anchor;
   const r = anchor.getBoundingClientRect(), h = m.offsetHeight, w = m.offsetWidth;
   m.style.left = clamp(r.right - w, 8, window.innerWidth - w - 8) + 'px';
@@ -6631,7 +6653,7 @@ document.addEventListener('keydown', e => {
 // liest auch ältere Dateien (Version 1 und 2) ein
 function migrate(data) {
   const fill = c => Object.assign({ plans: [], duties: [], dutyCount: {}, picked: [], showDuties: false, subNote: '', groups: [], checks: [], exams: [], msgs: [] }, c);
-  if (Array.isArray(data.classes) && data.classes.length) return { classes: data.classes.map(fill), current: data.current || data.classes[0].id, seq: data.seq || 10000, boards: Array.isArray(data.boards) ? data.boards : [], boardStart: data.boardStart || {}, ...(data.gh && data.gh.repo && data.gh.token ? { gh: data.gh } : {}), ...(Array.isArray(data.snips) ? { snips: data.snips } : {}), ...(data.mods && Array.isArray(data.mods.off) ? { mods: data.mods } : {}), ...(data.home && typeof data.home === 'object' ? { home: data.home } : {}) };
+  if (Array.isArray(data.classes) && data.classes.length) return { classes: data.classes.map(fill), current: data.current || data.classes[0].id, seq: data.seq || 10000, boards: Array.isArray(data.boards) ? data.boards : [], boardStart: data.boardStart || {}, ...(data.gh && data.gh.repo && data.gh.token ? { gh: data.gh } : {}), ...(Array.isArray(data.snips) ? { snips: data.snips } : {}), ...(data.mods && Array.isArray(data.mods.off) ? { mods: data.mods } : {}), ...(data.home && typeof data.home === 'object' ? { home: data.home } : {}), ...(Array.isArray(data.bdOrder) ? { bdOrder: data.bdOrder } : {}) };
   const fresh = { classes: [], current: null, seq: 0 };
   state = fresh;   // damit newId() fortlaufend zählt
   const c = makeClass('Klasse 1', []);
@@ -7362,7 +7384,7 @@ function renderMods() {
   const dOpen = !!(box.querySelector('details.md-g') || {}).open;
   const off = new Set(modsOff()), row = ([k, ic, n, w]) => `<label class="chk md-row"><input type="checkbox" data-mod="${k}"${off.has(k) ? '' : ' checked'}> <span><b>${ic} ${esc(n)}</b>${w ? `<small>${esc(w)}</small>` : ''}</span></label>`;
   box.innerHTML = MODS.map(([g, l]) => `<div class="md-g"><div class="sub">${esc(g)}</div>${l.map(row).join('')}</div>`).join('') +
-    `<details class="md-g"><summary class="sub">Tafel-Bausteine einzeln (${Object.keys(BD_TYPES).filter(k => !BD_MOD[k] && !off.has('bd:' + k)).length} von ${Object.keys(BD_TYPES).filter(k => !BD_MOD[k]).length} an)</summary><div class="md-bd">${Object.entries(BD_TYPES).filter(([k]) => !BD_MOD[k]).map(([k, T]) => `<label class="chk"><input type="checkbox" data-mod="bd:${k}"${off.has('bd:' + k) ? '' : ' checked'}> ${T.i} ${esc(T.n)}</label>`).join('')}</div></details>` +
+    `<details class="md-g"><summary class="sub">Tafel-Bausteine einzeln (${Object.keys(BD_TYPES).filter(k => !BD_MOD[k] && !BD_TYPES[k].hide && !off.has('bd:' + k)).length} von ${Object.keys(BD_TYPES).filter(k => !BD_MOD[k] && !BD_TYPES[k].hide).length} an)</summary><div class="md-bd">${Object.entries(BD_TYPES).filter(([k, T]) => !BD_MOD[k] && !T.hide).map(([k, T]) => `<label class="chk"><input type="checkbox" data-mod="bd:${k}"${off.has('bd:' + k) ? '' : ' checked'}> ${T.i} ${esc(T.n)}</label>`).join('')}</div></details>` +
     '' ; if (dOpen) box.querySelector('details.md-g').open = true;
   box.insertAdjacentHTML('beforeend', `<p class="hint" style="margin:6px 0 0">Ausgeschaltete Module verschwinden aus Menüs, Startseite und Fernbedienung – die Daten bleiben erhalten und sind beim Wiedereinschalten sofort wieder da. Gespeichert wird das in der Datei.</p>`);
 }
@@ -7420,7 +7442,7 @@ const BD_TYPES = {
   seat: { n: 'Sitzplan', i: '🪑', w: 44, h: 64, p: () => ({ lay: 'cur', flip: true, teams: true }) }
 };
 const PHASES = { ruhe: ['🤫', 'Ruhe', '#dc2626'], leise: ['💬', 'Flüstern', '#d97706'], partner: ['🧑‍🤝‍🧑', 'Partner', '#2563eb'], gruppe: ['👥', 'Gruppe', '#16a34a'] };
-const BD_BG = ['#ffffff', '#fffbea', '#ecfdf5', '#eff6ff', '#fdf2f8', '#f5f3ff', '#fef2f2'];
+const BD_BG = ['#ffffff', '#fffbea', '#ecfdf5', '#eff6ff', '#fdf2f8', '#f5f3ff', '#fef2f2', '#fef08a', '#fbcfe8', '#bbf7d0', '#bae6fd', '#fed7aa', '#e9d5ff', '#fca5a5'];
 const SCORE_COL = ['#0ea5e9', '#f97316', '#22c55e', '#a855f7', '#ef4444', '#eab308', '#14b8a6', '#ec4899'];
 const boardsAll = () => state.boards || [];
 const boardsVis = () => boardsAll().filter(b => !b.cls || b.cls === state.current);
@@ -7508,7 +7530,7 @@ function renderBoard() {
   $('bdSel').innerHTML = boardsVis().map(x => `<option value="${x.id}"${b && x.id === b.id ? ' selected' : ''}>${esc(x.name)}${x.cls ? ' (nur ' + esc(cls().name) + ')' : ''}</option>`).join('') || '<option value="">– noch keins –</option>';
   ['bdDup', 'bdRen', 'bdDel', 'bdOnly'].forEach(id => { $(id).disabled = !b; });
   $('bdOnly').checked = !!(b && b.cls);
-  $('bdPal').innerHTML = Object.entries(BD_TYPES).filter(([k]) => bdTypeOn(k)).map(([k, T]) => `<button data-add="${k}" title="${esc(T.n)} hinzufügen"><span>${T.i}</span>${esc(T.n)}</button>`).join('');
+  $('bdPal').innerHTML = bdTypesSorted().map(([k, T]) => `<button data-add="${k}" title="${esc(T.n)} hinzufügen · ziehen = Reihenfolge ändern"><span>${T.i}</span>${esc(T.n)}</button>`).join('') + `<p class="hint pal-hint">Bausteine ziehen = Reihenfolge ändern${state.bdOrder ? ' · <a href="#" id="bdPalReset">↺ Standard</a>' : ''}</p>`;
   const bs = state.boardStart || {}, opts = sel => '<option value="">–</option>' + boardsVis().map(x => `<option value="${x.id}"${sel === x.id ? ' selected' : ''}>${esc(x.name)}</option>`).join('');
   $('bdStart').innerHTML = ['Mo', 'Di', 'Mi', 'Do', 'Fr'].map((d, i) => `<span>${d}</span><select data-wd="${i}">${opts(bs[i])}</select>`).join('');
   $('bdTitle').textContent = b ? b.name : 'Tafel';
@@ -7603,7 +7625,7 @@ const bdEnd = () => {
   if (!bdDrag) return;
   const d = bdDrag; bdDrag = null;
   if (d.moved && d.n) change(() => { Object.assign(d.it, d.n); }, { keepList: true });
-  else if (d.wasSel && d.ctl) bdCtl(d.it, d.ctl, d.el);   // ausgewählter Baustein: Bedienelement antippen
+  else if (d.ctl) bdCtl(d.it, d.ctl, d.el);   // Bedienelement antippen (auch im Anordnen-Modus)
 };
 $('bdStage').addEventListener('pointerup', bdEnd);
 $('bdStage').addEventListener('pointercancel', bdEnd);
@@ -7745,7 +7767,25 @@ $('bdDup').addEventListener('click', () => { const b = curBoard(); if (!b) retur
 $('bdRen').addEventListener('click', () => { const b = curBoard(); if (!b) return; const n = window.prompt('Neuer Name:', b.name); if (n && n.trim()) change(() => { b.name = n.trim(); }, { keepList: true }); });
 $('bdDel').addEventListener('click', () => { const b = curBoard(); if (!b || !window.confirm(`Tafelbild „${b.name}“ löschen? (Mit ↶ rückgängig zu machen.)`)) return; change(() => { state.boards = state.boards.filter(x => x !== b); Object.keys(state.boardStart || {}).forEach(k => { if (state.boardStart[k] === b.id) delete state.boardStart[k]; }); }, { keepList: true }); ui.boardId = null; renderBoard(); });
 $('bdOnly').addEventListener('change', e => { const b = curBoard(); if (b) change(() => { b.cls = e.target.checked ? state.current : null; }, { keepList: true }); });
-$('bdPal').addEventListener('click', e => { const b = e.target.closest('[data-add]'); if (b) bdAddItem(b.dataset.add); });
+$('bdStage').addEventListener('dblclick', e => {
+  const bw = e.target.closest('.bw'); if (!bw || e.target.closest('.bd-ctl, .bd-tools, button, textarea, input, select, canvas.bd-ink') || ui.bdDraw) return;
+  if (bdItem(bw.dataset.id)) { e.preventDefault(); bdSettings(bw.dataset.id); }
+});
+// Bausteinliste: Reihenfolge selbst festlegen (ziehen) – gespeichert in der Datei
+const bdTypesSorted = () => { const o = state.bdOrder || [], keys = Object.keys(BD_TYPES); return Object.entries(BD_TYPES).filter(([k, T]) => !T.hide && bdTypeOn(k)).sort((a, b) => { const ia = o.indexOf(a[0]), ib = o.indexOf(b[0]); return (ia < 0 ? 1000 + keys.indexOf(a[0]) : ia) - (ib < 0 ? 1000 + keys.indexOf(b[0]) : ib); }); };
+let palDrag = null;
+$('bdPal').addEventListener('pointerdown', e => { const b = e.target.closest('[data-add]'); if (!b || e.button > 0) return; palDrag = { b, x: e.clientX, y: e.clientY, on: false, id: e.pointerId }; });
+$('bdPal').addEventListener('pointermove', e => {
+  const d = palDrag; if (!d) return;
+  if (!d.on) { if (Math.hypot(e.clientX - d.x, e.clientY - d.y) < 8) return; d.on = true; d.b.classList.add('pal-drag'); try { d.b.setPointerCapture(d.id); } catch (er) {} }
+  e.preventDefault();
+  const t = document.elementsFromPoint(e.clientX, e.clientY).find(x => x !== d.b && x.dataset && x.dataset.add && x.parentElement === $('bdPal'));
+  if (t) { const r = t.getBoundingClientRect(), after = e.clientX > r.left + r.width / 2; t.parentElement.insertBefore(d.b, after ? t.nextSibling : t); }
+});
+const palEnd = () => { const d = palDrag; palDrag = null; if (!d || !d.on) return; d.b.classList.remove('pal-drag'); d.b.dataset.moved = '1'; setTimeout(() => { delete d.b.dataset.moved; }, 50);
+  const ord = [...$('bdPal').querySelectorAll('[data-add]')].map(x => x.dataset.add); change(() => { state.bdOrder = ord.concat((state.bdOrder || []).filter(k => !ord.includes(k))); }, { keepList: true }); };
+$('bdPal').addEventListener('pointerup', palEnd); $('bdPal').addEventListener('pointercancel', palEnd);
+$('bdPal').addEventListener('click', e => { const b = e.target.closest('[data-add]'); if (b && !b.dataset.moved) bdAddItem(b.dataset.add); if (e.target.closest('#bdPalReset')) change(() => { delete state.bdOrder; }, { keepList: true }); });
 $('bdStart').addEventListener('change', e => { const s = e.target.closest('[data-wd]'); if (!s) return; change(() => { state.boardStart = state.boardStart || {}; if (s.value) state.boardStart[s.dataset.wd] = s.value; else delete state.boardStart[s.dataset.wd]; }, { keepList: true }); });
 
 /* ---------- Präsentieren ---------- */
@@ -7766,7 +7806,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && ui.bdDraw 
 function bdMenu(kind, anchor) {
   const m = $('bdMenu');
   if (kind === 'pick') m.innerHTML = '<div class="mt">Tafelbild wählen</div>' + boardsVis().map(b => `<button data-pick="${b.id}"${curBoard() && b.id === curBoard().id ? ' class="cur"' : ''}>🖼 ${esc(b.name)}</button>`).join('') + '<button data-pick="new">＋ Neues Tafelbild</button>';
-  else m.innerHTML = '<div class="mt">Baustein hinzufügen</div><div class="grid">' + Object.entries(BD_TYPES).filter(([k]) => bdTypeOn(k)).map(([k, T]) => `<button data-addm="${k}">${T.i} ${esc(T.n)}</button>`).join('') + '</div>';
+  else m.innerHTML = '<div class="mt">Baustein hinzufügen</div><div class="grid">' + bdTypesSorted().map(([k, T]) => `<button data-addm="${k}">${T.i} ${esc(T.n)}</button>`).join('') + '</div>';
   m.hidden = false;
   const r = anchor.getBoundingClientRect();
   m.style.left = Math.max(8, Math.min(r.left, innerWidth - m.offsetWidth - 8)) + 'px'; m.style.top = Math.max(8, r.top - m.offsetHeight - 8) + 'px';
@@ -8430,6 +8470,7 @@ function rcItem(it) {
   if (it.t === 'wheel') return { id: it.id, t: 'wheel', win: (ui.wheel[it.id] || {}).winName || '' };
   if (it.t === 'math') return { id: it.id, t: 'math', show: !!(ui.math[it.id] || {}).show, flash: !!p.flash, run: !!(ui.math[it.id] || {}).run };
   if (it.t === 'done') { const d = new Set(doneIds(it)), dn = displayNames(cls().students); return { id: it.id, t: 'done', rows: listStudents().filter(s => !isAbsent(s)).map(s => [s.id, dn.get(s.id), d.has(s.id) ? 1 : 0]) }; }
+  if (it.t === 'rnd') { const r = ui.rnd[it.id] || {}; return { id: it.id, t: 'rnd', mode: it.p.mode || 'coin', res: r.anim ? '…' : r.res != null ? String(r.res) : '' }; }
   if (it.t === 'budget') { const b = budState(it); return { id: it.id, t: 'budget', run: b.run, left: Math.ceil(b.left / 1000), res: b.res }; }
   return null;
 }
@@ -8488,6 +8529,7 @@ function rcHandle(d) {
     if (it.t === 'wheel' && bw) { if (d.a === 'spin') wheelSpin(it.id, it.p, bw); if (d.a === 'reset') { ui.wheel[it.id] = { rot: (ui.wheel[it.id] || {}).rot || 0, out: [] }; bw.querySelector('.bx').innerHTML = bwHtml(it); } }
     if (it.t === 'math' && bw) { mathCtl(it, d.a); bw.querySelector('.bx').innerHTML = bwHtml(it); bdFitText(); }
     if (it.t === 'done' && d.a === 'dn' && d.v) doneToggle(it, String(d.v));
+    if (it.t === 'rnd' && bw) { if (d.a === 'go') rndGo(it, bw); if (d.a === 'reset') { ui.rnd[it.id] = { hist: [], used: [] }; bw.querySelector('.bx').innerHTML = bwRndHtml(it); } }
     if (it.t === 'budget' && ['go', 'stop', 'reset'].includes(d.a)) { budCtl(it, d.a); if (bw) bw.querySelector('.bx').innerHTML = bwHtml(it); }
   }
   if (d.c === 'pick') { if (d.n) $('pickN').value = d.n; if (ui.view !== 'plan' || !ui.present) { rcShow('plan'); setTimeout(pickSomeone, 400); } else pickSomeone(); }
@@ -8856,6 +8898,7 @@ function rcItemHtml(i) {
     <div class="rc-row rc-small"><select data-rdice="${i.id}" data-k="n">${[1, 2, 3, 4, 5, 6].map(n => `<option value="${n}"${+i.n === n ? ' selected' : ''}>${n} Würfel</option>`).join('')}</select><select data-rdice="${i.id}" data-k="sides">${DICE_SIDES.map(n => `<option value="${n}"${+i.sides === n ? ' selected' : ''}>W${n}</option>`).join('')}</select></div></div>`;
   if (i.t === 'score') return `<div class="rc-card"><b>🏆 Punktestand</b>${i.teams.map((t, k) => `<div class="rc-row"><span class="rc-team" style="--tc:${t.c}">${esc(t.n)}</span><button data-ri="${i.id}" data-i="${k}" data-d="-1">−</button><b>${t.s}</b><button data-ri="${i.id}" data-i="${k}" data-d="1">＋</button></div>`).join('')}</div>`;
   if (i.t === 'done') return `<div class="rc-card rc-wide"><b>🙋 Wer ist fertig? ${i.rows.filter(r => r[2]).length} / ${i.rows.length}</b><div class="rc-chg">${i.rows.map(([sid, nm, on]) => `<button class="rc-chip${on ? ' s-ok' : ''}" data-ri="${i.id}" data-a="dn" data-v="${sid}">${on ? '✓ ' : ''}${esc(nm)}</button>`).join('')}</div></div>`;
+  if (i.t === 'rnd') return `<div class="rc-card"><b>${i.mode === 'coin' ? '🪙 Münzwurf' : i.mode === 'num' ? '🎲 Zufallszahl' : '🃏 Karte ziehen'}</b><div class="rc-row"><button class="primary" data-ri="${i.id}" data-a="go">${i.mode === 'coin' ? 'Werfen' : 'Ziehen'}</button><b class="rc-dv">${esc(i.res || '')}</b><button data-ri="${i.id}" data-a="reset">↺</button></div></div>`;
   if (i.t === 'budget') return `<div class="rc-card"><b>🔋 Geräuschbudget</b><div class="rc-row"><b>${i.res === 'ok' ? '🎉 geschafft' : i.res === 'fail' ? '😮 leer' : i.left + ' s'}</b>${i.run ? `<button data-ri="${i.id}" data-a="stop">⏹</button>` : `<button class="primary" data-ri="${i.id}" data-a="go">▶ Start</button>`}<button data-ri="${i.id}" data-a="reset">↺</button></div></div>`;
   if (i.t === 'wheel') return `<div class="rc-card"><b>🎡 Glücksrad</b><div class="rc-row"><button class="primary" data-ri="${i.id}" data-a="spin">🎡 Drehen</button><button data-ri="${i.id}" data-a="reset">↺</button>${i.win ? `<b>${esc(i.win)}</b>` : ''}</div></div>`;
   if (i.t === 'math') return `<div class="rc-card"><b>🧮 Kopfrechnen</b><div class="rc-row"><button data-ri="${i.id}" data-a="show">${i.show ? '🙈 Lösung verbergen' : '👁 Lösung'}</button><button data-ri="${i.id}" data-a="new">🔀 Neu</button></div></div>`;
@@ -10491,7 +10534,8 @@ Object.assign(BD_TYPES, {
   budget: { n: 'Geräuschbudget', i: '🔋', w: 30, h: 34, p: () => ({ min: 15, sec: 30, sens: 5 }) },
   done: { n: 'Wer ist fertig?', i: '🙋', w: 40, h: 50, p: () => ({ extra: '' }) },
   teams: { n: 'Gruppen', i: '👥', w: 44, h: 46, p: () => ({}) },
-  note: { n: 'Notizzettel', i: '🗒', w: 20, h: 26, p: () => ({ text: '', c: '#fef08a' }) }
+  note: { n: 'Notizzettel', i: '🗒', w: 20, h: 26, hide: true, p: () => ({ text: '', c: '#fef08a' }) },
+  rnd: { n: 'Zufall: Münze, Zahl, Karte', i: '🪙', w: 26, h: 40, p: () => ({ mode: 'coin', from: 1, to: 100, deck: '32', list: '' }) }
 });
 BD_MOD.duty = 'duties';
 const NOTE_COL = ['#fef08a', '#fbcfe8', '#bbf7d0', '#bae6fd', '#fed7aa', '#e9d5ff'];
@@ -10543,12 +10587,13 @@ function bwBudgetHtml(it) {
   const col = q > .5 ? '#16a34a' : q > .2 ? '#f59e0b' : '#dc2626';
   return `<div class="bw-budget${b.res ? ' res-' + b.res : ''}"><div class="mh">🔋 Geräuschbudget</div>
     <div class="bg-bat"><div class="bg-fill" style="width:${(q * 100).toFixed(1)}%;background:${col}"></div><span>${b.res === 'ok' ? '🎉 Geschafft!' : b.res === 'fail' ? '😮 Budget leer' : Math.ceil(b.left / 1000) + ' s'}</span></div>
-    <div class="md-info">${b.run ? (dur ? `⏱ noch ${mm}:${String(ss).padStart(2, '0')}` : '⏱ läuft') + (MIC.an ? ` · ${micS('bud' + it.id) === 'r' ? '🔴 zu laut' : micS('bud' + it.id) === 'y' ? '🟡 etwas laut' : '🟢 gut'}` : ' · 🎤 …') : b.res ? '' : `${it.p.sec || 30} s „zu laut“ erlaubt${dur ? ' · ' + it.p.min + ' min' : ''}`}</div>
+    ${b.run ? (() => { const [y, r] = micTh(boardPhase(), it.p.sens), pos = v => clamp((v - 30) / 60 * 100, 0, 100); return `<div class="bg-lvl" title="Lautstärke jetzt"><i style="width:${MIC.an ? micLvl().toFixed(0) : 0}%;background:${micS('bud' + it.id) === 'r' ? '#dc2626' : micS('bud' + it.id) === 'y' ? '#f59e0b' : '#16a34a'}"></i><u style="left:${pos(y)}%"></u><u style="left:${pos(r)}%" class="r"></u></div>`; })() : ''}
+    <div class="md-info">${b.run ? (dur ? `⏱ noch ${mm}:${String(ss).padStart(2, '0')}` : '⏱ läuft') + (MIC.err ? ' · ⚠️ ' + esc(MIC.err) : MIC.an ? ` · ${micS('bud' + it.id) === 'r' ? '🔴 zu laut' : micS('bud' + it.id) === 'y' ? '🟡 etwas laut' : '🟢 gut'} (ca. ${Math.round(MIC.db)} dB)` : ' · 🎤 Mikrofon wird gestartet …') : b.res ? '' : `${it.p.sec || 30} s „zu laut“ erlaubt${dur ? ' · ' + it.p.min + ' min' : ''}`}</div>
     <div class="wh-ctl">${b.run ? '<button class="bd-ctl" data-bg="stop">⏹ Stopp</button>' : `<button class="bd-ctl primary" data-bg="go">▶ Start</button>`}${b.run || b.res || b.left < tot ? '<button class="bd-ctl" data-bg="reset">↺</button>' : ''}</div></div>`;
 }
 function budCtl(it, a) {
   const b = budState(it);
-  if (a === 'go') { if (b.res || b.left <= 0) Object.assign(b, { left: (it.p.sec || 30) * 1000, res: '' }); b.run = true; b.t0 = Date.now(); b.last = Date.now(); audio(); }
+  if (a === 'go') { if (b.res || b.left <= 0) Object.assign(b, { left: (it.p.sec || 30) * 1000, res: '' }); b.run = true; b.t0 = Date.now(); b.last = Date.now(); audio(); MIC.failAt = 0; if (!MIC.st && !MIC.pending) micStart(); }
   if (a === 'stop') b.run = false;
   if (a === 'reset') Object.assign(b, { run: false, left: (it.p.sec || 30) * 1000, res: '' });
 }
@@ -10557,7 +10602,7 @@ function budTick() {   // vom Mikrofon-Takt (150 ms) aufgerufen
   bd.items.forEach(it => {
     if (it.t !== 'budget') return; const b = BUD[it.id]; if (!b || !b.run) return;
     const now = Date.now(), dt = now - (b.last || now); b.last = now;
-    if (MIC.an) { const s = micJudge('bud' + it.id, boardPhase(), it.p.sens); if (s === 'r') b.left -= dt; else if (s === 'y') b.left -= dt * 0.25; }
+    if (MIC.an) { const s = micJudge('bud' + it.id, boardPhase(), it.p.sens); if (s === 'r') b.left -= dt; else if (s === 'y') b.left -= dt * 0.5; }
     const dur = (it.p.min || 0) * 60000;
     if (b.left <= 0) { b.left = 0; b.run = false; b.res = 'fail'; playSound('alarm', 5); }
     else if (dur && now - b.t0 >= dur) { b.run = false; b.res = 'ok'; playSound('gong', 6); goals().forEach(g => goalAward(g, 'budget', 'Geräuschbudget eingehalten', 'budget|' + it.id + '|' + b.t0)); }
@@ -10588,16 +10633,8 @@ function bwTeamsHtml() {
 }
 
 /* ---- 🗒 Notizzettel ---- */
-function bwNoteHtml(it) { return `<div class="bw-note" style="--nc:${it.p.c || NOTE_COL[0]}"><div class="tx">${txFmt(it.p.text || '') || '<span class="hint">Doppelklick = schreiben</span>'}</div></div>`; }
-document.getElementById('bdStage').addEventListener('dblclick', e => {
-  const nt = e.target.closest('.bw-note'); if (!nt || nt.querySelector('textarea')) return;
-  const bw = nt.closest('.bw'), it = bdItem(bw.dataset.id); if (!it) return;
-  const ta = document.createElement('textarea'); ta.className = 'nt-ed'; ta.value = it.p.text || ''; ta.placeholder = 'Notiz … (** fett **, • Liste)';
-  nt.querySelector('.tx').replaceWith(ta); ta.focus();
-  const save = () => { const v = ta.value; if (v !== (it.p.text || '')) change(() => { it.p.text = v; }, { keepList: true }); else { bw.querySelector('.bx').innerHTML = bwHtml(it); bdFitText(); } };
-  ta.addEventListener('blur', save, { once: true });
-  ta.addEventListener('keydown', ev => { if (ev.key === 'Escape' || (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey))) { ev.preventDefault(); ta.blur(); } else txListKey(ev); });
-});
+function bwNoteHtml(it) { return `<div class="bw-note" style="--nc:${it.p.c || NOTE_COL[0]}"><div class="tx">${txFmt(it.p.text || '') || '<span class="hint">Doppelklick = schreiben (⚙)</span>'}</div></div>`; }
+
 
 /* ---- ✍️ Textformatierung für „Text / Aufgabe“ und Notizzettel ----
    **fett**  *kursiv*  __unterstrichen__  ==markiert==  [rot]…[/rot] [blau] [grün]
@@ -10649,6 +10686,52 @@ document.addEventListener('keydown', e => { if (e.target.matches && e.target.mat
 document.addEventListener('input', e => { const ed = e.target.closest && e.target.closest('.tx-edit'); if (!ed) return; const pv = ed.querySelector('.tx-prev'); if (pv) pv.innerHTML = txFmt(e.target.value) || '<span class="hint">Vorschau</span>'; });
 const txEditor = (key, val, ph) => `<div class="tx-edit">${txToolbar()}<textarea data-k="${key}" placeholder="${ph}">${esc(val || '')}</textarea><div class="tx-prev">${txFmt(val) || '<span class="hint">Vorschau</span>'}</div></div>`;
 
+/* ---- 🪙 Zufall: Münze, Zufallszahl, Karte ziehen ---- */
+ui.rnd = {};
+const CARD_S = [['♠', 0], ['♥', 1], ['♦', 1], ['♣', 0]];
+function rndDeck(p) {
+  if (p.deck === 'list') return String(p.list || '').split('\n').map(x => x.trim()).filter(Boolean);
+  const ranks = p.deck === '52' ? ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'B', 'D', 'K', 'A'] : ['7', '8', '9', '10', 'B', 'D', 'K', 'A'];
+  return CARD_S.flatMap(([s]) => ranks.map(r => r + s));
+}
+function rndCardHtml(c, big) {
+  if (!/[♠♥♦♣]$/.test(c)) return `<div class="rn-card txt${big ? ' big' : ''}"><span>${esc(c)}</span></div>`;
+  const s = c.slice(-1), r = c.slice(0, -1), red = s === '♥' || s === '♦';
+  return `<div class="rn-card${red ? ' red' : ''}${big ? ' big' : ''}"><i>${r}<br>${s}</i><b>${s}</b><i class="br">${r}<br>${s}</i></div>`;
+}
+function bwRndHtml(it) {
+  const p = it.p, st = ui.rnd[it.id] || {}, mode = p.mode || 'coin';
+  let main = '';
+  if (mode === 'coin') main = `<div class="rn-coin${st.anim ? ' flip' : ''}${st.res === 'Zahl' ? ' z' : ''}"><span>${st.anim ? '' : st.res === 'Zahl' ? '1' : st.res === 'Kopf' ? '👑' : '?'}</span></div><div class="rn-res">${st.anim ? '…' : st.res ? esc(st.res) : 'Kopf oder Zahl?'}</div>`;
+  if (mode === 'num') main = `<div class="rn-num${st.anim ? ' roll' : ''}">${st.res != null ? esc(String(st.res)) : '?'}</div><div class="rn-res">${esc(String(p.from ?? 1))} bis ${esc(String(p.to ?? 100))}</div>`;
+  if (mode === 'card') { const d = rndDeck(p), left = d.length - (st.used || []).length;
+    main = `<div class="rn-cards">${st.res ? rndCardHtml(st.res, true) : `<div class="rn-card back big"><b>✦</b></div>`}</div><div class="rn-res">${left} von ${d.length} übrig</div>`; }
+  const hist = (st.hist || []).slice(-6, -1).reverse();
+  return `<div class="bw-rnd">${main}${hist.length ? `<div class="rn-hist">vorher: ${hist.map(h => esc(String(h))).join(' · ')}</div>` : ''}
+    <div class="wh-ctl"><button class="bd-ctl primary" data-rn="go">${mode === 'coin' ? '🪙 Werfen' : mode === 'num' ? '🎲 Zahl ziehen' : '🃏 Karte ziehen'}</button>${(st.hist || []).length ? '<button class="bd-ctl" data-rn="reset" title="Neu mischen / Verlauf löschen">↺</button>' : ''}</div></div>`;
+}
+function rndGo(it, bw) {
+  const p = it.p, st = ui.rnd[it.id] = ui.rnd[it.id] || { hist: [], used: [] }; if (st.anim) return;
+  const mode = p.mode || 'coin'; let res;
+  if (mode === 'coin') res = Math.random() < .5 ? 'Kopf' : 'Zahl';
+  if (mode === 'num') { let a = parseInt(p.from, 10), b = parseInt(p.to, 10); if (isNaN(a)) a = 1; if (isNaN(b)) b = 100; if (a > b) [a, b] = [b, a]; res = a + Math.floor(Math.random() * (b - a + 1)); }
+  if (mode === 'card') { const d = rndDeck(p); let free = d.filter(c => !(st.used || []).includes(c)); if (!free.length) { st.used = []; free = d; } if (!free.length) return; res = free[Math.floor(Math.random() * free.length)]; st.used = (st.used || []).concat([res]); }
+  const paint = () => { const bx = bw && bw.querySelector('.bx'); if (bx) bx.innerHTML = bwRndHtml(it); };
+  st.anim = true; paint();
+  if (mode === 'num') { const a = parseInt(p.from, 10) || 1, b = parseInt(p.to, 10) || 100; let k = 0; const iv = setInterval(() => { st.res = Math.min(a, b) + Math.floor(Math.random() * (Math.abs(b - a) + 1)); const n = bw && bw.querySelector('.rn-num'); if (n) n.textContent = st.res; if (++k > 14) clearInterval(iv); }, 70); }
+  setTimeout(() => { st.anim = false; st.res = res; st.hist = (st.hist || []).concat([res]).slice(-20); paint(); playSound(mode === 'coin' ? 'glocke' : 'gong', 3); if (RC.host) rcBroadcast(); }, mode === 'coin' ? 1300 : mode === 'num' ? 1150 : 500);
+}
+BDX.rnd = {
+  html: bwRndHtml,
+  form: p => `<label class="nc-name">Art<select data-k="mode"><option value="coin"${p.mode === 'coin' ? ' selected' : ''}>🪙 Münzwurf (Kopf/Zahl)</option><option value="num"${p.mode === 'num' ? ' selected' : ''}>🎲 Zufallszahl</option><option value="card"${p.mode === 'card' ? ' selected' : ''}>🃏 Karte ziehen</option></select></label>
+    <div class="row"><label class="nc-name">Zahl von<input type="number" data-k="from" value="${esc(String(p.from ?? 1))}" style="width:90px"></label><label class="nc-name">bis<input type="number" data-k="to" value="${esc(String(p.to ?? 100))}" style="width:90px"></label></div>
+    <label class="nc-name">Kartenstapel<select data-k="deck"><option value="32"${p.deck !== '52' && p.deck !== 'list' ? ' selected' : ''}>32 Karten (7 bis Ass)</option><option value="52"${p.deck === '52' ? ' selected' : ''}>52 Karten (2 bis Ass)</option><option value="list"${p.deck === 'list' ? ' selected' : ''}>eigene Karten (Liste unten)</option></select></label>
+    <label class="nc-name">Eigene Karten (eine je Zeile, z. B. Aufgaben, Themen, Wörter)<textarea data-k="list" placeholder="Karte 1&#10;Karte 2">${esc(p.list || '')}</textarea></label>
+    <p class="hint" style="margin:0">Gezogene Karten kommen erst wieder in den Stapel, wenn alle gezogen sind oder ↺ gedrückt wird.</p>`,
+  save: (p, v) => { p.mode = v.mode; p.from = parseInt(v.from, 10); if (isNaN(p.from)) p.from = 1; p.to = parseInt(v.to, 10); if (isNaN(p.to)) p.to = 100; p.deck = v.deck; p.list = v.list; },
+  ctl: (it, ctl, bw) => { const a = ctl.dataset.rn; if (!a) return false; if (a === 'go') rndGo(it, bw); if (a === 'reset') { ui.rnd[it.id] = { hist: [], used: [] }; bw.querySelector('.bx').innerHTML = bwRndHtml(it); } return true; }
+};
+
 /* ---- Einstellungen, Bedienung ---- */
 Object.assign(BDX, {
   duty: { html: bwDutyHtml, form: () => '<p class="hint" style="margin:0">Zeigt die aktuellen Dienste aus dem Sitzplan (Dienste &amp; Ämter). Ändern und neu verteilen dort.</p>', save: () => {}, ctl: () => false },
@@ -10663,7 +10746,7 @@ Object.assign(BDX, {
     form: p => `<label class="nc-name">Dauer der Arbeitsphase<select data-k="min">${[0, 5, 10, 15, 20, 25, 30, 45].map(m => `<option value="${m}"${+p.min === m ? ' selected' : ''}>${m ? m + ' Minuten' : 'ohne Ende (Stopp von Hand)'}</option>`).join('')}</select></label>
       <label class="nc-name">Budget: so viele Sekunden darf es zu laut sein<select data-k="sec">${[10, 20, 30, 45, 60, 90, 120].map(s => `<option value="${s}"${+p.sec === s ? ' selected' : ''}>${s} Sekunden</option>`).join('')}</select></label>
       <label class="nc-name">Empfindlichkeit<input type="range" min="1" max="9" data-k="sens" value="${p.sens || 5}"></label>
-      <p class="hint" style="margin:0">Rot (zu laut) zieht voll ab, Gelb nur ein Viertel. Die Grenzen richten sich nach der Arbeitsphase auf dem Tafelbild. Wird die Zeit mit Restbudget geschafft, gibt es – wenn beim Klassenziel die Regel „🔋 Geräuschbudget“ an ist – einen Punkt.</p>`,
+      <p class="hint" style="margin:0">Rot (zu laut) zieht voll ab, Gelb die Hälfte. Beim ersten Start fragt der Browser nach dem Mikrofon. Die Grenzen richten sich nach der Arbeitsphase auf dem Tafelbild. Wird die Zeit mit Restbudget geschafft, gibt es – wenn beim Klassenziel die Regel „🔋 Geräuschbudget“ an ist – einen Punkt.</p>`,
     save: (p, v) => { p.min = +v.min; p.sec = +v.sec || 30; p.sens = +v.sens || 5; },
     ctl: (it, ctl, bw) => { const a = ctl.dataset.bg; if (!a) return false; budCtl(it, a); bw.querySelector('.bx').innerHTML = bwHtml(it); return true; }
   },
@@ -10681,7 +10764,7 @@ Object.assign(BDX, {
   },
   note: {
     html: bwNoteHtml,
-    form: p => `<div class="nc-name">Notiz${txEditor('text', p.text, 'Kurze Notiz …')}</div><div class="nc-name">Farbe<div class="bd-colors" data-k="c">${NOTE_COL.map(c => `<button type="button" data-c="${c}" style="background:${c}"${(p.c || NOTE_COL[0]) === c ? ' class="cur"' : ''}></button>`).join('')}</div></div><p class="hint" style="margin:0">Tipp: Doppelklick auf den Zettel = direkt schreiben.</p>`,
+    form: p => `<div class="nc-name">Notiz${txEditor('text', p.text, 'Kurze Notiz …')}</div><div class="nc-name">Farbe<div class="bd-colors" data-k="c">${NOTE_COL.map(c => `<button type="button" data-c="${c}" style="background:${c}"${(p.c || NOTE_COL[0]) === c ? ' class="cur"' : ''}></button>`).join('')}</div></div>`,
     save: (p, v) => { p.text = v.text; if (v.c) p.c = v.c; },
     ctl: () => false
   }
