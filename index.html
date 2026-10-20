@@ -575,6 +575,8 @@
   .bd-pal [data-add].pal-drag { opacity: .55; outline: 2px dashed var(--accent); transform: scale(1.04); cursor: grabbing; }
   .bd-pal .pal-hint { grid-column: 1 / -1; margin: 2px 0 0; font-size: .75rem; }
   .tp-head { display: flex; align-items: center; gap: 8px; } .tp-head .tp-big { margin-left: auto; padding: 2px 9px; font-size: 1rem; line-height: 1.2; }
+  .bw-clock .cw { font-size: min(11cqh, 6.4cqw); font-weight: 800; color: var(--accent); margin-top: 2cqh; line-height: 1.15; cursor: pointer; padding: 0 3cqw; }
+  .bw-clock .cw.hid { color: #94a3b8; font-weight: 700; font-size: min(8cqh, 5cqw); } .bw-clock.w b { font-size: min(40cqh, 24cqw); } .bw-clock.an.w .cw { margin-top: 0; }
 </style>
 <style>
   :root {
@@ -1798,7 +1800,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-12-07</p>
+          <p class="hint" style="margin:0">Version 2026-12-08</p>
         </div>
       </details>
 
@@ -7495,8 +7497,8 @@ const bdItem = id => { const b = curBoard(); return b ? b.items.find(i => i.id =
 function bwHtml(it) {
   if (BDX[it.t]) return BDX[it.t].html(it);
   const p = it.p || {};
-  if (it.t === 'clock' && p.analog) return `<div class="bw-clock an">${aClockSvg()}${p.date ? '<small data-live="date"></small>' : ''}</div>`;
-  if (it.t === 'clock') return `<div class="bw-clock"><b data-live="time"></b>${p.date ? '<small data-live="date"></small>' : ''}</div>`;
+  if (it.t === 'clock' && p.analog) return `<div class="bw-clock an${p.words ? ' w' : ''}">${aClockSvg()}${p.words ? `<div class="cw bd-ctl" data-cw="1" title="Antippen = Uhrzeit in Worten zeigen/verbergen" data-live="words"></div>` : ''}${p.date ? '<small data-live="date"></small>' : ''}</div>`;
+  if (it.t === 'clock') return `<div class="bw-clock${p.words ? ' w' : ''}"><b data-live="time"></b>${p.words ? `<div class="cw bd-ctl" data-cw="1" title="Antippen = Uhrzeit in Worten zeigen/verbergen" data-live="words"></div>` : ''}${p.date ? '<small data-live="date"></small>' : ''}</div>`;
   if (it.t === 'count') { const c = countdownInfo(p); return `<div class="bw-count${c.fe ? ' fe' : ''}" data-live="count">${c.top ? `<small>${esc(c.top)}</small>` : ''}<b${c.word ? ' style="font-size:min(26cqh,14cqw)"' : ''}>${esc(c.big)}</b><span>${esc(c.sub)}</span></div>`; }
   if (it.t === 'text') return `<div class="bw-text" style="background:${p.bg || '#fff'}">${p.title ? `<h4>${esc(p.title)}</h4>` : ''}<div class="tx fmt">${txFmt(p.text || '') || '<span class="hint">Text eingeben (⚙)</span>'}</div></div>`;
   if (it.t === 'img') return p.src ? `<div class="bw-img"><img src="${p.src}" alt="">${p.cap ? `<div class="bw-cap">${esc(p.cap)}</div>` : ''}</div>` : '<div class="bw-ph">🖼<br>Bild wählen (⚙)</div>';
@@ -7585,6 +7587,7 @@ function bdLive() {
   document.querySelectorAll('#bdStage [data-live="time"]').forEach(el => { const it = bdItem(el.closest('.bw').dataset.id); el.textContent = now.toLocaleTimeString('de-DE', it && it.p.sec ? { hour: '2-digit', minute: '2-digit', second: '2-digit' } : { hour: '2-digit', minute: '2-digit' }); });
   document.querySelectorAll('#bdStage svg.aclk').forEach(sv => { const it = bdItem(sv.closest('.bw').dataset.id); sv.classList.toggle('nosec', !(it && it.p.sec)); aClockSet(sv, now); });
   document.querySelectorAll('#bdStage [data-live="date"]').forEach(el => { el.textContent = now.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' }); });
+  document.querySelectorAll('#bdStage [data-live="words"]').forEach(el => { const it = bdItem(el.closest('.bw').dataset.id); if (!it) return; const hide = (ui.cwHide || {})[it.id], t = hide ? '👁 Wie spät ist es? (antippen)' : timeWords(now, it.p); el.classList.toggle('hid', !!hide); if (el.textContent !== t) el.textContent = t; });
 }
 setInterval(bdLive, 1000);
 setInterval(() => { if (ui.view === 'board' && !bdDrag && document.visibilityState === 'visible') document.querySelectorAll('#bdStage .bw').forEach(bw => { const it = bdItem(bw.dataset.id); if (it && (it.t === 'count' || it.t === 'due')) { bw.querySelector('.bx').innerHTML = bwHtml(it); } }); bdFitText(); }, 60000);
@@ -7645,8 +7648,36 @@ $('bdStage').addEventListener('click', e => {
   const ctl = e.target.closest('.bd-ctl'); if (!ctl) return;
   const bw = ctl.closest('.bw'), it = bw && bdItem(bw.dataset.id); if (it) bdCtl(it, ctl, bw);
 });
+
+/* ---------- 🕒 Uhrzeit in Worten (Lernuhr) ----------
+   wstyle: 'std' = „Viertel nach drei“, 'reg' = „viertel vier / dreiviertel vier“, 'dig' = „fünfzehn Uhr fünfzehn“ */
+ui.cwHide = {};
+const NUMW = ['null', 'eins', 'zwei', 'drei', 'vier', 'fünf', 'sechs', 'sieben', 'acht', 'neun', 'zehn', 'elf', 'zwölf', 'dreizehn', 'vierzehn', 'fünfzehn', 'sechzehn', 'siebzehn', 'achtzehn', 'neunzehn'];
+function numW(n) {
+  if (n < 20) return NUMW[n];
+  const T = ['', '', 'zwanzig', 'dreißig', 'vierzig', 'fünfzig'], e = n % 10, z = Math.floor(n / 10);
+  return e ? (e === 1 ? 'ein' : NUMW[e]) + 'und' + T[z] : T[z];
+}
+function timeWords(d, p) {
+  const h = d.getHours(), m = d.getMinutes(), st = (p && p.wstyle) || 'std';
+  const daytime = p && p.wday ? ' ' + (h < 5 ? 'nachts' : h < 10 ? 'morgens' : h < 12 ? 'vormittags' : h < 14 ? 'mittags' : h < 18 ? 'nachmittags' : h < 22 ? 'abends' : 'nachts') : '';
+  if (st === 'dig') return 'Es ist ' + (h === 1 ? 'ein' : numW(h)) + ' Uhr' + (m ? ' ' + numW(m) : '') + '.';
+  const hw = k => { const x = k % 12 || 12; return x === 1 ? 'eins' : numW(x); };
+  const H = hw(h), N = hw(h + 1), mw = k => k % 5 ? (k === 1 ? 'eine Minute' : numW(k) + ' Minuten') : numW(k);
+  let t;
+  if (m === 0) t = ((h % 12 || 12) === 1 ? 'ein' : H) + ' Uhr';
+  else if (m === 15) t = st === 'reg' ? 'viertel ' + N : 'Viertel nach ' + H;
+  else if (m === 45) t = st === 'reg' ? 'dreiviertel ' + N : 'Viertel vor ' + N;
+  else if (m === 30) t = 'halb ' + N;
+  else if (m <= 20) t = mw(m) + ' nach ' + H;
+  else if (m < 30) t = mw(30 - m) + ' vor halb ' + N;
+  else if (m < 40) t = mw(m - 30) + ' nach halb ' + N;
+  else t = mw(60 - m) + ' vor ' + N;
+  return 'Es ist ' + t + daytime + '.';
+}
 function bdCtl(it, ctl, bw) {
   if (BDX[it.t] && BDX[it.t].ctl(it, ctl, bw)) return;
+  if (ctl.dataset.cw) { ui.cwHide[it.id] = !ui.cwHide[it.id]; bdLive(); return; }
   if (ctl.dataset.tm) {
     const t = bdTm(it), k = ctl.dataset.tm;
     if (k === 'full') { tmFull(t); return; }
@@ -7685,7 +7716,11 @@ function bdSettings(id) {
   const p = it.p, T = BD_TYPES[it.t];
   let f = '';
   const sel = (name, opts, v) => `<select data-k="${name}">${opts.map(([k, l]) => `<option value="${k}"${v === k ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
-  if (it.t === 'clock') f = `<label class="nc-name">Anzeige${sel('kind', [['d', '🔢 digital'], ['a', '🕒 analog (Zeiger)']], p.analog ? 'a' : 'd')}</label><label class="chk"><input type="checkbox" data-k="sec"${p.sec ? ' checked' : ''}> Sekunden anzeigen</label><label class="chk"><input type="checkbox" data-k="date"${p.date ? ' checked' : ''}> Datum anzeigen</label>`;
+  if (it.t === 'clock') f = `<label class="nc-name">Anzeige${sel('kind', [['d', '🔢 digital'], ['a', '🕒 analog (Zeiger)']], p.analog ? 'a' : 'd')}</label><label class="chk"><input type="checkbox" data-k="sec"${p.sec ? ' checked' : ''}> Sekunden anzeigen</label><label class="chk"><input type="checkbox" data-k="date"${p.date ? ' checked' : ''}> Datum anzeigen</label>
+    <div class="fl-set"><label class="chk"><input type="checkbox" data-k="words"${p.words ? ' checked' : ''}> <b>🗣 Uhrzeit in Worten</b> (Lernuhr, z. B. „Es ist Viertel nach drei.“)</label>
+    <label class="nc-name">Sprechweise${sel('wstyle', [['std', 'Viertel nach drei · Viertel vor vier'], ['reg', 'viertel vier · dreiviertel vier (regional)'], ['dig', 'fünfzehn Uhr fünfzehn (digital)']], p.wstyle || 'std')}</label>
+    <label class="chk"><input type="checkbox" data-k="wday"${p.wday ? ' checked' : ''}> Tageszeit dazu (morgens, nachmittags …)</label>
+    <p class="hint" style="margin:0">Auf der Tafel: Text antippen = verbergen/zeigen („Wie spät ist es?“).</p></div>`;
   if (it.t === 'count') f = `<label class="nc-name">Countdown bis${sel('mode', [['ferien', 'zu den nächsten Ferien (automatisch)'], ['date', 'zu einem eigenen Termin']], p.mode)}</label>
     <div class="row"><label class="nc-name" style="flex:1">Datum<input type="date" data-k="date" value="${esc(p.date || '')}"></label><label class="nc-name" style="flex:2">Bezeichnung<input data-k="label" value="${esc(p.label || '')}" placeholder="z. B. zum Wandertag"></label></div>
     <label class="nc-name">Zählen in${sel('unit', [['school', 'Schultagen (ohne Wochenende, Ferien, Feiertage)'], ['days', 'Tagen']], p.unit)}</label>`;
@@ -7744,7 +7779,7 @@ $('bdDlgOk').addEventListener('click', () => {
   const v = {}; $('bdForm').querySelectorAll('[data-k]').forEach(el => { const k = el.dataset.k; v[k] = el.classList.contains('bd-colors') ? (el.querySelector('.cur') || {}).dataset?.c : el.type === 'checkbox' ? el.checked : el.value; });
   change(() => {
     const p = it.p;
-    if (it.t === 'clock') { p.sec = v.sec; p.date = v.date; p.analog = v.kind === 'a'; }
+    if (it.t === 'clock') { p.sec = v.sec; p.date = v.date; p.analog = v.kind === 'a'; p.words = v.words; p.wstyle = v.wstyle; p.wday = v.wday; }
     if (it.t === 'count') { p.mode = v.mode; p.date = v.date; p.label = v.label.trim(); p.unit = v.unit; if (p.mode === 'date' && !p.date) p.mode = 'ferien'; }
     if (it.t === 'text') { p.title = v.title.trim(); p.text = v.text; if (v.bg) p.bg = v.bg; }
     if (it.t === 'img') { if (bdImg) p.src = bdImg; p.cap = v.cap.trim(); }

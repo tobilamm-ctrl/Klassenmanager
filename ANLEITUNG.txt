@@ -634,3 +634,10 @@ NEU in Version 2026-12-07: Gruppeneinteilung in der Präsentation
 - Menü 👥 in der Präsentation: „⛶ Groß anzeigen“ ist jetzt auch hier da, dazu „🎭 Rollen, die verteilt
   werden“ (antippen = ein/aus), „🎭 Rollen verteilen“ und „✕ Rollen weg“.
 - Große Ansicht: Die Rollenauswahl ist gleich aufgeklappt.
+
+NEU in Version 2026-12-08: 🗣 Uhrzeit in Worten (Lernuhr)
+- Baustein „Uhr“ → ⚙ → „Uhrzeit in Worten“ einschalten (digital und analog). Sprechweise wählbar:
+  „Viertel nach drei / Viertel vor vier“, regional „viertel vier / dreiviertel vier“ oder digital
+  „fünfzehn Uhr fünfzehn“; optional mit Tageszeit (morgens, nachmittags …).
+  Minutengenau: „fünf vor halb vier“, „drei Minuten nach halb vier“, „zwanzig vor vier“ …
+- Text auf der Tafel antippen = verbergen („Wie spät ist es?“), nochmal antippen = zeigen.
