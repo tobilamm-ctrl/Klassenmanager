@@ -563,7 +563,7 @@ NEU in Version 2026-11-30: Übersichtlicher
   die Daten bleiben erhalten. Die Einstellung wird in der Datei gespeichert.
 
 NEU in Version 2026-12-01: 📅 Stundenplan „gültig ab“
-- Stundenplan → „⚙️ Plan ▾“ → „📅 Neuer Plan ab … / Pläne“: Datum wählen → „Anlegen“. Der neue Plan beginnt
+- Stundenplan → „⚙️ Plan ▾“ → „📅 Stundenpläne“: bei „＋ Neuer Plan ab“ Datum wählen → „Anlegen“. Der neue Plan beginnt
   am Montag der gewählten Woche und ist zuerst eine Kopie des vorherigen – nur die Änderungen eintragen.
 - Jede Woche zeigt automatisch den Plan, der in ihr gilt (Hinweis „📅 Plan 2 · ab 09.11.“ neben der KW,
   antippen = Pläne verwalten). Was du in einer Woche änderst, gilt für den Plan dieser Woche.
@@ -573,3 +573,13 @@ NEU in Version 2026-12-01: 📅 Stundenplan „gültig ab“
 - Schüler: Das Hausaufgabenheft bekommt den aktuellen und kommende Pläne sowie eine kleine Zeitleiste.
   Jeden Plan, den es einmal bekommen hat, hebt es auf – beim Zurückblättern stimmt der Plan also auch
   später noch. Geänderte ältere Pläne werden zwei Wochen lang automatisch mitgeschickt.
+
+NEU in Version 2026-12-02: 🎯 Klassenziel – bewegte Darstellungen
+- Neu zur Auswahl (⚙ beim Klassenziel → Darstellung): 🌳 Baum, der wächst (Blätter, ab der Hälfte Blüten,
+  am Ziel Äpfel) · 🏰 Burg, Stein für Stein (am Ziel wird die Fahne gehisst) · 🧗 Bergsteiger zum Gipfel
+  (beim Gruppenwettbewerb alle Gruppen auf einem Berg) · 🎈 Luftballons (am Ziel hebt der Korb ab) ·
+  🐠 Aquarium (Fische, Pflanzen, Luftblasen, Schatztruhe) · ✨ Sternbild · 💡 Lichterkette mit Feuerwerk.
+- Neue Punkte fliegen sichtbar ein (Stein fällt, Ballon steigt auf, Fisch springt ins Wasser …).
+- „ruhige Darstellung“ schaltet die Dauerbewegung (schwimmende Fische, wiegende Blätter usw.) ab.
+- Stundenplan: Der Menüpunkt heißt jetzt „📅 Stundenpläne“; die Plan-Anzeige neben der Woche ist kleiner
+  und verschiebt die Wochenauswahl nicht mehr.

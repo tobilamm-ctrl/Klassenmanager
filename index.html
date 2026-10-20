@@ -481,7 +481,9 @@
   .hm-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 6px; align-items: center; padding: 5px 8px; border-radius: 8px; background: #f8fafc; }
   .hm-row.off { opacity: .55; } .hm-row select { font: inherit; font-size: .85rem; padding: 3px 6px; border: 1px solid #d1d5db; border-radius: 6px; } .hm-row button { padding: 3px 9px; }
   /* Stundenplan „gültig ab“ */
-  .tt-vertag { margin-left: 10px; padding: 4px 10px; font-size: .8rem; font-weight: 700; color: #4338ca; background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 999px; }
+  .tt-weekbar { position: relative; }
+  .tt-vertag { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); max-width: calc(50% - 150px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 2px 8px; font-size: .7rem; font-weight: 700; color: #4338ca; background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 999px; }
+  @media (max-width: 760px) { .tt-vertag { max-width: 70px; } }
   .tt-vertag.new { background: #4338ca; color: #fff; border-color: #4338ca; }
   .tv-list { display: flex; flex-direction: column; gap: 6px; }
   .tv-row { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto auto auto; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 10px; background: #f8fafc; border: 1.5px solid transparent; }
@@ -492,6 +494,33 @@
   .tv-row button { padding: 4px 9px; }
   .tv-new { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; padding: 10px; border: 1.5px dashed #a5b4fc; border-radius: 10px; }
   .tv-new input { font: inherit; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 7px; }
+  /* Klassenziel: bewegte Darstellungen */
+  .g-sway { animation: gSway 5s ease-in-out infinite alternate; transform-box: view-box; transform-origin: 60px 104px; }
+  @keyframes gSway { from { transform: rotate(-1.4deg); } to { transform: rotate(1.4deg); } }
+  .g-drop2 { animation: gDrop2 .6s cubic-bezier(.3,1.3,.5,1) both; } @keyframes gDrop2 { from { transform: translateY(-40px); opacity: 0; } 60% { opacity: 1; } }
+  .g-wave { animation: gWave 1.1s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: left center; } @keyframes gWave { from { transform: skewY(-7deg) scaleX(.92); } to { transform: skewY(6deg) scaleX(1); } }
+  .g-hoist { animation: gHoist 1.8s ease-out both; } @keyframes gHoist { from { transform: translateY(17px); } }
+  .g-move { animation: gMove 1.1s cubic-bezier(.3,.8,.4,1) both; } @keyframes gMove { from { transform: translate(var(--dx), var(--dy)); } }
+  .g-bob { animation: gBob 1.3s ease-in-out infinite alternate; } @keyframes gBob { to { transform: translateY(-1.6px); } }
+  .g-swing { animation: gSwing 3s ease-in-out infinite alternate; transform-box: view-box; } @keyframes gSwing { from { transform: rotate(-3.5deg); } to { transform: rotate(3.5deg); } }
+  .g-rise { animation: gRise 1.5s cubic-bezier(.2,.8,.3,1) both; } @keyframes gRise { from { transform: translate(var(--dx), var(--dy)) scale(.15); opacity: .4; } }
+  .g-lift { animation: gLift 2.4s ease-in-out infinite alternate; } @keyframes gLift { from { transform: translateY(0); } to { transform: translateY(-13px); } }
+  .g-swim { animation: gSwim 9s linear infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes gSwim { 0% { transform: translateX(0) scaleX(1); } 46% { transform: translateX(var(--d)) scaleX(1); } 50% { transform: translateX(var(--d)) scaleX(-1); } 96% { transform: translateX(0) scaleX(-1); } 100% { transform: translateX(0) scaleX(1); } }
+  .g-splash { animation: gSplash 1.1s ease-out both; } @keyframes gSplash { from { transform: translateY(-34px); opacity: 0; } }
+  .g-bub { animation: gBub 3.2s ease-in infinite; } @keyframes gBub { from { transform: translateY(0); opacity: .9; } to { transform: translateY(-74px); opacity: 0; } }
+  .g-plant { animation: gPlant 3.2s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: bottom center; } @keyframes gPlant { from { transform: skewX(-7deg); } to { transform: skewX(7deg); } }
+  .g-twinkle { animation: gTw 2.4s ease-in-out infinite alternate; } @keyframes gTw { from { opacity: .15; } to { opacity: .95; } }
+  .g-draw { animation: gDraw 1s ease-out both; } @keyframes gDraw { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
+  .g-glow { animation: gGlow 2s ease-in-out infinite alternate; } @keyframes gGlow { from { opacity: .06; } to { opacity: .28; } }
+  .g-flick { opacity: .4; animation: gFlick 2.2s ease-in-out infinite alternate; } @keyframes gFlick { from { opacity: .22; } to { opacity: .55; } }
+  .g-chase { opacity: .55; animation: gChase .9s steps(1) infinite; } @keyframes gChase { 50% { opacity: .05; } }
+  .g-fw { animation: gFw 2.2s ease-out infinite; transform-box: fill-box; transform-origin: center; } @keyframes gFw { 0% { transform: scale(.1); opacity: 0; } 15% { opacity: 1; } 70% { transform: scale(1); opacity: .9; } 100% { transform: scale(1.15); opacity: 0; } }
+  .g-calm .g-idle { animation: none !important; }
+  .g-climbs { flex: 1; } .g-clr { display: flex; flex-direction: column; gap: 3px; width: 100%; font-size: .9em; }
+  .g-clrow { display: flex; align-items: center; gap: 6px; } .g-clrow i { width: 12px; height: 12px; border-radius: 50%; background: var(--gc); flex: none; } .g-clrow span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
+  .g-clrow button { padding: 1px 9px; min-width: 34px; }
+  @media (prefers-reduced-motion: reduce) { .g-idle { animation: none !important; } }
 </style>
 <style>
   :root {
@@ -1715,7 +1744,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-12-01</p>
+          <p class="hint" style="margin:0">Version 2026-12-02</p>
         </div>
       </details>
 
@@ -1879,7 +1908,7 @@
           <b id="ttTitle" style="font-size:1.05rem" hidden>Stundenplan</b>
           <span class="ttm-wrap"><button id="ttPlanBtn" title="Stundenplan einrichten: Raster, Fächer, Samstag, leeren">⚙️ Plan ▾</button>
             <div id="ttPlanMenu" class="ttmenu" hidden>
-              <button id="ttVerBtn" title="Ab einem bestimmten Datum gilt ein anderer Stundenplan">📅 Neuer Plan ab … / Pläne</button>
+              <button id="ttVerBtn" title="Mehrere Stundenpläne: ab einem bestimmten Datum gilt ein anderer Plan">📅 Stundenpläne</button>
               <button id="ttRaster" title="Stundenraster bearbeiten">🕒 Raster (Stundenzeiten)</button>
               <button id="ttPalToggle" class="toggle" title="Fächerleiste ein-/ausblenden">🎨 Fächer</button>
               <label class="chk"><input type="checkbox" id="ttSat"> Samstag</label>
@@ -9821,7 +9850,7 @@ function tallyStartHtml(c) {
 /* ---------- 🎯 Klassenziel / Belohnung ----------
    c.goals = [{ id, name, reward, target, n, style, color, img, sound, vol, minus, show, mode, rules, groups, log, done, aw }]
    Darstellungen: Murmelglas, Sterne, Thermometer, Puzzle, Rakete. Regeln vergeben Punkte automatisch oder schlagen sie vor. */
-const GOAL_STYLES = { jar: '🫙 Murmelglas', stars: '⭐ Sternenreihe', thermo: '🌡️ Thermometer', puzzle: '🧩 Puzzlebild', rocket: '🚀 Rakete zum Mond' };
+const GOAL_STYLES = { jar: '🫙 Murmelglas', stars: '⭐ Sternenreihe', thermo: '🌡️ Thermometer', puzzle: '🧩 Puzzlebild', rocket: '🚀 Rakete zum Mond', tree: '🌳 Baum, der wächst', build: '🏰 Burg, Stein für Stein', climb: '🧗 Bergsteiger zum Gipfel', balloon: '🎈 Luftballons', aqua: '🐠 Aquarium', constel: '✨ Sternbild', lights: '💡 Lichterkette & Feuerwerk' };
 const GOAL_COLORS = ['#2563eb', '#16a34a', '#f59e0b', '#db2777', '#7c3aed', '#0891b2', '#dc2626'];
 const GOAL_WHY = ['ruhig gearbeitet', 'super aufgeräumt', 'gut zusammengearbeitet', 'Lob von Fachlehrkraft', 'alle Hausaufgaben da', 'pünktlich angefangen', 'hilfsbereit'];
 const GOAL_RULES = {
@@ -9882,6 +9911,7 @@ function confetti(cv, ms) {
 function goalRand(seed) { let h = 2166136261; for (const ch of String(seed)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return () => { h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; }; }
 function goalSvg(g, n, target, col, seed, fresh) {
   const f = Math.min(1, target ? n / target : 0), st = g.style;
+  if (GOAL_SVGX[st]) return GOAL_SVGX[st](g, n, target, col, seed, fresh);
   if (st === 'stars') {
     const T = Math.min(target, 60), cols = T <= 10 ? T : T <= 24 ? Math.ceil(T / 2) : Math.ceil(T / 3), rows = Math.ceil(T / cols), on = Math.round(f * T);
     let s = ''; for (let i = 0; i < T; i++) { const x = (i % cols) * 12 + 6, y = Math.floor(i / cols) * 12 + 6; s += `<path d="${starPath(x, y, 5.2)}" fill="${i < on ? '#facc15' : '#e5e7eb'}" stroke="${i < on ? '#ca8a04' : '#cbd5e1'}" stroke-width=".6"${fresh && i === on - 1 ? ' class="g-pop"' : ''}/>`; }
@@ -9916,15 +9946,151 @@ function goalSvg(g, n, target, col, seed, fresh) {
   const top = Math.max(22, 102 - Math.ceil(cap / per) * r * 1.75 - 4);
   return `<svg viewBox="0 0 136 110" class="g-svg"><path d="M30 ${top} L30 98 Q30 106 38 106 L98 106 Q106 106 106 98 L106 ${top}" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>${m}<rect x="26" y="${top - 6}" width="84" height="7" rx="3" fill="#cbd5e1"/><line x1="36" y1="${top + 6}" x2="36" y2="96" stroke="#fff" stroke-width="3" opacity=".7" stroke-linecap="round"/></svg>`;
 }
+/* ---- weitere, bewegte Darstellungen: Baum, Burg, Bergsteiger, Luftballons, Aquarium, Sternbild, Lichterkette ----
+   g-idle = Dauerbewegung (abschaltbar mit „ruhige Darstellung“), neue Teile bekommen eine Einflug-Animation */
+const gq = (n, T) => Math.max(0, Math.min(1, T ? n / T : 0));
+const gPrev = (n, fresh) => fresh && GOAL.last && GOAL.last.d > 0 ? Math.max(0, n - GOAL.last.d) : n;
+const gF = v => (+v).toFixed(2);
+const G_PAL = ['#ef4444', '#f59e0b', '#22c55e', '#3b82f6', '#a855f7', '#ec4899', '#14b8a6', '#facc15'];
+// Punkte auf einer Linie (gleichmäßig nach Länge)
+function gAlong(pts, fr) {
+  const seg = []; let L = 0; for (let i = 1; i < pts.length; i++) { const l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(l); L += l; }
+  let d = Math.max(0, Math.min(1, fr)) * L;
+  for (let i = 0; i < seg.length; i++) { if (d <= seg[i] || i === seg.length - 1) { const q = seg[i] ? Math.min(1, d / seg[i]) : 0; return [pts[i][0] + (pts[i + 1][0] - pts[i][0]) * q, pts[i][1] + (pts[i + 1][1] - pts[i][1]) * q]; } d -= seg[i]; }
+  return pts[pts.length - 1];
+}
+const GOAL_SVGX = {
+  // 🌳 Baum: wächst, bekommt Blätter, ab der Hälfte Blüten, am Ziel Äpfel
+  tree(g, n, T, col, seed, fresh) {
+    const f = gq(n, T), pf = gq(gPrev(n, fresh), T), K = Math.max(10, Math.min(T * 2, 70)), on = Math.round(f * K), was = Math.round(pf * K), rnd = goalRand(seed + 'tree');
+    const pos = []; while (pos.length < K) { const x = rnd() * 2 - 1, y = rnd() * 2 - 1; if (x * x + y * y <= 1) pos.push([60 + x * 40, 42 + y * 27, rnd() * 180, rnd()]); }
+    const s = 0.55 + 0.45 * Math.min(1, f * 1.6);
+    const br = [[60, 62, 34, 40], [60, 58, 86, 36], [60, 54, 46, 26], [60, 52, 76, 22], [60, 50, 60, 18]].filter((b, i) => f >= i * 0.12);
+    let leaves = '';
+    for (let i = 0; i < on; i++) {
+      const [x, y, a, r] = pos[i], cls = i >= was && fresh ? ' class="g-pop"' : '';
+      if (f >= 0.5 && i % 4 === 0) leaves += `<g${cls}>${[0, 72, 144, 216, 288].map(w => `<circle cx="${gF(x + 2.1 * Math.cos(w * Math.PI / 180))}" cy="${gF(y + 2.1 * Math.sin(w * Math.PI / 180))}" r="1.7" fill="#f9a8d4"/>`).join('')}<circle cx="${gF(x)}" cy="${gF(y)}" r="1.1" fill="#facc15"/></g>`;
+      else leaves += `<ellipse${cls} cx="${gF(x)}" cy="${gF(y)}" rx="4.4" ry="2.6" transform="rotate(${gF(a)} ${gF(x)} ${gF(y)})" fill="${['#16a34a', '#22c55e', '#15803d', '#4ade80'][Math.floor(r * 4)]}"/>`;
+    }
+    const fruit = f >= 1 ? pos.filter((p, i) => i % 7 === 3).slice(0, 9).map(([x, y]) => `<g class="g-pop"><circle cx="${gF(x)}" cy="${gF(y + 3)}" r="2.8" fill="#dc2626"/><circle cx="${gF(x - .8)}" cy="${gF(y + 2.1)}" r=".8" fill="#fff" opacity=".6"/></g>`).join('') : '';
+    return `<svg viewBox="0 0 120 110" class="g-svg"><ellipse cx="60" cy="106" rx="56" ry="6" fill="#bbf7d0"/><path d="M8 106 q6 -5 12 0 M96 106 q5 -4 10 0" stroke="#4ade80" fill="none"/>
+      <g transform="translate(60 104) scale(${gF(s)}) translate(-60 -104)"><g class="g-idle g-sway">${f > 0.15 ? `<ellipse cx="60" cy="42" rx="${gF(30 + 12 * Math.min(1, f * 1.5))}" ry="${gF(20 + 9 * Math.min(1, f * 1.5))}" fill="#86efac" opacity="${gF(Math.min(.55, f * .9))}"/>` : ''}<path d="M55 104 Q57 80 57 58 L63 58 Q63 80 65 104 Z" fill="#92400e"/><path d="M57 70 Q58 64 60 60" stroke="#78350f" fill="none"/>
+      ${br.map(([x1, y1, x2, y2]) => `<path d="M${x1} ${y1} Q${(x1 + x2) / 2} ${y1 - 6} ${x2} ${y2}" stroke="#92400e" stroke-width="2.4" fill="none" stroke-linecap="round"/>`).join('')}${leaves}${fruit}</g></g></svg>`;
+  },
+  // 🏰 Burg: Stein für Stein, am Ziel wird die Fahne gehisst
+  build(g, n, T, col, seed, fresh) {
+    const slots = []; for (let r = 0; r <= 12; r++) for (let c = 0; c <= 10; c++) {
+      const tower = c <= 1 || c >= 9; let ok = tower ? r <= 11 : r <= 6;
+      if (!tower && c === 5 && r <= 2) ok = false;   // Tor
+      if (r === 7 && !tower) ok = c % 2 === 0;        // Zinnen Mauer
+      if (r === 12) ok = c === 0 || c === 10;         // Zinnen Türme
+      if (ok) slots.push([5 + c * 10, 98 - r * 6]);
+    }
+    const S = slots.length, f = gq(n, T), on = Math.round(f * S), was = Math.round(gq(gPrev(n, fresh), T) * S), rnd = goalRand(seed + 'b');
+    let br = '', ghost = '';
+    slots.forEach(([x, y], i) => { const l = 52 + Math.floor(rnd() * 18); ghost += `<rect x="${x}" y="${y}" width="10" height="6" fill="none" stroke="#e2e8f0" stroke-width=".5"/>`;
+      if (i < on) br += `<rect${fresh && i >= was ? ` class="g-drop2" style="animation-delay:${(i - was) * 70}ms"` : ''} x="${x + .3}" y="${y + .3}" width="9.4" height="5.4" rx=".8" fill="hsl(28 14% ${l}%)" stroke="hsl(28 14% ${l - 12}%)" stroke-width=".4"/>`; });
+    const done = f >= 1, gate = f >= 0.25 ? `<path d="M55 104 V91 Q60 85 65 91 V104 Z" fill="#78350f"/><line x1="60" y1="88" x2="60" y2="104" stroke="#451a03" stroke-width=".5"/>` : '';
+    const win = f >= 0.6 ? `<rect x="13" y="56" width="3" height="7" rx="1.5" fill="#1e293b"/><rect x="103" y="56" width="3" height="7" rx="1.5" fill="#1e293b"/>` : '';
+    const flag = done ? `<g class="g-hoist"><path class="g-idle g-wave" d="M110 7 L126 11 L110 16 Z" fill="${col}"/></g>` : '';
+    return `<svg viewBox="0 0 130 110" class="g-svg"><rect x="0" y="104" width="130" height="6" fill="#a3e635" opacity=".6"/>${ghost}${br}${gate}${win}<line x1="110" y1="26" x2="110" y2="5" stroke="#475569" stroke-width="1.2"/>${flag}${done ? '<text x="65" y="20" font-size="9" text-anchor="middle" class="g-pop">✨</text>' : ''}</svg>`;
+  },
+  // 🧗 Bergsteiger: auf dem Pfad zum Gipfel (bei Gruppen: alle Gruppen auf einem Berg)
+  climb(g, n, T, col, seed, fresh, list) {
+    const P = [[12, 104], [46, 97], [28, 88], [58, 80], [40, 68], [64, 58], [52, 46], [70, 36], [62, 26], [73, 15]];
+    const L = list || [{ n, col, name: '', fresh }];
+    const marks = [0.25, 0.5, 0.75].map((q, i) => { const [x, y] = gAlong(P, q), reached = L.some(c => gq(c.n, T) >= q); return `<circle cx="${gF(x)}" cy="${gF(y)}" r="2" fill="${reached ? '#facc15' : '#e2e8f0'}" stroke="#78716c" stroke-width=".5"/>${i === 1 ? `<text x="${gF(x + 9)}" y="${gF(y + 2)}" font-size="8" text-anchor="middle">🛖</text>` : ''}`; }).join('');
+    const top = L.some(c => gq(c.n, T) >= 1);
+    const cl = L.map((c, i) => {
+      const fr = gq(c.n, T), [x, y] = gAlong(P, fr), [px, py] = gAlong(P, gq(gPrev(c.n, c.fresh), T)), ox = (i - (L.length - 1) / 2) * 5;
+      const fig = L.length > 1 ? `<circle r="4.6" fill="${c.col}" stroke="#fff" stroke-width="1.2"/><text y="2" font-size="5.5" font-weight="800" text-anchor="middle" fill="#fff">${esc((c.name || '?').slice(0, 1).toUpperCase())}</text>` : `<text y="3" font-size="11" text-anchor="middle">🧗</text>`;
+      return `<g transform="translate(${gF(x + ox)} ${gF(y - 5)})"><g${c.fresh && (px !== x || py !== y) ? ` class="g-move" style="--dx:${gF(px - x)}px;--dy:${gF(py - y)}px"` : ''}><g class="g-idle g-bob" style="animation-delay:${-i * .3}s">${fig}</g></g></g>`;
+    }).join('');
+    return `<svg viewBox="0 0 120 110" class="g-svg"><defs><linearGradient id="gmt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#94a3b8"/><stop offset="1" stop-color="#64748b"/></linearGradient></defs>
+      <rect width="120" height="110" rx="6" fill="#e0f2fe"/><circle cx="104" cy="16" r="7" fill="#fde047"/>
+      <path d="M0 108 L30 58 L42 70 L73 12 L96 50 L106 42 L120 66 L120 110 L0 110 Z" fill="url(#gmt)"/><path d="M73 12 L64 30 L70 27 L74 32 L79 26 L83 28 Z" fill="#fff"/>
+      <path d="M0 110 L0 100 Q30 92 60 104 Q90 96 120 102 L120 110 Z" fill="#86efac"/>
+      <polyline points="${P.map(p => p.join(',')).join(' ')}" fill="none" stroke="#fef3c7" stroke-width="1.6" stroke-dasharray="2 2"/>${marks}
+      <line x1="73" y1="13" x2="73" y2="3" stroke="#334155" stroke-width=".8"/><path class="${top ? 'g-idle g-wave' : ''}" d="M73 3 L82 5.5 L73 8 Z" fill="${top ? '#ef4444' : '#cbd5e1'}"/>${cl}${top ? '<text x="88" y="12" font-size="8" class="g-pop">🎉</text>' : ''}</svg>`;
+  },
+  // 🎈 Luftballons: jeder Punkt ein Ballon, am Ziel hebt der Korb ab
+  balloon(g, n, T, col, seed, fresh) {
+    const K = Math.max(6, Math.min(T, 36)), f = gq(n, T), on = Math.round(f * K), was = Math.round(gq(gPrev(n, fresh), T) * K), rnd = goalRand(seed + 'bl');
+    const pos = []; let tries = 0; while (pos.length < K && tries++ < 4000) { const x = 60 + (rnd() * 2 - 1) * 46, y = 34 + (rnd() * 2 - 1) * 26; if (((x - 60) / 48) ** 2 + ((y - 34) / 28) ** 2 > 1) continue; if (pos.some(p => Math.hypot(p[0] - x, p[1] - y) < 8.5 - Math.min(3, K / 12))) continue; pos.push([x, y]); }
+    while (pos.length < K) pos.push([60 + (rnd() * 2 - 1) * 40, 34 + (rnd() * 2 - 1) * 22]);
+    pos.sort((a, b) => Math.hypot(a[0] - 60, a[1] - 40) - Math.hypot(b[0] - 60, b[1] - 40));
+    let b = '';
+    for (let i = 0; i < on; i++) {
+      const [x, y] = pos[i], ax = 60 + (x - 60) * .12, c = G_PAL[i % G_PAL.length];
+      const inner = `<path d="M${gF(x)} ${gF(y + 7)} Q${gF((x + ax) / 2 + 3)} ${gF((y + 92) / 2)} ${gF(ax)} 90" stroke="#94a3b8" stroke-width=".5" fill="none"/><ellipse cx="${gF(x)}" cy="${gF(y)}" rx="5.6" ry="6.8" fill="${c}"/><path d="M${gF(x - 1.2)} ${gF(y + 7.4)} L${gF(x + 1.2)} ${gF(y + 7.4)} L${gF(x)} ${gF(y + 6.2)} Z" fill="${c}"/><ellipse cx="${gF(x - 1.9)}" cy="${gF(y - 2.4)}" rx="1.3" ry="2" fill="#fff" opacity=".5"/>`;
+      b += `<g class="g-idle g-swing" style="transform-origin:${gF(ax)}px 90px;animation-duration:${(2.6 + (i % 5) * .45).toFixed(2)}s;animation-delay:${-(i % 7) * .4}s">${fresh && i >= was ? `<g class="g-rise" style="--dx:${gF(ax - x)}px;--dy:${gF(90 - y)}px">${inner}</g>` : inner}</g>`;
+    }
+    const done = f >= 1;
+    return `<svg viewBox="0 0 120 110" class="g-svg"><rect width="120" height="110" rx="6" fill="#f0f9ff"/><path d="M14 22 q4 -4 9 0 q4 -3 7 1 h-16z M92 14 q4 -4 9 0 q4 -3 7 1 h-16z" fill="#fff"/>
+      <g class="${done ? 'g-idle g-lift' : ''}">${b}<path d="M50 90 L70 90 L67 103 L53 103 Z" fill="#b45309"/><path d="M51 94 H69 M52 98 H68" stroke="#78350f" stroke-width=".6"/><text x="60" y="88" font-size="9" text-anchor="middle">🎁</text></g>
+      <rect y="104" width="120" height="6" fill="#bbf7d0"/></svg>`;
+  },
+  // 🐠 Aquarium: jeder Punkt ein Fisch, dazu Pflanzen, Luftblasen und am Ende eine Schatztruhe
+  aqua(g, n, T, col, seed, fresh) {
+    const K = Math.max(5, Math.min(T, 30)), f = gq(n, T), on = Math.round(f * K), was = Math.round(gq(gPrev(n, fresh), T) * K), rnd = goalRand(seed + 'aq');
+    let fish = '';
+    for (let i = 0; i < K; i++) {
+      const y = 22 + rnd() * 58, x = 18 + rnd() * 44, d = 16 + rnd() * (96 - x - 16), s = .75 + rnd() * .5, c = G_PAL[Math.floor(rnd() * G_PAL.length)], dur = 7 + rnd() * 6, del = -rnd() * dur;
+      if (i >= on) continue;
+      const body = `<ellipse rx="6" ry="3.6" fill="${c}"/><path d="M-5 0 L-10.5 -3.8 L-10.5 3.8 Z" fill="${c}"/><path d="M-1 -3.4 Q1 -6 3 -3" fill="${c}"/><circle cx="3.2" cy="-1" r=".9" fill="#0f172a"/><path d="M0 -3 Q-1.4 0 0 3" stroke="#fff" stroke-width=".6" fill="none" opacity=".7"/>`;
+      fish += `<g transform="translate(${gF(x)} ${gF(y)}) scale(${gF(s)})"><g class="${fresh && i >= was ? 'g-splash' : ''}"><g class="g-idle g-swim" style="--d:${gF(d / s)}px;animation-duration:${dur.toFixed(1)}s;animation-delay:${del.toFixed(1)}s">${body}</g></g></g>`;
+    }
+    const plant = (x, h, c2) => `<path class="g-idle g-plant" d="M${x} 98 q-5 -${h / 3} 0 -${h * 2 / 3} q4 -${h / 6} 0 -${h / 3} M${x + 3} 98 q5 -${h / 4} 1 -${h / 2} q-3 -${h / 6} 1 -${h / 4}" stroke="${c2}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+    const bubbles = f >= 0.5 ? [0, 1, 2, 3, 4].map(i => `<circle class="g-idle g-bub" style="animation-delay:${-i * .7}s" cx="${24 + (i % 2) * 3}" cy="94" r="${1 + (i % 3) * .5}" fill="none" stroke="#e0f2fe" stroke-width=".6"/>`).join('') + [0, 1, 2].map(i => `<circle class="g-idle g-bub" style="animation-delay:${-i * 1.1 - .4}s" cx="${99 + (i % 2) * 2}" cy="94" r="1.2" fill="none" stroke="#e0f2fe" stroke-width=".6"/>`).join('') : '';
+    const chest = f >= 1 ? `<g class="g-pop"><rect x="70" y="90" width="16" height="9" rx="1.2" fill="#a16207"/><path d="M70 90 L72 82 L88 82 L86 90 Z" fill="#ca8a04"/><rect x="77" y="91" width="2.4" height="3" fill="#fde047"/><circle cx="74" cy="88" r="1.6" fill="#fde047"/><circle cx="79" cy="87" r="1.8" fill="#facc15"/><circle cx="83" cy="88.5" r="1.4" fill="#fde047"/></g><text class="g-idle g-twinkle" x="80" y="80" font-size="7" text-anchor="middle">✨</text>` : '';
+    return `<svg viewBox="0 0 120 110" class="g-svg"><defs><linearGradient id="gaq" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset="1" stop-color="#0369a1"/></linearGradient></defs>
+      <rect x="4" y="8" width="112" height="98" rx="5" fill="url(#gaq)" stroke="#94a3b8" stroke-width="2"/><path d="M5 14 Q20 11 35 14 T65 14 T95 14 T115 14" stroke="#e0f2fe" stroke-width="1" fill="none" opacity=".8"/>
+      <path d="M5 98 Q30 92 60 97 T115 95 L115 105 L5 105 Z" fill="#fde68a"/><circle cx="40" cy="99" r="2" fill="#d6d3d1"/><circle cx="96" cy="100" r="1.6" fill="#a8a29e"/>
+      ${f >= 0.25 ? plant(16, 34, '#16a34a') : ''}${f >= 0.75 ? plant(104, 28, '#22c55e') + plant(56, 18, '#15803d') : ''}${bubbles}${chest}${fish}</svg>`;
+  },
+  // ✨ Sternbild: jeder Punkt zündet einen Stern an, Linien verbinden sie, am Ziel leuchtet das Bild
+  constel(g, n, T, col, seed, fresh) {
+    const K = Math.max(8, Math.min(T, 30)), f = gq(n, T), on = Math.round(f * K), was = Math.round(gq(gPrev(n, fresh), T) * K), rnd = goalRand(seed + 'cs');
+    const out = []; for (let i = 0; i <= 10; i++) { const a = Math.PI / 5 * i - Math.PI / 2, r = i % 2 ? 17 : 40; out.push([60 + r * Math.cos(a), 56 + r * Math.sin(a)]); }
+    const pts = Array.from({ length: K }, (_, i) => gAlong(out, i / K));
+    let bg = ''; for (let i = 0; i < 34; i++) bg += `<circle class="g-idle g-twinkle" style="animation-delay:${-(rnd() * 2.4).toFixed(2)}s" cx="${gF(rnd() * 120)}" cy="${gF(rnd() * 110)}" r="${gF(.3 + rnd() * .6)}" fill="#fff"/>`;
+    let lines = '', stars = '';
+    for (let i = 1; i < on; i++) { const [x1, y1] = pts[i - 1], [x2, y2] = pts[i], len = Math.hypot(x2 - x1, y2 - y1); lines += `<line x1="${gF(x1)}" y1="${gF(y1)}" x2="${gF(x2)}" y2="${gF(y2)}" stroke="#fde68a" stroke-width=".9" opacity=".85"${fresh && i >= was ? ` class="g-draw" style="--len:${gF(len)};stroke-dasharray:${gF(len)};animation-delay:${(i - was) * 120}ms"` : ''}/>`; }
+    const done = f >= 1;
+    if (done) { const [x1, y1] = pts[K - 1], [x2, y2] = pts[0]; lines += `<line x1="${gF(x1)}" y1="${gF(y1)}" x2="${gF(x2)}" y2="${gF(y2)}" stroke="#fde68a" stroke-width=".9"/>`; }
+    pts.forEach(([x, y], i) => { stars += i < on ? `<g${fresh && i >= was ? ' class="g-pop"' : ''}><circle cx="${gF(x)}" cy="${gF(y)}" r="4.5" fill="#fde68a" opacity=".22"/><path d="${starPath(x, y, 3)}" fill="#fef08a"/></g>` : `<circle cx="${gF(x)}" cy="${gF(y)}" r=".9" fill="#64748b"/>`; });
+    return `<svg viewBox="0 0 120 110" class="g-svg"><rect width="120" height="110" rx="6" fill="#0b1026"/>${bg}${done ? `<path class="g-idle g-glow" d="M${out.map(p => gF(p[0]) + ' ' + gF(p[1])).join(' L')} Z" fill="#fde68a"/>` : ''}${lines}${stars}${done ? '<text x="60" y="104" font-size="7" text-anchor="middle" fill="#fde68a" class="g-pop">✨ geschafft ✨</text>' : ''}</svg>`;
+  },
+  // 💡 Lichterkette: jeder Punkt eine Lampe, am Ziel blinkt alles und es gibt Feuerwerk
+  lights(g, n, T, col, seed, fresh) {
+    const K = Math.max(6, Math.min(T, 48)), rows = Math.ceil(K / 12), per = Math.ceil(K / rows), f = gq(n, T), on = Math.round(f * K), was = Math.round(gq(gPrev(n, fresh), T) * K), done = f >= 1;
+    const top = done ? 40 : 22, gap = rows > 1 ? (100 - top) / rows : 0;
+    let wire = '', bulbs = '', k = 0;
+    for (let r = 0; r < rows; r++) {
+      const y0 = top + r * gap + (rows === 1 ? 18 : 0), sag = 9;
+      wire += `<path d="M4 ${gF(y0)} Q32 ${gF(y0 + sag * 2)} 60 ${gF(y0)} Q88 ${gF(y0 + sag * 2)} 116 ${gF(y0)}" stroke="#334155" stroke-width=".8" fill="none"/>`;
+      const cnt = Math.min(per, K - k);
+      for (let j = 0; j < cnt; j++, k++) {
+        const t = (j + .5) / cnt, half = t < .5 ? 0 : 1, u = (t - half * .5) * 2, x = 4 + t * 112, y = y0 + 4 * sag * u * (1 - u), c = G_PAL[k % 6], lit = k < on;
+        const fr = fresh && k >= was && lit ? ' class="g-pop"' : '';
+        bulbs += `<g${fr}><rect x="${gF(x - 1.2)}" y="${gF(y)}" width="2.4" height="2" fill="#475569"/>${lit ? `<circle class="g-idle ${done ? 'g-chase' : 'g-flick'}" style="animation-delay:${done ? (k % 2) * .45 : -(k % 5) * .4}s" cx="${gF(x)}" cy="${gF(y + 6)}" r="6" fill="${c}"/>` : ''}<ellipse cx="${gF(x)}" cy="${gF(y + 5.6)}" rx="2.6" ry="3.6" fill="${lit ? c : '#e5e7eb'}" stroke="${lit ? '#fff' : '#94a3b8'}" stroke-width=".4"/></g>`;
+      }
+    }
+    const fw = done ? [[24, 18, '#f472b6', 0], [62, 12, '#facc15', .7], [98, 20, '#60a5fa', 1.3]].map(([x, y, c, d]) => `<g class="g-idle g-fw" style="animation-delay:${d}s">${Array.from({ length: 12 }, (_, i) => { const a = i * Math.PI / 6; return `<line x1="${gF(x + 2 * Math.cos(a))}" y1="${gF(y + 2 * Math.sin(a))}" x2="${gF(x + 11 * Math.cos(a))}" y2="${gF(y + 11 * Math.sin(a))}" stroke="${c}" stroke-width="1.1" stroke-linecap="round"/>`; }).join('')}<circle cx="${x}" cy="${y}" r="1.4" fill="#fff"/></g>`).join('') : '';
+    return `<svg viewBox="0 0 120 110" class="g-svg"><rect width="120" height="110" rx="6" fill="#1e293b"/>${fw}${wire}${bulbs}</svg>`;
+  }
+};
 function starPath(cx, cy, R) { let d = ''; for (let i = 0; i < 10; i++) { const a = Math.PI / 5 * i - Math.PI / 2, r = i % 2 ? R * .45 : R; d += (i ? 'L' : 'M') + (cx + r * Math.cos(a)).toFixed(2) + ' ' + (cy + r * Math.sin(a)).toFixed(2); } return d + 'Z'; }
 // Inhalt eines Ziels (für Baustein, Startseite)
 function goalHtml(g, opts = {}) {
   const fresh = GOAL.last && GOAL.last.gid === g.id && Date.now() - GOAL.last.t < 1500 && GOAL.last.d > 0;
   const one = (n, col, name, gi) => `<div class="g-one" style="--gc:${col}">${name ? `<div class="g-tn">${esc(name)}</div>` : ''}<div class="g-vis">${goalSvg(g, n, g.target, col, g.id + (gi ?? ''), fresh && (gi == null || GOAL.last.gi === gi))}</div><div class="g-cnt"><b>${n}</b> / ${g.target}${n >= g.target ? ' 🎉' : ''}</div>
     ${opts.ctl ? `<div class="g-btn">${g.minus ? `<button class="bd-ctl" data-gd="-1" data-gi="${gi ?? ''}" title="−1">−</button>` : ''}<button class="bd-ctl primary" data-gd="1" data-gi="${gi ?? ''}" title="+1">＋1</button></div>` : ''}</div>`;
-  const body = g.groups ? `<div class="g-teams">${g.groups.map((x, i) => one(x.n || 0, x.color || GOAL_COLORS[i % GOAL_COLORS.length], x.name, i)).join('')}</div>` : one(g.n, g.color);
+  const body = g.groups && g.style === 'climb' ? `<div class="g-one g-climbs"><div class="g-vis">${GOAL_SVGX.climb(g, 0, g.target, g.color, g.id, false, g.groups.map((x, i) => ({ n: x.n || 0, col: x.color || GOAL_COLORS[i % GOAL_COLORS.length], name: x.name, fresh: fresh && GOAL.last.gi === i })))}</div>
+      <div class="g-clr">${g.groups.map((x, i) => `<div class="g-clrow" style="--gc:${x.color || GOAL_COLORS[i % GOAL_COLORS.length]}"><i></i><span>${esc(x.name)}</span><b>${x.n || 0}</b>/${g.target}${(x.n || 0) >= g.target ? ' 🎉' : ''}${opts.ctl ? `${g.minus ? `<button class="bd-ctl" data-gd="-1" data-gi="${i}">−</button>` : ''}<button class="bd-ctl primary" data-gd="1" data-gi="${i}">＋1</button>` : ''}</div>`).join('')}</div></div>`
+    : g.groups ? `<div class="g-teams">${g.groups.map((x, i) => one(x.n || 0, x.color || GOAL_COLORS[i % GOAL_COLORS.length], x.name, i)).join('')}</div>` : one(g.n, g.color);
   const why = opts.ctl && GOAL.why && GOAL.why.gid === g.id && Date.now() - GOAL.why.t < 5000 ? `<div class="g-why">Wofür? ${GOAL_WHY.slice(0, 5).map((w, i) => `<button class="bd-ctl" data-gw="${i}">${esc(w)}</button>`).join('')}</div>` : '';
-  return `<div class="bw-goal"><div class="g-hd"><b>🎯 ${esc(g.name)}</b><span>🎁 ${esc(g.reward || '')}</span></div>${body}${why}</div>`;
+  return `<div class="bw-goal${g.calm ? ' g-calm' : ''}"><div class="g-hd"><b>🎯 ${esc(g.name)}</b><span>🎁 ${esc(g.reward || '')}</span></div>${body}${why}</div>`;
 }
 
 /* ---- Regeln ---- */
@@ -10036,6 +10202,7 @@ function goalForm() {
     ${g.style === 'puzzle' ? `<label class="nc-name">Puzzlebild (eigenes Foto, optional)<input type="file" accept="image/*" id="goalImg"></label>${g.img ? '<button data-gimgdel="1">Bild entfernen</button>' : ''}` : ''}
     <div class="g-opts"><label class="chk"><input type="checkbox" data-gf="sound"${g.sound ? ' checked' : ''}> 🔔 Ton und Animation</label><label>Lautstärke <input type="range" min="1" max="10" data-gf="vol" value="${g.vol || 5}"></label>
       <label class="chk"><input type="checkbox" data-gf="minus"${g.minus ? ' checked' : ''}> Abziehen erlaubt</label>
+      <label class="chk" title="Fische, Blätter, Sterne usw. bewegen sich dann nur, wenn ein Punkt dazukommt"><input type="checkbox" data-gf="calm"${g.calm ? ' checked' : ''}> ruhige Darstellung (keine Dauerbewegung)</label>
       <label class="chk"><input type="checkbox" data-gf="show"${g.show ? ' checked' : ''}> 📲 bei den Schülern anzeigen</label></div>
     <details class="g-sec"${g.groups ? ' open' : ''}><summary>👥 Gruppenwettbewerb ${g.groups ? '(an)' : '(aus)'}</summary>
       <label class="chk"><input type="checkbox" data-gf="groupsOn"${g.groups ? ' checked' : ''}> Mehrere Gläser nebeneinander – jede Gruppe sammelt selbst</label>
