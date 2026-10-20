@@ -561,3 +561,15 @@ NEU in Version 2026-11-30: Übersichtlicher
   Dienste, Lehrer-Symbole, Abstimmung, Klangkulisse, Glücksrad, Kopfrechnen, Foto, Zeiger, Zeichnen –
   und jeder Tafel-Baustein einzeln. Ausgeschaltetes verschwindet aus Menüs, Startseite und Fernbedienung;
   die Daten bleiben erhalten. Die Einstellung wird in der Datei gespeichert.
+
+NEU in Version 2026-12-01: 📅 Stundenplan „gültig ab“
+- Stundenplan → „⚙️ Plan ▾“ → „📅 Neuer Plan ab … / Pläne“: Datum wählen → „Anlegen“. Der neue Plan beginnt
+  am Montag der gewählten Woche und ist zuerst eine Kopie des vorherigen – nur die Änderungen eintragen.
+- Jede Woche zeigt automatisch den Plan, der in ihr gilt (Hinweis „📅 Plan 2 · ab 09.11.“ neben der KW,
+  antippen = Pläne verwalten). Was du in einer Woche änderst, gilt für den Plan dieser Woche.
+- Pläne verwalten: Namen geben (z. B. „1. Halbjahr“), Startdatum verschieben, 👁 anzeigen, 🗑 löschen.
+  Alte Pläne bleiben erhalten, damit auch frühere Wochen stimmen. Fächer gelten für alle Pläne gemeinsam.
+- Startseite, „in der nächsten Stunde“, Packliste und Tagesänderungen richten sich nach dem Plan des Tages.
+- Schüler: Das Hausaufgabenheft bekommt den aktuellen und kommende Pläne sowie eine kleine Zeitleiste.
+  Jeden Plan, den es einmal bekommen hat, hebt es auf – beim Zurückblättern stimmt der Plan also auch
+  später noch. Geänderte ältere Pläne werden zwei Wochen lang automatisch mitgeschickt.

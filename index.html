@@ -480,6 +480,18 @@
   .hm-list { display: flex; flex-direction: column; gap: 4px; }
   .hm-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 6px; align-items: center; padding: 5px 8px; border-radius: 8px; background: #f8fafc; }
   .hm-row.off { opacity: .55; } .hm-row select { font: inherit; font-size: .85rem; padding: 3px 6px; border: 1px solid #d1d5db; border-radius: 6px; } .hm-row button { padding: 3px 9px; }
+  /* Stundenplan „gültig ab“ */
+  .tt-vertag { margin-left: 10px; padding: 4px 10px; font-size: .8rem; font-weight: 700; color: #4338ca; background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 999px; }
+  .tt-vertag.new { background: #4338ca; color: #fff; border-color: #4338ca; }
+  .tv-list { display: flex; flex-direction: column; gap: 6px; }
+  .tv-row { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto auto auto; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 10px; background: #f8fafc; border: 1.5px solid transparent; }
+  .tv-row.cur { border-color: #c7d2fe; background: #eef2ff; }
+  .tv-n { width: 26px; height: 26px; border-radius: 50%; background: #4338ca; color: #fff; display: grid; place-items: center; font-weight: 800; font-size: .85rem; }
+  .tv-m { display: flex; flex-direction: column; gap: 2px; min-width: 0; } .tv-m input { font: inherit; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 7px; } .tv-m small { color: var(--muted); }
+  .tv-d { display: flex; align-items: center; gap: 4px; font-size: .85rem; } .tv-d input { font: inherit; font-size: .85rem; padding: 3px 6px; border: 1px solid #d1d5db; border-radius: 7px; }
+  .tv-row button { padding: 4px 9px; }
+  .tv-new { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; padding: 10px; border: 1.5px dashed #a5b4fc; border-radius: 10px; }
+  .tv-new input { font: inherit; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 7px; }
 </style>
 <style>
   :root {
@@ -1703,7 +1715,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-11-30</p>
+          <p class="hint" style="margin:0">Version 2026-12-01</p>
         </div>
       </details>
 
@@ -1867,6 +1879,7 @@
           <b id="ttTitle" style="font-size:1.05rem" hidden>Stundenplan</b>
           <span class="ttm-wrap"><button id="ttPlanBtn" title="Stundenplan einrichten: Raster, Fächer, Samstag, leeren">⚙️ Plan ▾</button>
             <div id="ttPlanMenu" class="ttmenu" hidden>
+              <button id="ttVerBtn" title="Ab einem bestimmten Datum gilt ein anderer Stundenplan">📅 Neuer Plan ab … / Pläne</button>
               <button id="ttRaster" title="Stundenraster bearbeiten">🕒 Raster (Stundenzeiten)</button>
               <button id="ttPalToggle" class="toggle" title="Fächerleiste ein-/ausblenden">🎨 Fächer</button>
               <label class="chk"><input type="checkbox" id="ttSat"> Samstag</label>
@@ -1888,7 +1901,7 @@
             <p class="hint">Klick auf ein Fach = Name/Farbe ändern. Fach auf ein anderes Fach in dieser Liste ziehen = Reihenfolge ändern. Fach im Plan verschieben = tauschen, zurück hierher ziehen oder ✕ = entfernen. Klick auf eine Uhrzeit = Raster bearbeiten.</p>
           </div>
           <div class="tt-main">
-            <div class="tt-card"><div class="tt-weekbar"><span class="tt-week"><button id="ttPrev" title="Woche zurück">◀</button><button id="ttThis" title="Zur aktuellen Woche"></button><button id="ttNext" title="Woche vor">▶</button></span></div><div class="tt-grid" id="ttGrid"></div></div>
+            <div class="tt-card"><div class="tt-weekbar"><span class="tt-week"><button id="ttPrev" title="Woche zurück">◀</button><button id="ttThis" title="Zur aktuellen Woche"></button><button id="ttNext" title="Woche vor">▶</button></span><button id="ttVerTag" class="tt-vertag" hidden title="Mehrere Stundenpläne – antippen zum Verwalten"></button></div><div class="tt-grid" id="ttGrid"></div></div>
             <div class="agenda" id="ttAgenda"></div>
           </div>
         </div>
@@ -2012,6 +2025,7 @@
   <p class="noise-hint">Antippen = an/aus · mehrere Geräusche lassen sich mischen · die Geräusche laufen weiter, wenn das Fenster zu ist.</p>
 </div>
 <div id="palette"></div>
+<div class="cdlg-back" id="ttVerDlg" hidden><div class="cdlg nc" style="width:600px"><div class="cdlg-title">📅 Stundenpläne mit „gültig ab“</div><div class="nc-body" id="ttVerBody"></div></div></div>
 <div class="cdlg-back" id="homeDlg" hidden><div class="cdlg nc" style="width:560px"><div class="cdlg-title">🏠 Startseite anpassen</div><div class="nc-body" id="homeBody"></div></div></div>
 <div id="goalParty" hidden></div>
 <div id="goalAsk" hidden></div>
@@ -5524,7 +5538,40 @@ function defaultSlots() {
 function timetable() {
   const c = cls();
   if (!c.tt) c.tt = { sat: false, slots: defaultSlots(), subjects: [], cells: {} };
-  return c.tt;
+  return ttAt(ttMonday(), c);   // Plan der gerade angezeigten Woche
+}
+/* ---------- 📅 Stundenplan „gültig ab“: tt.vers = [{ id, from: Montag, name, slots, cells, ab, sat }] ----------
+   Der Grundplan steht wie bisher direkt in tt (gilt „schon immer“), weitere Pläne gelten ab ihrem Montag.
+   ttAt(Datum) liefert den Plan dieses Tages – Fächer, Tagesänderungen usw. bleiben gemeinsam. */
+const TT_PF = ['slots', 'cells', 'ab', 'sat'];
+const ttMon = ds => addDays(ds, -weekdayIdx(new Date(ds + 'T00:00')));
+function ttVerAt(tt, ds) { let v = null; const m = ttMon(ds); (tt.vers || []).forEach(x => { if (x.from <= m) v = x; }); return v; }
+function ttView(tt, v) {
+  if (!v) return tt;
+  return new Proxy(tt, {
+    get: (t, k) => TT_PF.includes(k) ? v[k] : k === '__ver' ? v : t[k],
+    set: (t, k, val) => { if (TT_PF.includes(k)) v[k] = val; else t[k] = val; return true; },
+    deleteProperty: (t, k) => { if (TT_PF.includes(k)) delete v[k]; else delete t[k]; return true; },
+    has: (t, k) => TT_PF.includes(k) ? k in v : k in t
+  });
+}
+function ttAt(ds, c = cls()) { return c.tt ? ttView(c.tt, ttVerAt(c.tt, ds || todayStr())) : null; }
+// alle Pläne (Grundplan + Versionen) als Ansicht, sortiert
+function ttPlans(c = cls()) {
+  const tt = c.tt; if (!tt) return [];
+  return [{ id: 'p0', from: '', name: tt.pname || '', view: tt }].concat((tt.vers || []).map(v => ({ id: v.id, from: v.from, name: v.name || '', view: ttView(tt, v), v })));
+}
+function ttPlanLabel(p, list, noName) {
+  const i = list.findIndex(x => x.id === p.id), nx = list[i + 1];
+  const rng = (p.from ? 'ab ' + fmtD(p.from) : 'von Anfang an') + (nx ? ' bis ' + fmtD(addDays(nx.from, -3)) : '');
+  return (p.name && !noName ? p.name + ' · ' : 'Plan ' + (i + 1) + ' · ') + rng;
+}
+// Woche, in der ein Plan am besten zu sehen ist: aktuelle Woche, sonst sein Beginn bzw. seine letzte Woche
+function ttPlanWeek(p) {
+  const pls = ttPlans(), i = pls.findIndex(x => x.id === p.id), nx = pls[i + 1], today = ttMon(todayStr());
+  const start = p.from || '0000', end = nx ? addDays(nx.from, -7) : '9999';
+  if (start <= today && today <= end) return 0;
+  return start > today ? ttWeekOf(start) : ttWeekOf(end);
 }
 const ttDays = tt => tt.sat ? [0, 1, 2, 3, 4, 5] : [0, 1, 2, 3, 4];
 const ttSubj = (tt, id) => tt.subjects.find(s => s.id === id);
@@ -5573,8 +5620,9 @@ function nextLessonDate(subjectName) {
   const subj = c.tt.subjects.find(s => s.name.toLowerCase() === subjectName.trim().toLowerCase()); if (!subj) return '';
   for (let n = 1; n <= 60; n++) {
     const ds = addDays(todayStr(), n), wd = weekdayIdx(new Date(ds + 'T00:00'));
-    if (!ttDays(c.tt).includes(wd) || freeDay(ds)) continue;
-    if (c.tt.slots.some(sl => !sl.pause && cellHas(c.tt.cells[wd + '|' + sl.id], subj.id))) return ds;
+    const T = ttAt(ds, c);
+    if (!ttDays(T).includes(wd) || freeDay(ds)) continue;
+    if (T.slots.some(sl => !sl.pause && cellHas(T.cells[wd + '|' + sl.id], subj.id))) return ds;
   }
   return '';
 }
@@ -5592,6 +5640,7 @@ function renderTimetable() {
   const wk = ui.ttWeek || 0, thisWeek = !wk;
   const monday = addDays(todayStr(), -today + 7 * wk);
   { const m = new Date(monday + 'T00:00'), th = new Date(m); th.setDate(m.getDate() + 3); const y1 = new Date(th.getFullYear(), 0, 4); const kw = 1 + Math.round(((th - y1) / 864e5 - 3 + (y1.getDay() + 6) % 7) / 7);
+    { const pls = ttPlans(), p = pls.filter(x => !x.from || x.from <= monday).pop(); $('ttVerTag').hidden = pls.length < 2; if (pls.length > 1) { $('ttVerTag').textContent = '📅 ' + ttPlanLabel(p, pls); $('ttVerTag').classList.toggle('new', !!p.from && p.from === monday); } }
     $('ttThis').textContent = `KW ${kw} · ${fmtD(monday)}–${fmtD(addDays(monday, days[days.length - 1]))}`; $('ttThis').classList.toggle('off', !thisWeek); $('ttThis').title = thisWeek ? 'Aktuelle Woche' : 'Zurück zur aktuellen Woche'; }
   const exams = cls().exams || [];
   const head = `<tr><th class="tt-time"></th>${days.map(d => { const ds = addDays(monday, d); const fr = freeDay(ds); return `<th class="${thisWeek && d === today ? 'today' : ''}${fr ? ' off' : ''}">${DAY_NAMES[d]}<span class="dt">${fmtD(ds)}</span>${fr ? `<span class="fr" title="unterrichtsfrei">${esc(fr)}</span>` : ''}${exams.filter(x => exOn(x, ds)).map(x => x.kind === 'ev' ? `<span class="exm ev" data-id="${x.id}" title="${esc((x.time ? x.time + ' ' : '') + x.title)}">📅 ${esc(x.title)}</span>` : `<span class="exm" data-id="${x.id}" title="${esc(x.title)}">📝 ${esc(x.subject || x.title)}</span>`).join('')}</th>`; }).join('')}</tr>`;
@@ -5828,7 +5877,7 @@ $('sjSave').addEventListener('click', () => {
 $('sjDel').addEventListener('click', () => {
   const id = subjEdit;
   if (!window.confirm('Fach löschen? Es wird auch aus allen Stunden entfernt.')) return;
-  change(() => { const tt = timetable(); tt.subjects = tt.subjects.filter(s => s.id !== id); Object.keys(tt.cells).forEach(k => setCell(tt, k, cellArr(tt, k).filter(x => x !== id))); }, { keepList: true });
+  change(() => { const tt = timetable(); tt.subjects = tt.subjects.filter(s => s.id !== id); ttPlans().forEach(p => { const v = p.view; Object.keys(v.cells).forEach(k => setCell(v, k, cellArr(v, k).filter(x => x !== id))); }); }, { keepList: true });
   $('subjDlg').hidden = true;
 });
 $('subjDlg').addEventListener('keydown', e => { if (e.key === 'Escape') $('subjDlg').hidden = true; if (e.key === 'Enter') $('sjSave').click(); });
@@ -5904,6 +5953,56 @@ $('slSave').addEventListener('click', () => {
 });
 $('ttRaster').addEventListener('click', openSlots);
 $('homeCfgBtn').addEventListener('click', openHomeCfg);
+/* ---- Dialog: Pläne verwalten, neuen Plan ab … anlegen ---- */
+function ttWeekOf(ds) { return Math.round((new Date(ttMon(ds) + 'T00:00') - new Date(ttMon(todayStr()) + 'T00:00')) / (7 * 864e5)); }
+function openTtVer() { renderTtVer(); $('ttVerDlg').hidden = false; }
+function renderTtVer() {
+  const pls = ttPlans(), curMon = ttMonday(), shown = pls.filter(x => !x.from || x.from <= curMon).pop(), today = ttMon(todayStr());
+  const sug = (() => { const nx = FERIEN_BY.filter(f => f[0] > todayStr()).map(f => f[1]).sort()[0]; return nx ? ttMon(addDays(nx, 3)) : addDays(today, 7); })();
+  $('ttVerBody').innerHTML = `<p class="hint" style="margin:0 0 8px">Jede Woche zeigt automatisch den Plan, der in ihr gilt. Ein neuer Plan beginnt immer am <b>Montag</b> der gewählten Woche und ist zuerst eine Kopie des vorherigen – du änderst nur, was anders wird. Was du in einer Woche einträgst, gilt für den Plan dieser Woche.</p>
+    <div class="tv-list">${pls.map((p, i) => `<div class="tv-row${p === shown ? ' cur' : ''}">
+      <span class="tv-n">${i + 1}</span>
+      <div class="tv-m"><input data-tvname="${p.id}" value="${esc(p.name)}" placeholder="Name (optional), z. B. 1. Halbjahr" maxlength="40"><small>${esc(ttPlanLabel(p, pls, true))}${(!p.from || p.from <= today) && (!pls[i + 1] || pls[i + 1].from > today) ? ' · <b>gilt jetzt</b>' : ''}${p === shown ? ' · wird gerade angezeigt' : ''}</small></div>
+      ${p.from ? `<label class="tv-d">ab<input type="date" data-tvfrom="${p.id}" value="${p.from}"></label>` : '<span class="tv-d hint">Grundplan</span>'}
+      <button data-tvshow="${p.id}" title="Diesen Plan im Stundenplan zeigen">👁</button>
+      ${p.from ? `<button class="danger" data-tvdel="${p.id}" title="Plan löschen">🗑</button>` : '<span></span>'}</div>`).join('')}</div>
+    <div class="tv-new"><b>＋ Neuer Plan ab</b><input type="date" id="tvNewDate" value="${sug}"><button class="primary" id="tvNewBtn">Anlegen</button></div>
+    <div class="row" style="justify-content:flex-end;margin-top:10px"><button class="primary" data-tvok="1">Fertig</button></div>`;
+}
+function ttVerSort(tt) { tt.vers.sort((a, b) => a.from.localeCompare(b.from)); }
+$('ttVerDlg').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) { if (e.target === $('ttVerDlg')) $('ttVerDlg').hidden = true; return; }
+  if (b.dataset.tvok) { $('ttVerDlg').hidden = true; return; }
+  if (b.id === 'tvNewBtn') {
+    const d = $('tvNewDate').value; if (!d) { $('tvNewDate').focus(); return; }
+    const from = ttMon(d), tt0 = cls().tt || timetable() && cls().tt;
+    if ((tt0.vers || []).some(v => v.from === from)) { window.alert('Ab ' + fmtDW(from) + ' gibt es schon einen Plan.'); return; }
+    const base = ttAt(addDays(from, -1)), id = newId('v');
+    change(() => { const tt = cls().tt; tt.vers = tt.vers || []; tt.vers.push({ id, from, name: '', slots: JSON.parse(JSON.stringify(base.slots)), cells: JSON.parse(JSON.stringify(base.cells)), ab: JSON.parse(JSON.stringify(base.ab || {})), sat: !!base.sat }); ttVerSort(tt); }, { keepList: true });
+    ui.ttWeek = ttWeekOf(from); $('ttVerDlg').hidden = true; renderTimetable();
+    setResult(`📅 Neuer Stundenplan ab ${fmtDW(from)} angelegt (Kopie des bisherigen) – jetzt einfach die Änderungen eintragen. Frühere Wochen behalten ihren Plan.`, 'ok');
+    return;
+  }
+  if (b.dataset.tvshow) { const p = ttPlans().find(x => x.id === b.dataset.tvshow); if (p) ui.ttWeek = ttPlanWeek(p); $('ttVerDlg').hidden = true; setView('tt'); renderTimetable(); return; }
+  if (b.dataset.tvdel) {
+    const v = (cls().tt.vers || []).find(x => x.id === b.dataset.tvdel); if (!v) return;
+    if (!window.confirm(`Den Stundenplan ab ${fmtDW(v.from)} löschen?\nAb dann gilt wieder der vorherige Plan. (Mit ↶ rückgängig zu machen.)`)) return;
+    change(() => { const tt = cls().tt; tt.vers = tt.vers.filter(x => x !== v); if (!tt.vers.length) delete tt.vers; }, { keepList: true });
+    renderTtVer(); renderTimetable();
+  }
+});
+$('ttVerDlg').addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.tvname) { change(() => { const tt = cls().tt, nm = t.value.trim().slice(0, 40); if (t.dataset.tvname === 'p0') { if (nm) tt.pname = nm; else delete tt.pname; } else { const v = tt.vers.find(x => x.id === t.dataset.tvname); if (v) v.name = nm; } }, { keepList: true }); renderTtVer(); renderTimetable(); }
+  if (t.dataset.tvfrom && t.value) {
+    const from = ttMon(t.value), tt = cls().tt, v = tt.vers.find(x => x.id === t.dataset.tvfrom); if (!v) return;
+    if (tt.vers.some(x => x !== v && x.from === from)) { window.alert('Ab ' + fmtDW(from) + ' gibt es schon einen Plan.'); renderTtVer(); return; }
+    change(() => { v.from = from; ttVerSort(tt); }, { keepList: true }); renderTtVer(); renderTimetable();
+  }
+});
+$('ttVerBtn').addEventListener('click', openTtVer);
+$('ttVerTag').addEventListener('click', openTtVer);
+
 $('ttPlanBtn').addEventListener('click', () => { const m = $('ttPlanMenu'); m.hidden = !m.hidden; $('ttPlanBtn').classList.toggle('on', !m.hidden); });
 $('ttPlanMenu').addEventListener('click', e => { if (e.target.closest('button')) { $('ttPlanMenu').hidden = true; $('ttPlanBtn').classList.remove('on'); } });
 document.addEventListener('pointerdown', e => { if (!$('ttPlanMenu').hidden && !e.target.closest('.ttm-wrap')) { $('ttPlanMenu').hidden = true; $('ttPlanBtn').classList.remove('on'); } });
@@ -7065,8 +7164,7 @@ function dueOn(ds) {
 const givenOn = ds => (cls().checks || []).filter(k => k.kind === 'hw' && k.given === ds && !k.archived);
 // nächster Schultag ab ds (einschließlich) laut Stundenplan
 function schoolDayFrom(ds, back) {
-  const tt = cls().tt, days = tt ? ttDays(tt) : [0, 1, 2, 3, 4];
-  for (let i = 0; i < 60; i++) { const d = addDays(ds, back ? -i : i), wd = weekdayIdx(new Date(d + 'T00:00')); if (days.includes(wd) && !freeDay(d)) return d; }
+  for (let i = 0; i < 60; i++) { const d = addDays(ds, back ? -i : i), wd = weekdayIdx(new Date(d + 'T00:00')), T = ttAt(d), days = T ? ttDays(T) : [0, 1, 2, 3, 4]; if (days.includes(wd) && !freeDay(d)) return d; }
   return ds;
 }
 
@@ -7074,7 +7172,8 @@ function schoolDayFrom(ds, back) {
 const startPref = () => { try { return localStorage.getItem('km-startview') || 'start'; } catch { return 'start'; } };
 function renderStart() {
   if (ui.view !== 'start') return;
-  const c = cls(), tt = c.tt, now = new Date(), t = todayStr(), hm = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+  const c = cls(), now = new Date(), t = todayStr(), hm = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+  let tt = ttAt(t, c);
   const h = now.getHours(), greet = h < 11 ? 'Guten Morgen' : h < 17 ? 'Guten Tag' : 'Guten Abend';
   const dateTxt = now.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' }) + ' · KW ' + isoWeek(t);
   const ci = countdownInfo({ mode: 'ferien' });
@@ -7091,6 +7190,7 @@ function renderStart() {
   const lastEnd = tt ? (tt.slots.filter(s => !s.pause && s.end).map(s => s.end).sort().pop() || '') : '';
   const todayFree = freeDay(t), todaySchool = tt && days.includes(weekdayIdx(now)) && !todayFree;
   if (!todaySchool || (lastEnd && hm >= lastEnd)) { day = schoolDayFrom(addDays(t, 1)); dayLbl = (day === addDays(t, 1) ? 'Morgen' : 'Nächster Schultag') + ' · ' + fmtDW(day); }
+  tt = ttAt(day, c);
   let left = `<div class="st-card"><h3>🗓 ${esc(dayLbl)}</h3>`;
   if (todayFree && dayLbl !== 'Heute') left += `<div class="st-free" style="margin-bottom:8px">Heute: ${esc(todayFree)}</div>`;
   if (!tt || !tt.slots.length || !Object.keys(tt.cells).length) left += `<p class="st-none">Noch kein Stundenplan angelegt.</p><div class="st-acts"><button data-go="tt">🗓 Stundenplan anlegen</button></div>`;
@@ -9875,7 +9975,7 @@ function goalCheckLists() {
 function goalCheckMat() {
   const c = cls(); if (!goals(c).some(g => goalRule(g, 'matDay')) || !c.tally) return;
   const td = c.tally, seen = td.seen || {}, t = todayStr();
-  const tt = c.tt, lastEnd = tt ? (tt.slots.filter(s => !s.pause && s.end).map(s => s.end).sort().pop() || '') : '', hm = new Date().toTimeString().slice(0, 5);
+  const tt = ttAt(t, c), lastEnd = tt ? (tt.slots.filter(s => !s.pause && s.end).map(s => s.end).sort().pop() || '') : '', hm = new Date().toTimeString().slice(0, 5);
   Object.keys(seen).forEach(d => {
     if (d > t || (d === t && !(lastEnd && hm >= lastEnd))) return;
     if (td.marks.some(m => m.d === d)) return;
@@ -10338,10 +10438,14 @@ $('ttChgPop').addEventListener('click', e => {
   pop.hidden = true; chgAt = null;
 });
 document.addEventListener('pointerdown', e => { if (!$('ttChgPop').hidden && !e.target.closest('#ttChgPop') && !e.target.closest('.tt-cell')) $('ttChgPop').hidden = true; }, true);
+// welche älteren Pläne zuletzt geändert wurden (pro Gerät gemerkt) – geänderte werden zwei Wochen lang mitgeschickt
+const strHashKM = t => { let h = 5381; for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
+function ttSentLoad(c) { try { return JSON.parse(localStorage.getItem('km-ttsent-' + c.id) || '{}') || {}; } catch { return {}; } }
+function ttSentSave(c, o, plans) { const ids = new Set(plans.map(p => p.id)); Object.keys(o).forEach(k => { if (!ids.has(k)) delete o[k]; }); try { localStorage.setItem('km-ttsent-' + c.id, JSON.stringify(o)); } catch {} }
 // für die Schüler: Änderungen der nächsten vier Wochen
 function chgPayload(tt) {
   const t = todayStr(), lim = addDays(t, 28), out = [];
-  Object.entries(tt.chg || {}).forEach(([k, ch]) => { const [d, sid] = [k.slice(0, 10), k.slice(11)], i = tt.slots.findIndex(s => s.id === sid); if (d < t || d > lim || i < 0) return; const s = ch.s && ttSubj(tt, ch.s); out.push([d, i, ch.t, ch.x || '', s ? s.name : '']); });
+  Object.entries(tt.chg || {}).forEach(([k, ch]) => { const [d, sid] = [k.slice(0, 10), k.slice(11)], i = ttAt(d).slots.findIndex(s => s.id === sid); if (d < t || d > lim || i < 0) return; const s = ch.s && ttSubj(tt, ch.s); out.push([d, i, ch.t, ch.x || '', s ? s.name : '']); });
   return out;
 }
 
@@ -10378,17 +10482,32 @@ function buildPayload(o, c = cls()) {
   if (!c.uid) c.uid = Math.random().toString(36).slice(2, 10);   // Kennung dieser Klasse/Lehrkraft – damit gelöschte Einträge nur bei den eigenen verschwinden
   const today = todayStr(), P = { app: 'jpw', v: 1, cls: c.name, d: today, tid: c.uid };
   if (o.tt && c.tt) {
-    const tt = c.tt, used = new Set(), sl = tt.slots.map(s => [s.label, s.start || '', s.end || '', s.pause ? 1 : 0]), cells = {};
-    Object.keys(tt.cells).forEach(k => {
-      const [d, sid] = k.split('|'), i = tt.slots.findIndex(s => s.id === sid); if (i < 0) return;
-      const v = cellArr(tt, k); if (!v.length) return; v.forEach(x => used.add(x));
-      cells[d + '|' + i] = v.length === 1 ? v[0] : v;
-    });
-    const ab = {};
-    Object.keys(tt.ab || {}).forEach(k => { const [d, sid] = k.split('|'), i = tt.slots.findIndex(s => s.id === sid); if (i >= 0 && cellArr(tt, k).length > 1) ab[d + '|' + i] = [tt.ab[k].wk, tt.ab[k].g1]; });
-    P.ch = chgPayload(tt);
-    P.tt = { sat: tt.sat ? 1 : 0, sl, su: tt.subjects.filter(s => used.has(s.id)).map(s => s.mat ? [s.id, s.name, s.color, s.mat] : [s.id, s.name, s.color]), c: cells };
-    if (Object.keys(ab).length) P.tt.ab = ab;
+    const used = new Set();
+    const pack = tt => {   // ein Plan im Format der Schüler-App (Stunden nach Position statt Kennung)
+      const sl = tt.slots.map(s => [s.label, s.start || '', s.end || '', s.pause ? 1 : 0]), cells = {}, ab = {};
+      Object.keys(tt.cells).forEach(k => {
+        const [d, sid] = k.split('|'), i = tt.slots.findIndex(s => s.id === sid); if (i < 0) return;
+        const v = cellArr(tt, k); if (!v.length) return; v.forEach(x => used.add(x));
+        cells[d + '|' + i] = v.length === 1 ? v[0] : v;
+      });
+      Object.keys(tt.ab || {}).forEach(k => { const [d, sid] = k.split('|'), i = tt.slots.findIndex(s => s.id === sid); if (i >= 0 && cellArr(tt, k).length > 1) ab[d + '|' + i] = [tt.ab[k].wk, tt.ab[k].g1]; });
+      const o2 = { sat: tt.sat ? 1 : 0, sl, c: cells }; if (Object.keys(ab).length) o2.ab = ab; return o2;
+    };
+    const plans = ttPlans(c), curP = plans.filter(p => !p.from || p.from <= ttMon(today)).pop(), tt = curP.view;
+    P.ch = chgPayload(c.tt);
+    P.tt = pack(tt);
+    if (plans.length > 1) {   // Zeitleiste aller Pläne; mitgeschickt werden nur kommende und kürzlich geänderte ältere Pläne
+      const pl = {}, sent = ttSentLoad(c), lim = addDays(today, -14);
+      plans.forEach(p => {
+        if (p === curP) return;
+        const pk = pack(p.view), h = strHashKM(JSON.stringify(pk));
+        if (!sent[p.id] || sent[p.id][0] !== h) sent[p.id] = [h, today];
+        if (p.from > curP.from || sent[p.id][1] >= lim) pl[p.id] = pk;
+      });
+      ttSentSave(c, sent, plans);
+      P.tv = { cur: curP.id, tl: plans.map(p => [p.id, p.from]), pl };
+    }
+    P.tt.su = c.tt.subjects.filter(s => used.has(s.id)).map(s => s.mat ? [s.id, s.name, s.color, s.mat] : [s.id, s.name, s.color]);
   }
   if (o.hw) P.hw = (c.checks || []).filter(k => k.kind === 'hw' && (!k.due || k.due >= today)).map(k => [k.id, k.subject || '', k.title || '', k.given || '', k.due || '', k.note || '']);
   if (o.ex) P.ex = (c.exams || []).filter(x => exEnd(x) >= today).map(x => { const a = [x.id, x.date, x.subject || '', x.title || '', x.note || '']; if (x.kind === 'ev') a.push('ev', x.end || '', x.time || ''); return a; });
