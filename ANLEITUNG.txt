@@ -671,3 +671,16 @@ NEU in Version 2026-12-11: 🖥² Tafel auf dem 2. Bildschirm – hier normal we
   (z. B. https://DEINNAME.github.io/sitzplan/). Leer = sitzplan.html aus demselben Ordner.
 - Tipp: Verknüpfung davon auf den Desktop oder in den Autostart (Windows-Taste + R → shell:startup).
 - Zurück auf „Duplizieren“: Windows-Taste + P → „Duplizieren“.
+
+Version 2026-12-12
+- 🖥² Tafel auf dem 2. Bildschirm: Der Reiter „📡 Fernbedienung“ zeigt jetzt alle Knöpfe (vorher leer).
+  „✕ Trennen“ schließt das Tafel-Fenster.
+
+2026-12-13: Fehler behoben - nach dem Drucken verrutschten Stundeninhalte und weitere Layouts (Druckeinstellung hatte Teile der Gestaltung ueberschrieben).
+
+2026-12-14: Der Knopf 🖥² (Tafel auf 2. Bildschirm) sitzt jetzt oben rechts direkt links neben ⚙️ Einstellungen.
+
+2026-12-15: Unterrichtsinhalte drucken und exportieren
+  - Stundenplan: „🖨 Drucken“ fragt, ob die Inhalte mitgedruckt werden (Haken wird gemerkt).
+  - Vertretung (Sitzplan > Drucken): Haken „📝 Unterrichtsinhalte mitdrucken“. Vertretungsblatt: Inhalte des Tages als Tabelle; Vertretungsmappe zusätzlich Stundenplan mit Inhalten und Tabelle der Woche.
+  - ⚙️ Plan > „📤 Unterrichtsinhalte exportieren“: alle Einträge mit Datum, Stunde, Fach (wahlweise ein Fach/Zeitraum) als Excel-Datei (CSV) oder als Liste drucken.
