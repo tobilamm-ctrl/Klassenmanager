@@ -641,3 +641,33 @@ NEU in Version 2026-12-08: 🗣 Uhrzeit in Worten (Lernuhr)
   „fünfzehn Uhr fünfzehn“; optional mit Tageszeit (morgens, nachmittags …).
   Minutengenau: „fünf vor halb vier“, „drei Minuten nach halb vier“, „zwanzig vor vier“ …
 - Text auf der Tafel antippen = verbergen („Wie spät ist es?“), nochmal antippen = zeigen.
+
+NEU in Version 2026-12-09: 📝 Unterrichtsinhalte je Stunde (nur für dich)
+- Stundenplan → „📝 Inhalte“ einschalten und eine Stunde anklicken – oder jederzeit Doppelklick auf eine
+  Stunde. Inhalt eintragen, Speichern (Strg+Enter). Gilt für genau diesen Tag und diese Stunde.
+- Im Fenster steht zur Anknüpfung der Inhalt der letzten Stunde desselben Fachs.
+- Die Stunde zeigt eine kurze Vorschau (📝 …), die Startseite den Inhalt unter der jeweiligen Stunde.
+- 🔒 Nur für dich: wird nicht an die Schüler geschickt, nicht beim Präsentieren und nicht im Druck gezeigt.
+
+Version 2026-12-10
+- Abhak-Tabelle: Das rote Dreieck für eine Bemerkung erscheint jetzt auch bei überfälligen offenen Feldern
+  (gelblich hinterlegt).
+
+NEU in Version 2026-12-11: 🖥² Tafel auf dem 2. Bildschirm – hier normal weiterarbeiten
+- Voraussetzung: Windows zeigt die Bildschirme „Erweitern“ (Windows-Taste + P), Chrome oder Edge am PC.
+- Oben rechts „🖥²“ antippen: Ein Tafel-Fenster öffnet sich auf dem Beamer/Tafelbildschirm (beim ersten Mal
+  fragt der Browser nach „Fenster auf allen Bildschirmen verwalten“ → Zulassen; Pop-ups erlauben).
+  Ist es nicht bildschirmfüllend: dort „⛶ Vollbild“ antippen.
+- Danach zeigen alle „⛶ Präsentieren“-Knöpfe (Sitzplan, Tafel, Stundenplan, Kalender) auf dem 2. Bildschirm an,
+  dein Bildschirm bleibt frei zum Arbeiten. Steuern (Timer, Glücksrad, Abhaken, Zeiger …) über den Reiter
+  „📡 Fernbedienung“ – ganz ohne iPad und Internet.
+- Änderungen gehen in beide Richtungen: was du hier änderst, steht sofort auf der Tafel; was an der Tafel
+  passiert (z. B. Abhaken per Fernbedienung, Klassenziel-Punkte), wird hier übernommen und gespeichert.
+- Erneut „🖥²“ = Tafel-Fenster schließen.
+
+„Klassenmanager starten.bat“ (im Ordner neben sitzplan.html)
+- Doppelklick: schaltet Windows auf „Erweitern“ und öffnet den Klassenmanager als App-Fenster.
+- Oben in der Datei (Rechtsklick → Bearbeiten) kann bei KM_URL eure Internet-Adresse eingetragen werden
+  (z. B. https://DEINNAME.github.io/sitzplan/). Leer = sitzplan.html aus demselben Ordner.
+- Tipp: Verknüpfung davon auf den Desktop oder in den Autostart (Windows-Taste + R → shell:startup).
+- Zurück auf „Duplizieren“: Windows-Taste + P → „Duplizieren“.
