@@ -689,3 +689,5 @@ Version 2026-12-12
   - Unterrichtsinhalt verschieben: Doppelklick auf die Stunde > „➡ Verschieben …“. Ganzen Inhalt oder nur einen Teil auf eine der nächsten Stunden des Fachs übernehmen. In der ursprünglichen Stunde bleibt der Inhalt mit Hinweis „➡ verschoben auf …“. Beim Eintragen von „fällt aus“ wird das Verschieben automatisch angeboten. Der Hinweis erscheint auch im Druck und im Export.
   - ⚙️ Einstellungen > Klasse > „🎓 Schuljahreswechsel …“: Archivdatei sichern, neuer Klassenname, Schüler übernehmen (Abgänger abhaken), auswählen, was geleert wird. Mit ↶ rückgängig.
   - ⚙️ Einstellungen > „🛟 Automatische Sicherung“: täglich/wöchentlich/alle 2 Wochen eine datierte Kopie. OneDrive: Ordner „Sicherungen“ neben der Datei. PC-Datei: einmal einen Ordner wählen. Zusätzlich die letzten 5 im Browser (wiederherstellbar). Es bleiben je 10 Sicherungen.
+
+2026-12-17: Knopf „Verschieben“ ohne Pfeil, einzeilig wie die anderen Knöpfe; Eingabefenster etwas breiter.

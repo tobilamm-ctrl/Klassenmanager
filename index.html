@@ -591,6 +591,7 @@
   .les-mv button { padding: 1px 6px; font-size: .75rem; margin-left: auto; }
   #lesMvBox { display: flex; flex-direction: column; gap: 6px; border-top: 1px dashed #cbd5e1; padding-top: 8px; } #lesMvBox[hidden] { display: none; }
   #lesMvBox textarea { min-height: 54px; }
+  #ttLesPop .row button { white-space: nowrap; }
   #syDlg .cdlg { width: 600px; max-height: calc(100vh - 32px); overflow: auto; user-select: auto; }
   .sy-stu { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 2px 10px; max-height: 190px; overflow: auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 8px; }
   .sy-stu label { font-size: .85rem; font-weight: 400; } .sy-stu label.out { opacity: .5; text-decoration: line-through; }
@@ -600,7 +601,7 @@
   #lesExp label { display: flex; flex-direction: column; gap: 2px; font-size: .85rem; } #lesExp .row2 { display: flex; gap: 8px; } #lesExp .row2 label { flex: 1; }
   @media print { .tt-les, .st-lesx { display: none !important; } .r-les .tt-les { display: block !important; } }
   body.tt-lesmode .tt-cell { cursor: text; outline: 1px dashed #6366f1; outline-offset: -2px; } body.tt-lesmode #ttLesBtn { background: #eef2ff; border-color: #6366f1; color: #3730a3; }
-  #ttLesPop { position: fixed; z-index: 2500; width: 380px; max-width: calc(100vw - 16px); background: #fff; border-radius: 10px; box-shadow: 0 8px 28px rgba(0,0,0,.25); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  #ttLesPop { position: fixed; z-index: 2500; width: 500px; max-width: calc(100vw - 16px); background: #fff; border-radius: 10px; box-shadow: 0 8px 28px rgba(0,0,0,.25); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
   #ttLesPop[hidden] { display: none; } #ttLesPop textarea { min-height: 90px; font: inherit; }
   .les-prev { font-size: .82rem; background: #f8fafc; border-left: 3px solid #a5b4fc; padding: 4px 8px; border-radius: 4px; } .les-prev small { color: var(--muted); display: block; }
   .st-lesx { display: block; font-size: .78rem; font-weight: 500; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1841,7 +1842,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-12-16</p>
+          <p class="hint" style="margin:0">Version 2026-12-17</p>
         </div>
       </details>
       <details class="card" open id="bkCard">
@@ -11274,7 +11275,7 @@ function openLes(key, el) {
     ${lesMvOf(tt, date, sid) ? `<div class="les-mv">➡ verschoben auf <b>${esc(lesKeyLabel(lesMvOf(tt, date, sid)))}</b><button data-lsmvx="1" title="Nur den Hinweis entfernen (der Inhalt in der anderen Stunde bleibt)">Hinweis entfernen</button></div>` : ''}
     <div id="lesMvBox" hidden></div>
     <p class="hint" style="margin:0">🔒 Nur für dich sichtbar – nicht bei den Schülern, nicht beim Präsentieren.</p>
-    <div class="row"><button class="danger" data-lsdel="1">Löschen</button>${ss.length ? '<button data-lsmv="1" title="Nicht alles geschafft? Inhalt (oder einen Teil) in eine spätere Stunde des Fachs übernehmen – hier bleibt er mit Hinweis stehen">➡ Verschieben …</button>' : ''}<span class="spacer"></span><button data-lsx="1">Abbrechen</button><button class="primary" data-lsok="1">Speichern</button></div>`;
+    <div class="row"><button class="danger" data-lsdel="1">Löschen</button>${ss.length ? '<button data-lsmv="1" title="Nicht alles geschafft? Inhalt (oder einen Teil) in eine spätere Stunde des Fachs übernehmen – hier bleibt er mit Hinweis stehen">Verschieben</button>' : ''}<span class="spacer"></span><button data-lsx="1">Abbrechen</button><button class="primary" data-lsok="1">Speichern</button></div>`;
   pop.hidden = false;
   const r = el.getBoundingClientRect(); pop.style.left = clamp(r.left, 8, innerWidth - pop.offsetWidth - 8) + 'px'; pop.style.top = clamp(r.bottom + 4, 8, innerHeight - pop.offsetHeight - 8) + 'px';
   const ta = $('lesText'); ta.focus(); ta.selectionStart = ta.selectionEnd = ta.value.length;
