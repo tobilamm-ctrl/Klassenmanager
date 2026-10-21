@@ -684,3 +684,8 @@ Version 2026-12-12
   - Stundenplan: „🖨 Drucken“ fragt, ob die Inhalte mitgedruckt werden (Haken wird gemerkt).
   - Vertretung (Sitzplan > Drucken): Haken „📝 Unterrichtsinhalte mitdrucken“. Vertretungsblatt: Inhalte des Tages als Tabelle; Vertretungsmappe zusätzlich Stundenplan mit Inhalten und Tabelle der Woche.
   - ⚙️ Plan > „📤 Unterrichtsinhalte exportieren“: alle Einträge mit Datum, Stunde, Fach (wahlweise ein Fach/Zeitraum) als Excel-Datei (CSV) oder als Liste drucken.
+
+2026-12-16: Verschieben, Schuljahreswechsel, automatische Sicherung
+  - Unterrichtsinhalt verschieben: Doppelklick auf die Stunde > „➡ Verschieben …“. Ganzen Inhalt oder nur einen Teil auf eine der nächsten Stunden des Fachs übernehmen. In der ursprünglichen Stunde bleibt der Inhalt mit Hinweis „➡ verschoben auf …“. Beim Eintragen von „fällt aus“ wird das Verschieben automatisch angeboten. Der Hinweis erscheint auch im Druck und im Export.
+  - ⚙️ Einstellungen > Klasse > „🎓 Schuljahreswechsel …“: Archivdatei sichern, neuer Klassenname, Schüler übernehmen (Abgänger abhaken), auswählen, was geleert wird. Mit ↶ rückgängig.
+  - ⚙️ Einstellungen > „🛟 Automatische Sicherung“: täglich/wöchentlich/alle 2 Wochen eine datierte Kopie. OneDrive: Ordner „Sicherungen“ neben der Datei. PC-Datei: einmal einen Ordner wählen. Zusätzlich die letzten 5 im Browser (wiederherstellbar). Es bleiben je 10 Sicherungen.

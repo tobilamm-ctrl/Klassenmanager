@@ -585,6 +585,17 @@
   .r-tt.r-les .tt td.tt-cell { height: auto; min-height: 40px; vertical-align: top; }
   .r-tt.r-les .tt-parts { height: auto; min-height: 40px; }
   .r-tt.r-les .tt td.tt-cell.full .tt-les { border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 6px 6px; margin-top: 0; padding: 2px 4px; }
+  .tt-les .mvx { color: #b45309; font-weight: 700; }
+  .les-mv { font-size: .82rem; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 4px 8px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .les-mv.from { background: #eff6ff; border-color: #bfdbfe; }
+  .les-mv button { padding: 1px 6px; font-size: .75rem; margin-left: auto; }
+  #lesMvBox { display: flex; flex-direction: column; gap: 6px; border-top: 1px dashed #cbd5e1; padding-top: 8px; } #lesMvBox[hidden] { display: none; }
+  #lesMvBox textarea { min-height: 54px; }
+  #syDlg .cdlg { width: 600px; max-height: calc(100vh - 32px); overflow: auto; user-select: auto; }
+  .sy-stu { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 2px 10px; max-height: 190px; overflow: auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 8px; }
+  .sy-stu label { font-size: .85rem; font-weight: 400; } .sy-stu label.out { opacity: .5; text-decoration: line-through; }
+  #syArchSt { font-size: .85rem; } #syArchSt.ok { color: #15803d; font-weight: 600; }
+  .bk-list { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; } .bk-list .row { font-size: .85rem; gap: 6px; } .bk-list .row button { padding: 2px 8px; font-size: .8rem; }
   .les-tab { width: 100%; border-collapse: collapse; font-size: 9.5pt; } .les-tab th, .les-tab td { border: 1px solid #cbd5e1; padding: 3px 6px; text-align: left; vertical-align: top; } .les-tab th { background: #f1f5f9; } .les-tab td.pre { white-space: pre-wrap; }
   #lesExp label { display: flex; flex-direction: column; gap: 2px; font-size: .85rem; } #lesExp .row2 { display: flex; gap: 8px; } #lesExp .row2 label { flex: 1; }
   @media print { .tt-les, .st-lesx { display: none !important; } .r-les .tt-les { display: block !important; } }
@@ -1830,8 +1841,12 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-12-15</p>
+          <p class="hint" style="margin:0">Version 2026-12-16</p>
         </div>
+      </details>
+      <details class="card" open id="bkCard">
+        <summary>🛟 Automatische Sicherung</summary>
+        <div class="cbody" id="bkBox"></div>
       </details>
 
       <details class="card" open>
@@ -1843,6 +1858,7 @@
             <button id="classRename">Umbenennen</button>
             <button id="classDel" class="danger">Löschen</button>
           </div>
+          <button id="syBtn" title="Klasse ins neue Schuljahr übernehmen: alten Stand archivieren, Hausaufgaben, Proben, Inhalte usw. leeren">🎓 Schuljahreswechsel …</button>
         </div>
       </details>
       <details class="card" open id="modCard">
@@ -2149,6 +2165,7 @@
 <button id="t2Fs" hidden title="Bildschirmfüllend">⛶ Vollbild</button>
 <div id="t2Lost" hidden>⚠️ Verbindung zum Hauptfenster getrennt – dieses Fenster schließen und im Klassenmanager erneut 🖥² antippen.</div>
 <div class="cdlg-back" id="ttVerDlg" hidden><div class="cdlg nc" style="width:600px"><div class="cdlg-title">📅 Stundenpläne mit „gültig ab“</div><div class="nc-body" id="ttVerBody"></div></div></div>
+<div class="cdlg-back" id="syDlg" hidden><div class="cdlg nc"><div class="cdlg-title">🎓 Schuljahreswechsel</div><div class="nc-body" id="syBody"></div></div></div>
 <div class="cdlg-back" id="homeDlg" hidden><div class="cdlg nc" style="width:560px"><div class="cdlg-title">🏠 Startseite anpassen</div><div class="nc-body" id="homeBody"></div></div></div>
 <div id="goalParty" hidden></div>
 <div id="goalAsk" hidden></div>
@@ -6353,11 +6370,11 @@ function lesRows(o = {}, c = cls()) {
     const ids = cellArr(T, wd + '|' + sid), subj = ids.map(id => ttSubj(T, id)).filter(Boolean).map(x => x.name).join(' / ');
     const ch = (tt.chg || {})[k]; let chg = '';
     if (ch) { const vs = ch.s && ttSubj(T, ch.s); chg = CHG_T[ch.t][1] + (vs ? ': ' + vs.name : '') + (ch.x ? (vs ? ' · ' : ': ') + ch.x : ''); }
-    return { date, sid, slot: sl ? sl.label : '', time: sl && sl.start ? sl.start + (sl.end ? '–' + sl.end : '') : '', order: sl ? T.slots.indexOf(sl) : 99, subj, sids: ids, chg, text: tt.les[k] };
+    return { date, sid, slot: sl ? sl.label : '', time: sl && sl.start ? sl.start + (sl.end ? '–' + sl.end : '') : '', order: sl ? T.slots.indexOf(sl) : 99, subj, sids: ids, chg, text: tt.les[k], mv: (tt.lesMv || {})[k] ? lesKeyLabel(tt.lesMv[k], c) : '' };
   }).filter(Boolean).filter(r => !o.subj || r.sids.includes(o.subj)).sort((a, b) => a.date.localeCompare(b.date) || a.order - b.order);
 }
 function lesTable(rows, noDate) {
-  return `<table class="les-tab"><tr>${noDate ? '' : '<th>Datum</th>'}<th>Stunde</th><th>Fach</th><th>Inhalt</th></tr>${rows.map(r => `<tr>${noDate ? '' : `<td>${fmtDW(r.date)}</td>`}<td>${esc(r.slot)}${r.time ? '<br><small>' + esc(r.time) + '</small>' : ''}</td><td>${esc(r.subj)}${r.chg ? '<br><small>' + esc(r.chg) + '</small>' : ''}</td><td class="pre">${esc(r.text)}</td></tr>`).join('')}</table>`;
+  return `<table class="les-tab"><tr>${noDate ? '' : '<th>Datum</th>'}<th>Stunde</th><th>Fach</th><th>Inhalt</th></tr>${rows.map(r => `<tr>${noDate ? '' : `<td>${fmtDW(r.date)}</td>`}<td>${esc(r.slot)}${r.time ? '<br><small>' + esc(r.time) + '</small>' : ''}</td><td>${esc(r.subj)}${r.chg ? '<br><small>' + esc(r.chg) + '</small>' : ''}</td><td class="pre">${esc(r.text)}${r.mv ? '<br><small>➡ verschoben auf ' + esc(r.mv) + '</small>' : ''}</td></tr>`).join('')}</table>`;
 }
 function lesExpOpen() {
   const c = cls(), all = lesRows(); if (!all.length) { setResult('Noch keine Unterrichtsinhalte eingetragen (📝 Inhalte oder Doppelklick auf eine Stunde).', 'warn'); return; }
@@ -6378,7 +6395,7 @@ function lesExpDo(kind) {
   $('ttLesPop').hidden = true;
   if (kind === 'csv') {
     const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
-    const lines = [['Klasse', 'Datum', 'Wochentag', 'Stunde', 'Zeit', 'Fach', 'Inhalt', 'Tagesänderung'].map(q).join(';')].concat(rows.map(r => [c.name, fmtY(r.date), new Date(r.date + 'T00:00').toLocaleDateString('de-DE', { weekday: 'long' }), r.slot, r.time, r.subj, r.text, r.chg].map(q).join(';')));
+    const lines = [['Klasse', 'Datum', 'Wochentag', 'Stunde', 'Zeit', 'Fach', 'Inhalt', 'Verschoben auf', 'Tagesänderung'].map(q).join(';')].concat(rows.map(r => [c.name, fmtY(r.date), new Date(r.date + 'T00:00').toLocaleDateString('de-DE', { weekday: 'long' }), r.slot, r.time, r.subj, r.text, r.mv, r.chg].map(q).join(';')));
     const blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const name = ('Unterrichtsinhalte ' + c.name + (sn ? ' ' + sn : '') + ' ' + todayStr()).replace(/[\\/:*?"<>|]/g, '-') + '.csv';
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
@@ -7406,7 +7423,7 @@ function renderStart() {
       const g1 = ss.length > 1 ? abGroup1(tt, key, mon) : null;
       const name = ss.length ? ss.map(s => esc(s.name)).join(' / ') + (g1 ? ` <small class="hint">(G1: ${esc((ttSubj(tt, g1) || {}).name || '')})</small>` : '') : '–';
       const ex = ss.length ? exs.filter(x => x.kind !== 'ev' && ss.some(s => s.name === x.subject)) : [];
-      return `<div class="st-les${cur ? ' now' : ''}${past ? ' past' : ''}${ss.length ? '' : ' empty'}" style="--sc:${ss[0] ? ss[0].color : '#e2e8f0'}"><span class="t"><b>${esc(sl.label)}</b>${esc(sl.start || '')}</span><span class="n">${name}${ex.map(x => ` <span class="tag" style="color:var(--red)">📝 ${esc(x.title)}</span>`).join('')}${chgBadge(tt, chgOf(tt, day, sl.id))}${lesOf(tt, day, sl.id) ? `<span class="st-lesx">📝 ${esc(lesOf(tt, day, sl.id))}</span>` : ''}</span><span class="tag">${cur ? '◀ jetzt' : ''}</span></div>`;
+      return `<div class="st-les${cur ? ' now' : ''}${past ? ' past' : ''}${ss.length ? '' : ' empty'}" style="--sc:${ss[0] ? ss[0].color : '#e2e8f0'}"><span class="t"><b>${esc(sl.label)}</b>${esc(sl.start || '')}</span><span class="n">${name}${ex.map(x => ` <span class="tag" style="color:var(--red)">📝 ${esc(x.title)}</span>`).join('')}${chgBadge(tt, chgOf(tt, day, sl.id))}${lesOf(tt, day, sl.id) ? `<span class="st-lesx">📝 ${esc(lesOf(tt, day, sl.id))}${lesMvOf(cls().tt, day, sl.id) ? ' ➡ ' + esc(fmtDW(lesMvOf(cls().tt, day, sl.id).slice(0, 10))) : ''}</span>` : ''}</span><span class="tag">${cur ? '◀ jetzt' : ''}</span></div>`;
     }).join('') + '</div>';
     const evs = exs.filter(x => x.kind === 'ev');
     if (evs.length) left += evs.map(x => `<div class="st-it" data-ex="${x.id}" style="--sc:var(--sun);margin-top:6px"><span class="s" style="color:#7a5b00">📅 Termin</span><span class="x">${esc((x.time ? x.time + ' · ' : '') + x.title)}</span></div>`).join('');
@@ -11206,7 +11223,35 @@ ui.ttChg = false;
    tt.les = { 'YYYY-MM-DD|slotId': Text } – wird nicht an die Schüler geschickt, nicht präsentiert; gedruckt nur auf Wunsch */
 ui.ttLes = false;
 const lesOf = (tt, date, sid) => ((tt && tt.les) || {})[date + '|' + sid] || '';
-function lesHtml(tt, date, sid) { const t = lesOf(tt, date, sid); return t ? `<div class="tt-les" title="${esc(t)}">📝 ${esc(t.split('\n')[0])}</div>` : ''; }
+function lesHtml(tt, date, sid) {
+  const t = lesOf(tt, date, sid); if (!t) return '';
+  const mv = lesMvOf(tt, date, sid), mt = mv ? lesKeyLabel(mv) : '';
+  return `<div class="tt-les" title="${esc(t + (mv ? '\n➡ verschoben auf ' + mt : ''))}">📝 ${mv ? `<span class="mvx">➡ ${esc(fmtD(mv.slice(0, 10)))}</span> ` : ''}${esc(t.split('\n')[0])}</div>`;
+}
+// ➡ verschobene Inhalte: tt.lesMv = { 'Datum|Stunde (Quelle)': 'Datum|Stunde (Ziel)' } – der Inhalt bleibt in der Quelle stehen
+const lesMvOf = (tt, date, sid) => ((tt && tt.lesMv) || {})[date + '|' + sid] || '';
+const lesMvFrom = (tt, key) => Object.keys((tt && tt.lesMv) || {}).filter(k => tt.lesMv[k] === key);
+function lesKeyLabel(key, c = cls()) {
+  const d = key.slice(0, 10), sid = key.slice(11), T = ttAt(d, c), sl = T && T.slots.find(x => x.id === sid);
+  return fmtDW(d) + (sl ? ' · ' + (/^\d+$/.test(sl.label) ? sl.label + '. Std.' : sl.label) : '');
+}
+// die nächsten Stunden desselben Fachs (ohne Ausfall, Ferien und Feiertage)
+function lesNextList(date, sid, n = 6) {
+  const c = cls(), T0 = ttAt(date), wd0 = weekdayIdx(new Date(date + 'T00:00')), subj = cellArr(T0, wd0 + '|' + sid);
+  if (!subj.length) return [];
+  const i0 = T0.slots.findIndex(x => x.id === sid), out = [];
+  for (let i = 0; i < 200 && out.length < n; i++) {
+    const d = addDays(date, i), T = ttAt(d), wd = weekdayIdx(new Date(d + 'T00:00'));
+    if (!ttDays(T).includes(wd) || freeDay(d)) continue;
+    T.slots.forEach((sl, j) => {
+      if (out.length >= n || (i === 0 && (d !== date || j <= i0))) return;
+      if (!cellArr(T, wd + '|' + sl.id).some(x => subj.includes(x))) return;
+      const ch = ((c.tt && c.tt.chg) || {})[d + '|' + sl.id]; if (ch && ch.t === 'aus') return;
+      out.push(d + '|' + sl.id);
+    });
+  }
+  return out;
+}
 function lesMode(on) { ui.ttLes = on; $('ttLesBtn').classList.toggle('on', on); document.body.classList.toggle('tt-lesmode', on); if (on) { if (ui.ttChg) $('ttChgBtn').click(); setResult('📝 Inhalte: eine Stunde anklicken und eintragen (mit ◀ ▶ blättern). Nochmal „📝 Inhalte“ = fertig. Tipp: Doppelklick auf eine Stunde geht immer.', 'ok'); } }
 $('ttLesBtn').addEventListener('click', () => lesMode(!ui.ttLes));
 // letzte eingetragene Stunde desselben Fachs vor diesem Tag (als Anknüpfung)
@@ -11224,19 +11269,46 @@ function openLes(key, el) {
   const pop = $('ttLesPop');
   pop.innerHTML = `<b>📝 ${fmtDW(date)} · ${esc(sl ? sl.label : '')}${ss.length ? ' · ' + esc(ss.map(x => x.name).join(' / ')) : ''}</b>
     ${prev ? `<div class="les-prev"><small>Letzte ${esc(ss[0] ? ss[0].name : '')}-Stunde (${fmtD(prev[0])}):</small> ${esc(prev[1])}</div>` : ''}
+    ${lesMvFrom(tt, date + '|' + sid).map(k => `<div class="les-mv from">↪ verschoben von <b>${esc(lesKeyLabel(k))}</b></div>`).join('')}
     <textarea id="lesText" maxlength="600" placeholder="Unterrichtsinhalt, z. B. „Bruchrechnen: Erweitern, Buch S. 34 Nr. 1–4“">${esc(lesOf(tt, date, sid))}</textarea>
+    ${lesMvOf(tt, date, sid) ? `<div class="les-mv">➡ verschoben auf <b>${esc(lesKeyLabel(lesMvOf(tt, date, sid)))}</b><button data-lsmvx="1" title="Nur den Hinweis entfernen (der Inhalt in der anderen Stunde bleibt)">Hinweis entfernen</button></div>` : ''}
+    <div id="lesMvBox" hidden></div>
     <p class="hint" style="margin:0">🔒 Nur für dich sichtbar – nicht bei den Schülern, nicht beim Präsentieren.</p>
-    <div class="row"><button class="danger" data-lsdel="1">Löschen</button><span class="spacer"></span><button data-lsx="1">Abbrechen</button><button class="primary" data-lsok="1">Speichern</button></div>`;
+    <div class="row"><button class="danger" data-lsdel="1">Löschen</button>${ss.length ? '<button data-lsmv="1" title="Nicht alles geschafft? Inhalt (oder einen Teil) in eine spätere Stunde des Fachs übernehmen – hier bleibt er mit Hinweis stehen">➡ Verschieben …</button>' : ''}<span class="spacer"></span><button data-lsx="1">Abbrechen</button><button class="primary" data-lsok="1">Speichern</button></div>`;
   pop.hidden = false;
   const r = el.getBoundingClientRect(); pop.style.left = clamp(r.left, 8, innerWidth - pop.offsetWidth - 8) + 'px'; pop.style.top = clamp(r.bottom + 4, 8, innerHeight - pop.offsetHeight - 8) + 'px';
   const ta = $('lesText'); ta.focus(); ta.selectionStart = ta.selectionEnd = ta.value.length;
 }
+function lesMvOpen(note) {
+  if (!lesAt) return; const box = $('lesMvBox'), list = lesNextList(lesAt.date, lesAt.sid);
+  if (!list.length) { setResult('Keine spätere Stunde dieses Fachs im Stundenplan gefunden.', 'warn'); return; }
+  const cur = lesMvOf(cls().tt, lesAt.date, lesAt.sid);
+  box.innerHTML = `${note ? `<div class="les-mv">${esc(note)}</div>` : ''}<label class="nc-name">Was wird verschoben? <small style="font-weight:400">(auch nur ein Teil)</small><textarea id="lesMvText" maxlength="600">${esc($('lesText').value.trim())}</textarea></label>
+    <label class="nc-name">auf die Stunde<select id="lesMvTo">${list.map(k => `<option value="${k}"${k === cur ? ' selected' : ''}>${esc(lesKeyLabel(k))}${lesOf(cls().tt, k.slice(0, 10), k.slice(11)) ? ' (hat schon Inhalt – wird vorne ergänzt)' : ''}</option>`).join('')}</select></label>
+    <div class="row"><span class="spacer"></span><button class="primary" data-lsmvok="1">➡ Verschieben</button></div>`;
+  box.hidden = false; $('lesMvText').focus();
+  const pop = $('ttLesPop'); pop.style.top = clamp(parseFloat(pop.style.top) || 8, 8, innerHeight - pop.offsetHeight - 8) + 'px';
+}
+function lesMoveDo() {
+  if (!lesAt) return;
+  const src = lesAt.date + '|' + lesAt.sid, tgt = $('lesMvTo').value, moved = $('lesMvText').value.trim(), own = $('lesText').value.trim();
+  if (!moved || !tgt) { setResult('Bitte eintragen, was verschoben werden soll.', 'warn'); return; }
+  change(() => {
+    const tt = cls().tt; tt.les = tt.les || {}; tt.lesMv = tt.lesMv || {};
+    tt.les[src] = (own || moved).slice(0, 600);
+    const old = tt.les[tgt] || '';
+    if (!old.includes(moved)) tt.les[tgt] = (moved + (old ? '\n' + old : '')).slice(0, 600);
+    tt.lesMv[src] = tgt;
+  }, { keepList: true });
+  $('ttLesPop').hidden = true; lesAt = null;
+  setResult(`➡ Verschoben auf ${lesKeyLabel(tgt)} – in der ursprünglichen Stunde steht der Hinweis.`, 'ok');
+}
 function lesSave(del) {
   if (!lesAt) return; const key = lesAt.date + '|' + lesAt.sid, v = del ? '' : $('lesText').value.trim().slice(0, 600);
-  change(() => { const tt = timetable(); tt.les = tt.les || {}; if (v) tt.les[key] = v; else delete tt.les[key]; if (!Object.keys(tt.les).length) delete tt.les; }, { keepList: true });
+  change(() => { const tt = timetable(); tt.les = tt.les || {}; if (v) tt.les[key] = v; else { delete tt.les[key]; if (tt.lesMv) { delete tt.lesMv[key]; if (!Object.keys(tt.lesMv).length) delete tt.lesMv; } } if (!Object.keys(tt.les).length) delete tt.les; }, { keepList: true });
   $('ttLesPop').hidden = true; lesAt = null;
 }
-$('ttLesPop').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.lx) { if (b.dataset.lx === 'x') $('ttLesPop').hidden = true; else lesExpDo(b.dataset.lx); return; } if (b.dataset.lsok) lesSave(false); else if (b.dataset.lsdel) lesSave(true); else { $('ttLesPop').hidden = true; lesAt = null; } });
+$('ttLesPop').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.lx) { if (b.dataset.lx === 'x') $('ttLesPop').hidden = true; else lesExpDo(b.dataset.lx); return; } if (b.dataset.lsmv) { lesMvOpen(); return; } if (b.dataset.lsmvok) { lesMoveDo(); return; } if (b.dataset.lsmvx) { const k = lesAt.date + '|' + lesAt.sid; change(() => { const tt = cls().tt; if (tt.lesMv) { delete tt.lesMv[k]; if (!Object.keys(tt.lesMv).length) delete tt.lesMv; } }, { keepList: true }); b.parentNode.remove(); return; } if (b.dataset.lsok) lesSave(false); else if (b.dataset.lsdel) lesSave(true); else { $('ttLesPop').hidden = true; lesAt = null; } });
 $('ttLesPop').addEventListener('keydown', e => { if (e.key === 'Escape') { $('ttLesPop').hidden = true; lesAt = null; } if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && lesAt) lesSave(false); });
 document.addEventListener('pointerdown', e => { if (!$('ttLesPop').hidden && !e.target.closest('#ttLesPop') && !e.target.closest('.tt-cell')) $('ttLesPop').hidden = true; }, true);
 $('ttGrid').addEventListener('dblclick', e => { const cell = e.target.closest('.tt-cell'); if (!cell || e.target.closest('button') || document.body.classList.contains('vpresent')) return; e.preventDefault(); if ($('whoPop')) $('whoPop').hidden = true; openLes(cell.dataset.key, cell); });
@@ -11264,6 +11336,10 @@ $('ttChgPop').addEventListener('click', e => {
   if (b.dataset.cht) { pop.dataset.t = b.dataset.cht; pop.querySelectorAll('[data-cht]').forEach(x => x.classList.toggle('on', x === b)); $('chgSubjL').hidden = b.dataset.cht !== 'vt'; return; }
   const key = chgAt.date + '|' + chgAt.sid;
   if (b.dataset.chok) change(() => { const tt = timetable(); tt.chg = tt.chg || {}; tt.chg[key] = { t: pop.dataset.t || 'aus', x: $('chgText').value.trim().slice(0, 80), s: pop.dataset.t === 'vt' ? $('chgSubj').value : '' }; const lim = addDays(todayStr(), -14); Object.keys(tt.chg).forEach(k2 => { if (k2.slice(0, 10) < lim) delete tt.chg[k2]; }); }, { keepList: true });
+  if (b.dataset.chok && (pop.dataset.t || 'aus') === 'aus' && lesOf(cls().tt, chgAt.date, chgAt.sid) && !lesMvOf(cls().tt, chgAt.date, chgAt.sid) && lesNextList(chgAt.date, chgAt.sid, 1).length) {
+    const k2 = chgAt.date + '|' + chgAt.sid, d0 = ttMonday();
+    setTimeout(() => { const cell = $('ttGrid').querySelector(`.tt-cell[data-key="${dayDiff(d0, k2.slice(0, 10))}|${k2.slice(11)}"]`); if (!cell) return; openLes(cell.dataset.key, cell); lesMvOpen('❌ Die Stunde fällt aus – Inhalt auf eine spätere Stunde verschieben?'); }, 50);
+  }
   if (b.dataset.chdel) change(() => { const tt = timetable(); if (tt.chg) delete tt.chg[key]; }, { keepList: true });
   pop.hidden = true; chgAt = null;
 });
@@ -11306,6 +11382,175 @@ $('planDate').value = todayStr();
 renderAll();
 { let v = 'start'; try { if (startPref() === 'last') v = localStorage.getItem('km-lastview') || 'start'; } catch {} setView(['start', 'plan', 'board', 'list', 'tt'].includes(v) ? v : 'start'); }
 renderRecent();
+/* =====================================================================
+   🛟 Automatische Sicherung: regelmäßig eine datierte Kopie der Datei
+   – OneDrive: Ordner „Sicherungen“ neben der Datei · PC (Chrome/Edge): selbst gewählter Ordner
+   – zusätzlich immer die letzten 5 Sicherungen im Speicher dieses Browsers
+   ===================================================================== */
+const BK_KEEP = 10, BK_IDB = 5;
+const bkCfg = () => { try { return Object.assign({ on: true, days: 7, last: 0, where: '' }, JSON.parse(localStorage.getItem('km-bk') || '{}')); } catch { return { on: true, days: 7, last: 0, where: '' }; } };
+const bkCfgSet = o => { try { localStorage.setItem('km-bk', JSON.stringify(Object.assign(bkCfg(), o))); } catch {} };
+const bkBase = () => ((od ? od.name : fileName) || 'Klassenmanager.json').replace(/\.json$/i, '');
+const bkIsMine = n => /^Sicherung \d{4}-\d{2}-\d{2} /.test(n) && n.endsWith(' ' + bkBase() + '.json');
+let bkBusy = false, bkErr = '', bkPermAsk = false;
+async function odParent() {
+  const r = await odFetch(`/me/drive/items/${od.id}?$select=parentReference`); if (!r.ok) throw await odErr(r);
+  return (await r.json()).parentReference.id;
+}
+async function odFolder(pid, name) {
+  const r = await odFetch(`/me/drive/items/${pid}/children`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, folder: {}, '@microsoft.graph.conflictBehavior': 'fail' }) });
+  if (r.ok) return (await r.json()).id;
+  const g = await odFetch(`/me/drive/items/${pid}:/${encodeURIComponent(name)}`); if (!g.ok) throw await odErr(g);
+  return (await g.json()).id;
+}
+async function odPut(fid, name, text) {
+  const r = await odFetch(`/me/drive/items/${fid}:/${encodeURIComponent(name)}:/content?@microsoft.graph.conflictBehavior=replace`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: text });
+  if (!r.ok) throw await odErr(r);
+}
+async function bkDir(interactive) {
+  const h = await idbGet('bkdir'); if (!h) return null;
+  let p = await h.queryPermission({ mode: 'readwrite' });
+  if (p !== 'granted' && interactive) p = await h.requestPermission({ mode: 'readwrite' });
+  if (p === 'granted') return h;
+  if (!bkPermAsk) { bkPermAsk = true; document.addEventListener('pointerdown', async () => { bkPermAsk = false; try { if ((await h.requestPermission({ mode: 'readwrite' })) === 'granted') bkRun(false); } catch {} }, { once: true, capture: true }); }
+  return null;
+}
+async function bkPickDir() {
+  try { const h = await window.showDirectoryPicker({ id: 'km-bk', mode: 'readwrite' }); await idbSet('bkdir', h); renderBk(); bkRun(true); }
+  catch (e) { if (e.name !== 'AbortError') window.alert('Ordner konnte nicht gewählt werden: ' + e.message); }
+}
+// eine Sicherung schreiben; manual = auch wenn noch nicht fällig
+async function bkRun(manual) {
+  if (bkBusy || T2.on) return; const c0 = bkCfg();
+  if (!manual && (!c0.on || Date.now() - c0.last < c0.days * 864e5 - 36e5)) return;
+  if (!state.classes.some(c => c.students.length)) return;   // leerer Plan: nichts zu sichern
+  bkBusy = true; bkErr = '';
+  const text = fileData(), name = `Sicherung ${todayStr()} ${bkBase()}.json`; let where = '';
+  try {
+    let list = (await idbGet('bk')) || []; list = [{ time: Date.now(), name, text }].concat(list.filter(x => x.name !== name)).slice(0, BK_IDB); await idbSet('bk', list);
+    where = '🌐 nur in diesem Browser';
+    if (od) {
+      const fid = await odFolder(await odParent(), 'Sicherungen'); await odPut(fid, name, text);
+      const r = await odFetch(`/me/drive/items/${fid}/children?$select=id,name&$top=200`);
+      if (r.ok) { const old = ((await r.json()).value || []).filter(x => bkIsMine(x.name)).sort((a, b) => b.name.localeCompare(a.name)).slice(BK_KEEP); for (const x of old) await odFetch(`/me/drive/items/${x.id}`, { method: 'DELETE' }); }
+      where = '☁️ OneDrive › ' + (od.path && od.path !== '/' ? od.path.replace(/^\//, '') + ' › ' : '') + 'Sicherungen';
+    } else if (FS) {
+      const dir = await bkDir(manual);
+      if (dir) {
+        const fh = await dir.getFileHandle(name, { create: true }), w = await fh.createWritable(); await w.write(text); await w.close();
+        const names = []; for await (const [n, h] of dir.entries()) if (h.kind === 'file' && bkIsMine(n)) names.push(n);
+        for (const n of names.sort().reverse().slice(BK_KEEP)) { try { await dir.removeEntry(n); } catch {} }
+        where = '📁 Ordner „' + dir.name + '“';
+      }
+    }
+    bkCfgSet({ last: Date.now(), where });
+    if (manual) setResult(`🛟 Gesichert: „${name}“ (${where.replace(/^\S+ /, '')}).`, 'ok');
+  } catch (e) { bkErr = e.message === 'login' ? 'Anmeldung bei Microsoft abgelaufen' : (e.message || String(e)); if (manual) setResult('🛟 Sicherung hat nicht geklappt: ' + bkErr, 'warn'); }
+  finally { bkBusy = false; renderBk(); }
+}
+async function bkRestore(i) {
+  const list = (await idbGet('bk')) || [], b = list[i]; if (!b) return;
+  if (!window.confirm(`Den aktuellen Stand durch die Sicherung vom ${new Date(b.time).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' })} ersetzen?\n\nMit ↶ Rückgängig kommst du wieder zurück.`)) return;
+  const before = snap();
+  try { state = migrate(JSON.parse(b.text)); state.classes.forEach(classFix); } catch { window.alert('Die Sicherung konnte nicht gelesen werden.'); return; }
+  commit(before); dirty = true; renderAll(); renderFileInfo(); setResult('🛟 Sicherung wiederhergestellt – wird beim nächsten Speichern in die Datei übernommen.', 'ok');
+}
+async function bkDownload(i) {
+  const b = ((await idbGet('bk')) || [])[i]; if (!b) return;
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([b.text], { type: 'application/json' })); a.download = b.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+async function renderBk() {
+  const box = $('bkBox'); if (!box) return;
+  const c0 = bkCfg(), list = (await idbGet('bk')) || [], dir = FS && !od ? await idbGet('bkdir') : null;
+  const fmtT = t => new Date(t).toLocaleString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const ort = od ? '☁️ in OneDrive, Ordner „Sicherungen“ neben der Datei' : FS ? (dir ? `📁 im Ordner „${esc(dir.name)}“` : '⚠️ noch kein Ordner gewählt – bis dahin nur im Browser') : '🌐 im Speicher dieses Browsers (zum Mitnehmen: herunterladen)';
+  box.innerHTML = `<label class="chk"><input type="checkbox" id="bkOn"${c0.on ? ' checked' : ''}> Automatisch sichern
+      <select id="bkDays" style="margin-left:auto"${c0.on ? '' : ' disabled'}><option value="1"${c0.days == 1 ? ' selected' : ''}>täglich</option><option value="7"${c0.days == 7 ? ' selected' : ''}>jede Woche</option><option value="14"${c0.days == 14 ? ' selected' : ''}>alle 2 Wochen</option></select></label>
+    <p class="hint" style="margin:0">Ort: ${ort}. Es bleiben die letzten ${BK_KEEP} Sicherungen, ältere werden automatisch entfernt.</p>
+    <div class="row fill">${FS && !od ? `<button id="bkDirBtn">📁 ${dir ? 'Anderen Ordner wählen' : 'Ordner für Sicherungen wählen'}</button>` : ''}<button id="bkNow">🛟 Jetzt sichern</button></div>
+    <p class="hint" style="margin:0">Letzte Sicherung: ${c0.last ? '<b>' + fmtT(c0.last) + '</b>' + (c0.where ? ' · ' + esc(c0.where) : '') : 'noch keine'}${bkErr ? ` <span class="unsaved">· Fehler: ${esc(bkErr)}</span>` : ''}</p>
+    ${list.length ? `<details><summary class="hint" style="cursor:pointer">Im Browser gespeicherte Sicherungen (${list.length})</summary><div class="bk-list">${list.map((b, i) => `<div class="row"><span>${fmtT(b.time)}</span><span class="hint">${Math.round(b.text.length / 1024)} KB</span><span class="spacer"></span><button data-bkdl="${i}" title="Als Datei herunterladen">⬇</button><button data-bkres="${i}">Wiederherstellen</button></div>`).join('')}</div></details>` : ''}`;
+}
+$('bkBox').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'bkNow') bkRun(true); else if (b.id === 'bkDirBtn') bkPickDir();
+  else if (b.dataset.bkres) bkRestore(+b.dataset.bkres); else if (b.dataset.bkdl) bkDownload(+b.dataset.bkdl);
+});
+$('bkBox').addEventListener('change', e => {
+  if (e.target.id === 'bkOn') { bkCfgSet({ on: e.target.checked }); renderBk(); }
+  if (e.target.id === 'bkDays') bkCfgSet({ days: +e.target.value });
+});
+if (!T2.on) { setTimeout(() => { renderBk(); bkRun(false); }, 45000); setInterval(() => bkRun(false), 15 * 6e4); renderBk(); }
+
+/* =====================================================================
+   🎓 Schuljahreswechsel: alten Stand als Archivdatei sichern, Klasse fürs neue Jahr vorbereiten
+   ===================================================================== */
+let syArchDone = false;
+function syYear() { const a = new Date().getFullYear() - 1; return a + '-' + String(a + 1).slice(2); }   // das zu Ende gegangene Schuljahr (im Dialog änderbar)
+const syNextName = n => n.replace(/(\d+)(?!.*\d)/, x => String(+x + 1));
+function openSy() {
+  const c = cls(); syArchDone = false;
+  const studs = c.students.slice().sort((a, b) => (a.last || '').localeCompare(b.last || '') || (a.first || '').localeCompare(b.first || ''));
+  const CL = [['hw', '📚 Hausaufgaben und Abhaklisten', 1], ['ex', '📝 Proben und Termine (zukünftige bleiben)', 1], ['msg', '📣 Mitteilungen', 1], ['les', '📝 Unterrichtsinhalte und Tagesänderungen', 1], ['tt', '🗓 Stundenplan: Stunden leeren (Fächer und Zeiten bleiben)', 1], ['tally', '📋 Strichlisten: Einträge (die Listen bleiben)', 1], ['goal', '🎯 Klassenziele auf 0 (Einstellungen bleiben)', 1], ['duty', '🧹 Dienst-Zähler und „Wer ist dran?“-Verlauf', 1], ['hist', '🕘 Sitzplan-Verlauf', 0]];
+  $('syBody').innerHTML = `<p class="hint" style="margin:0">Die Klasse <b>${esc(c.name)}</b> wird ins neue Schuljahr übernommen. Vorher wird der komplette bisherige Stand (alle Klassen) als Archivdatei gesichert – darin bleibt alles nachlesbar (mit „📂 Öffnen“).</p>
+    <div class="sub">1. Archiv sichern</div>
+    <label class="nc-name">Dateiname<input id="syArchName" value="${esc(`Archiv Schuljahr ${syYear()} – ${bkBase()}.json`)}"></label>
+    <div class="row"><button id="syArch" class="primary">🗄 Archiv sichern</button><span id="syArchSt"></span></div>
+    <div class="sub">2. Klasse im neuen Schuljahr</div>
+    <label class="nc-name">Name<input id="syName" value="${esc(syNextName(c.name))}"></label>
+    <label class="chk"><input type="checkbox" id="syStu" checked> Schüler übernehmen <span class="hint">– Haken weg = verlässt die Klasse</span></label>
+    <div class="sy-stu ind" id="syStuList">${studs.map(st => `<label class="chk"><input type="checkbox" data-sys="${st.id}" checked> ${esc(fullName(st))}</label>`).join('') || '<span class="hint">keine Schüler</span>'}</div>
+    <label class="chk"><input type="checkbox" id="syRoom" checked> Sitzplan (Plätze) übernehmen</label>
+    <div class="sub">3. Leeren</div>
+    ${CL.map(([k, l, on]) => `<label class="chk"><input type="checkbox" data-syc="${k}"${on ? ' checked' : ''}> ${l}</label>`).join('')}
+    <p class="hint" style="margin:0">Regeln, Gruppen, Dienste, Tafelbilder, Module und die Verbindung zum Hausaufgabenheft bleiben. Der Wechsel lässt sich mit ↶ Rückgängig zurücknehmen.</p>
+    <label class="chk"><input type="checkbox" id="syNoArch"> Ohne Archiv fortfahren (z. B. schon gesichert)</label>
+    <div class="row"><button data-syx="1">Abbrechen</button><span class="spacer"></span><button class="primary" id="syGo" disabled>🎓 Schuljahr wechseln</button></div>`;
+  $('syDlg').hidden = false;
+}
+function syUpd() { $('syGo').disabled = !(syArchDone || $('syNoArch').checked); $('syStuList').hidden = !$('syStu').checked; $('syStuList').querySelectorAll('label').forEach(l => l.classList.toggle('out', !l.querySelector('input').checked)); }
+async function syArchive() {
+  let name = $('syArchName').value.trim() || 'Archiv.json'; if (!/\.json$/i.test(name)) name += '.json';
+  name = name.replace(/[\\/:*?"<>|]/g, '-');
+  const text = fileData(), st = $('syArchSt'); st.className = ''; st.textContent = '… wird gesichert';
+  try {
+    let where;
+    if (od) { const fid = await odFolder(await odParent(), 'Sicherungen'); await odPut(fid, name, text); where = 'in OneDrive › Sicherungen'; }
+    else if (FS) { const h = await window.showSaveFilePicker({ suggestedName: name, types: FILE_TYPES }); const w = await h.createWritable(); await w.write(text); await w.close(); where = '„' + h.name + '“'; }
+    else { const f = new File([text], name, { type: 'application/json' }); if (navigator.canShare && navigator.canShare({ files: [f] })) await navigator.share({ files: [f] }); else { const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = name; document.body.appendChild(a); a.click(); a.remove(); } where = 'als Datei'; }
+    syArchDone = true; st.className = 'ok'; st.textContent = '✓ gesichert ' + where; syUpd();
+  } catch (e) { st.textContent = e.name === 'AbortError' ? '' : '⚠️ ' + (e.message === 'login' ? 'Bitte bei Microsoft anmelden und nochmal' : e.message); }
+}
+function syGo() {
+  const c = cls(), t = todayStr(), on = k => { const x = $('syBody').querySelector(`[data-syc="${k}"]`); return x && x.checked; };
+  const keep = $('syStu').checked ? new Set([...$('syBody').querySelectorAll('[data-sys]')].filter(x => x.checked).map(x => x.dataset.sys)) : new Set();
+  const nm = $('syName').value.trim() || c.name, gone = c.students.filter(s => !keep.has(s.id)).length;
+  if (!window.confirm(`Schuljahreswechsel für „${c.name}“ → „${nm}“ durchführen?${gone ? `\n${gone} Schüler verlassen die Klasse.` : ''}`)) return;
+  change(() => {
+    c.name = nm;
+    c.students = c.students.filter(s => keep.has(s.id)); cleanupStudents();
+    if (!$('syRoom').checked) c.items.forEach(it => (it.seats || []).forEach(s => { s.sid = null; s.pinned = false; }));
+    if (on('hw')) c.checks = [];
+    if (on('ex')) c.exams = (c.exams || []).filter(x => exEnd(x) >= t);
+    if (on('msg')) c.msgs = [];
+    if (c.tt && on('les')) { delete c.tt.les; delete c.tt.lesMv; delete c.tt.chg; }
+    if (c.tt && on('tt')) { const T = ttAt(t, c); c.tt.slots = T.slots; c.tt.sat = T.sat; if (T.ab) c.tt.ab = T.ab; c.tt.cells = {}; delete c.tt.vers; delete c.tt.pname; }
+    if (c.tally && on('tally')) { c.tally.marks = []; c.tally.seen = {}; }
+    if (c.goals && on('goal')) c.goals.forEach(g => { g.n = 0; g.log = []; g.done = false; delete g.aw; });
+    if (on('duty')) { c.dutyCount = {}; c.picked = []; }
+    if (on('hist')) c.plans = [];
+  });
+  $('syDlg').hidden = true;
+  setResult(`🎓 Willkommen im neuen Schuljahr, ${nm}! ${gone ? gone + ' Schüler entfernt. ' : ''}Neue Schüler unter „🧒 Schüler“ hinzufügen.`, 'ok');
+}
+$('syBtn').addEventListener('click', openSy);
+$('syDlg').addEventListener('click', e => {
+  if (e.target === $('syDlg')) { $('syDlg').hidden = true; return; }
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.syx) $('syDlg').hidden = true; else if (b.id === 'syArch') syArchive(); else if (b.id === 'syGo') syGo();
+});
+$('syDlg').addEventListener('change', syUpd);
+
 if (!T2.on) odStart().then(done => { if (!done) { autoOpenLast(); loadDevice(); } renderRecent(); }).catch(() => { autoOpenLast(); loadDevice(); });
 /* ---------- An die Schüler-iPads senden (QR-Code, ohne Schülernamen) ---------- */
 function buildPayload(o, c = cls()) {
