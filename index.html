@@ -1847,7 +1847,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-12-21</p>
+          <p class="hint" style="margin:0">Version 2026-12-22</p>
         </div>
       </details>
       <details class="card" open id="bkCard">
@@ -4334,7 +4334,7 @@ function makeTeams() {
   const mode = $('teamMode').value, N = clamp(parseInt($('teamN').value, 10) || 2, 2, 30);
   let k;
   if (mode === 'pairs') k = Math.floor(n / 2);
-  else if (mode === 'size') k = Math.max(1, Math.floor(n / N));
+  else if (mode === 'size') k = Math.max(1, Math.round(n / N));   // so nah wie möglich an der gewünschten Größe (z. B. 18 Kinder je 4 → 4,4,4,3,3 statt 5,5,4,4)
   else k = clamp(N, 1, n);
   // Größen möglichst gleich verteilen
   const sizes = Array(k).fill(Math.floor(n / k));
@@ -4972,7 +4972,7 @@ $('pmTeamColor').addEventListener('change', e => { $('teamColor').checked = $('t
 $('pmTeamList').addEventListener('change', e => { ui.showTeamList = e.target.checked; renderRoom(); syncPresentBar(); });
 // Einstellungen im Präsentations-Menü = dieselben wie in der Seitenleiste
 $('pmTeamMode').addEventListener('change', e => { $('teamMode').value = e.target.value; $('pmTeamN').disabled = e.target.value === 'pairs'; renderTeams(); });
-$('pmTeamN').addEventListener('change', e => { $('teamN').value = e.target.value; });
+['input', 'change'].forEach(ev => $('pmTeamN').addEventListener(ev, e => { $('teamN').value = e.target.value; }));
 $('pmTeamRules').addEventListener('change', e => { $('teamRules').checked = e.target.checked; });
 $('pmTeamMix').addEventListener('change', e => { $('teamMix').checked = e.target.checked; });
 $('pmTeamMake').addEventListener('click', () => {
