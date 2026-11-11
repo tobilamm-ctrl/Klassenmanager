@@ -721,6 +721,10 @@
   .rolebox.big { margin-top: 10px; font-size: .95rem; }
   .rolesel { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
   .rolesel .rs { padding: 3px 9px; border-radius: 999px; font-size: .8rem; font-weight: 600; border: 1px solid var(--line); background: #fff; color: var(--muted); opacity: .75; }
+  .rolesel .rs-edit { opacity: 1; border-style: dashed; color: var(--accent); }
+  .role-list { display: flex; flex-direction: column; gap: 5px; max-height: 55vh; overflow: auto; }
+  .role-row { display: flex; gap: 6px; align-items: center; } .role-row input { flex: 1; min-width: 0; } .role-row input.role-ic { flex: 0 0 52px; text-align: center; font-size: 1.15rem; } .role-row button { padding: 4px 9px; }
+  #roleDlg .cdlg { max-height: calc(100vh - 32px); overflow: auto; user-select: auto; }
   .rolesel .rs.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); opacity: 1; }
   .tren { cursor: pointer; }
   .tsets { display: flex; flex-direction: column; gap: 4px; } #tsList, #pmTsList { display: flex; flex-direction: column; gap: 4px; }
@@ -1843,7 +1847,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-12-20</p>
+          <p class="hint" style="margin:0">Version 2026-12-21</p>
         </div>
       </details>
       <details class="card" open id="bkCard">
@@ -2167,6 +2171,7 @@
 <button id="t2Fs" hidden title="Bildschirmfüllend">⛶ Vollbild</button>
 <div id="t2Lost" hidden>⚠️ Verbindung zum Hauptfenster getrennt – dieses Fenster schließen und im Klassenmanager erneut 🖥² antippen.</div>
 <div class="cdlg-back" id="ttVerDlg" hidden><div class="cdlg nc" style="width:600px"><div class="cdlg-title">📅 Stundenpläne mit „gültig ab“</div><div class="nc-body" id="ttVerBody"></div></div></div>
+<div class="cdlg-back" id="roleDlg" hidden><div class="cdlg nc" style="width:520px"><div class="cdlg-title">🎭 Rollen für die Gruppenarbeit</div><div class="nc-body" id="roleDlgBody"></div></div></div>
 <div class="cdlg-back" id="syDlg" hidden><div class="cdlg nc"><div class="cdlg-title">🎓 Schuljahreswechsel</div><div class="nc-body" id="syBody"></div></div></div>
 <div class="cdlg-back" id="homeDlg" hidden><div class="cdlg nc" style="width:560px"><div class="cdlg-title">🏠 Startseite anpassen</div><div class="nc-body" id="homeBody"></div></div></div>
 <div id="goalParty" hidden></div>
@@ -2565,23 +2570,27 @@ const TEAM_COLORS = ['#0ea5e9', '#f97316', '#22c55e', '#a855f7', '#ef4444', '#ea
 const teamColor = i => TEAM_COLORS[i % TEAM_COLORS.length];
 const teamShort = i => { const n = ui.teams && ui.teams.names && ui.teams.names[i]; return n ? (n.length > 8 ? n.slice(0, 7) + '…' : n) : (ui.teams && ui.teams.mode === 'pairs' ? 'P' : 'G') + (i + 1); };
 // Rollen in Gruppen
-const ROLES = [
+const ROLES_DEF = [
   { k: 'lead', i: '👑', n: 'Gruppenleiter/in' }, { k: 'time', i: '⏱️', n: 'Zeitwächter/in' }, { k: 'write', i: '✍️', n: 'Schriftführer/in' }, { k: 'speak', i: '🎤', n: 'Sprecher/in' },
   { k: 'mat', i: '📦', n: 'Materialmanager/in' }, { k: 'quiet', i: '🤫', n: 'Lautstärkewächter/in' }, { k: 'qual', i: '🔍', n: 'Qualitätsprüfer/in' }, { k: 'motiv', i: '💪', n: 'Motivator/in' }];
-const roleSel = () => { const c = cls(); return Array.isArray(c.roleSel) ? c.roleSel : ROLES.map(r => r.k); };
+// eigene Rollen: state.roles (für alle Klassen, in der Datei) ersetzt die Standardliste, sobald etwas geändert wurde
+const roles = () => (typeof state !== 'undefined' && state && Array.isArray(state.roles) && state.roles.length ? state.roles : ROLES_DEF);
+const roleSel = () => { const c = cls(); return Array.isArray(c.roleSel) ? c.roleSel : roles().map(r => r.k); };
 function renderRoleSel() {
-  const sel = roleSel(), html = ROLES.map(r => `<button class="rs${sel.includes(r.k) ? ' on' : ''}" data-rs="${r.k}" title="${r.n} ${sel.includes(r.k) ? 'wird verteilt – Klick = nicht verteilen' : 'wird nicht verteilt – Klick = verteilen'}">${r.i} ${r.n}</button>`).join('');
+  const sel = roleSel(), html = roles().map(r => `<button class="rs${sel.includes(r.k) ? ' on' : ''}" data-rs="${r.k}" title="${esc(r.n)} ${sel.includes(r.k) ? 'wird verteilt – Klick = nicht verteilen' : 'wird nicht verteilt – Klick = verteilen'}">${esc(r.i)} ${esc(r.n)}</button>`).join('') + '<button class="rs rs-edit" data-rsedit="1" title="Rollen umbenennen, eigene hinzufügen oder löschen">✎ Rollen bearbeiten</button>';
   $('roleSel').innerHTML = html; $('roleSel2').innerHTML = html; if ($('roleSel3')) $('roleSel3').innerHTML = html;
 }
 document.addEventListener('click', e => {
+  if (e.target.closest('[data-rsedit]')) { e.preventDefault(); openRoleDlg(); return; }
   const b = e.target.closest('[data-rs]'); if (!b) return;
   const sel = roleSel().slice(), k = b.dataset.rs, i = sel.indexOf(k);
   if (i >= 0) sel.splice(i, 1); else sel.push(k);
-  change(() => { cls().roleSel = ROLES.map(r => r.k).filter(x => sel.includes(x)); }, { keepList: true });
+  change(() => { cls().roleSel = roles().map(r => r.k).filter(x => sel.includes(x)); }, { keepList: true });
   renderRoleSel();
 });
-const roleIcons = id => ((ui.teams && ui.teams.roles && ui.teams.roles[id]) || []).map(k => (ROLES.find(r => r.k === k) || {}).i || '').join('');
-const roleNames = id => ((ui.teams && ui.teams.roles && ui.teams.roles[id]) || []).map(k => (ROLES.find(r => r.k === k) || {}).n || '').join(', ');
+const roleIcons = id => ((ui.teams && ui.teams.roles && ui.teams.roles[id]) || []).map(k => (roles().find(r => r.k === k) || {}).i || '').join('');
+const roleNames = id => ((ui.teams && ui.teams.roles && ui.teams.roles[id]) || []).map(k => (roles().find(r => r.k === k) || {}).n || '').join(', ');
+
 // Farbe eines Platzes: Geschlechter-Ansicht (wenn eingeschaltet) > Partner/Gruppen > eigene Farbe des Kindes
 function seatColor(st, teamIdx) {
   if (ui.genderView) return st.gender ? colorInfo(GENDER_VIEW[st.gender]) : null;
@@ -4375,7 +4384,7 @@ function renderTeams() {
   $('teamsGrid').innerHTML = ui.teams.list.map((t, i) =>
     `<div class="tcard" data-t="${i}" style="--tc:${teamColor(i)}"><h3>${ttl(i)} <small>(${t.length})</small></h3>${t.map((id, k) => tm(id, i, k, true)).join('') || '<i class="hint">leer</i>'}</div>`).join('');
   const used = new Set(Object.values(ui.teams.roles || {}).flat());
-  $('roleLegend').innerHTML = used.size ? ROLES.filter(r => used.has(r.k)).map(r => `<span>${r.i} ${r.n}</span>`).join('') : '<span class="hint">Klick auf einen Namen = Rolle festlegen · „🎭 Rollen verteilen“ = zufällig in jeder Gruppe</span>';
+  $('roleLegend').innerHTML = used.size ? roles().filter(r => used.has(r.k)).map(r => `<span>${r.i} ${r.n}</span>`).join('') : '<span class="hint">Klick auf einen Namen = Rolle festlegen · „🎭 Rollen verteilen“ = zufällig in jeder Gruppe</span>';
   $('teamColor2').checked = $('teamColor').checked;
 }
 $('teamMode').addEventListener('change', renderTeams);
@@ -4490,7 +4499,7 @@ function openRolePop(t, k, el) {
   const mine = (ui.teams.roles && ui.teams.roles[id]) || [];
   const taken = new Map(); ui.teams.list[t].forEach(o => { if (o !== id) ((ui.teams.roles || {})[o] || []).forEach(rk => taken.set(rk, o)); });
   const dn = displayNames(cls().students);
-  const avail = ROLES.filter(r => roleSel().includes(r.k) || mine.includes(r.k));
+  const avail = roles().filter(r => roleSel().includes(r.k) || mine.includes(r.k));
   $('rolePop').innerHTML = `<b>${esc(dn.get(id) || '')}</b>${avail.map(r => `<button data-role="${r.k}" class="${mine.includes(r.k) ? 'on' : ''}">${r.i} ${r.n}${taken.has(r.k) ? `<small> (bisher ${esc(dn.get(taken.get(r.k)) || '')})</small>` : ''}</button>`).join('')}<button data-role="" class="none">✕ keine Rolle</button>`;
   const p = $('rolePop'); p.hidden = false;
   const b = el.getBoundingClientRect(), pw = p.offsetWidth, ph = p.offsetHeight;
@@ -4511,7 +4520,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('rolePo
 function dealRoles() {
   if (!ui.teams) return;
   const R = ui.teams.roles = {};
-  const use = ROLES.filter(r => roleSel().includes(r.k));
+  const use = roles().filter(r => roleSel().includes(r.k));
   if (!use.length) { setResult('Keine Rollen ausgewählt – wähle unter „Rollen“ aus, welche verteilt werden sollen.', 'warn'); renderTeams(); return; }
   ui.teams.list.forEach(t => { const ids = t.slice().sort(() => Math.random() - .5); ids.forEach((id, j) => { if (j < use.length) R[id] = [use[j].k]; }); });
   renderTeams(); renderRoom(); setResult('🎭 Rollen in jeder Gruppe zufällig verteilt.', 'ok');
@@ -6783,7 +6792,7 @@ document.addEventListener('keydown', e => {
 // liest auch ältere Dateien (Version 1 und 2) ein
 function migrate(data) {
   const fill = c => Object.assign({ plans: [], duties: [], dutyCount: {}, picked: [], showDuties: false, subNote: '', groups: [], checks: [], exams: [], msgs: [] }, c);
-  if (Array.isArray(data.classes) && data.classes.length) return { classes: data.classes.map(fill), current: data.current || data.classes[0].id, seq: data.seq || 10000, boards: Array.isArray(data.boards) ? data.boards : [], boardStart: data.boardStart || {}, ...(data.gh && data.gh.repo && data.gh.token ? { gh: data.gh } : {}), ...(Array.isArray(data.snips) ? { snips: data.snips } : {}), ...(data.mods && Array.isArray(data.mods.off) ? { mods: data.mods } : {}), ...(data.home && typeof data.home === 'object' ? { home: data.home } : {}), ...(Array.isArray(data.bdOrder) ? { bdOrder: data.bdOrder } : {}) };
+  if (Array.isArray(data.classes) && data.classes.length) return { classes: data.classes.map(fill), current: data.current || data.classes[0].id, seq: data.seq || 10000, boards: Array.isArray(data.boards) ? data.boards : [], boardStart: data.boardStart || {}, ...(data.gh && data.gh.repo && data.gh.token ? { gh: data.gh } : {}), ...(Array.isArray(data.snips) ? { snips: data.snips } : {}), ...(data.mods && Array.isArray(data.mods.off) ? { mods: data.mods } : {}), ...(data.home && typeof data.home === 'object' ? { home: data.home } : {}), ...(Array.isArray(data.bdOrder) ? { bdOrder: data.bdOrder } : {}), ...(Array.isArray(data.roles) && data.roles.length ? { roles: data.roles } : {}) };
   const fresh = { classes: [], current: null, seq: 0 };
   state = fresh;   // damit newId() fortlaufend zählt
   const c = makeClass('Klasse 1', []);
@@ -11522,6 +11531,39 @@ $('bkBox').addEventListener('change', e => {
   if (e.target.id === 'bkDays') bkCfgSet({ days: +e.target.value });
 });
 if (!T2.on) { setTimeout(() => { renderBk(); bkRun(false); }, 45000); setInterval(() => bkRun(false), 15 * 6e4); renderBk(); }
+
+/* ---------- 🎭 Rollen bearbeiten (gilt für alle Klassen) ---------- */
+function openRoleDlg() { renderRoleDlg(); $('roleDlg').hidden = false; }
+function renderRoleDlg() {
+  const custom = Array.isArray(state.roles) && state.roles.length;
+  $('roleDlgBody').innerHTML = `<p class="hint" style="margin:0">Symbol und Namen direkt ändern. Die Rollen gelten für alle Klassen; welche verteilt werden, stellst du je Klasse mit Antippen ein.</p>
+    <div class="role-list">${roles().map((r, i) => `<div class="role-row"><input class="role-ic" data-ri="${i}" data-rf="i" value="${esc(r.i)}" maxlength="4" title="Symbol (Emoji)"><input data-ri="${i}" data-rf="n" value="${esc(r.n)}" maxlength="30" placeholder="Name der Rolle"><button data-rmv="-1" data-i="${i}" title="nach oben"${i ? '' : ' disabled'}>↑</button><button data-rdel="${i}" class="danger" title="Rolle löschen"${roles().length > 1 ? '' : ' disabled'}>🗑</button></div>`).join('')}</div>
+    <div class="row"><button data-radd="1">＋ Eigene Rolle</button>${custom ? '<button data-rreset="1">Standardrollen wiederherstellen</button>' : ''}<span class="spacer"></span><button class="primary" data-rok="1">Fertig</button></div>`;
+}
+function roleEdit(fn) { change(() => { const l = roles().map(r => ({ ...r })); fn(l); state.roles = l; }, { keepList: true }); renderRoleSel(); }
+$('roleDlg').addEventListener('click', e => {
+  if (e.target === $('roleDlg')) { $('roleDlg').hidden = true; return; }
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.rok) { $('roleDlg').hidden = true; return; }
+  if (b.dataset.radd) {
+    const k = 'r' + Date.now().toString(36);
+    roleEdit(l => l.push({ k, i: '⭐', n: 'Neue Rolle' }));
+    change(() => state.classes.forEach(c => { if (Array.isArray(c.roleSel) && !c.roleSel.includes(k)) c.roleSel.push(k); }), { keepList: true });   // neue Rolle wird gleich mit verteilt
+    renderRoleSel(); renderRoleDlg(); const ins = $('roleDlgBody').querySelectorAll('[data-rf="n"]'); const last = ins[ins.length - 1]; if (last) { last.focus(); last.select(); }
+    return;
+  }
+  if (b.dataset.rdel != null) { const i = +b.dataset.rdel, r = roles()[i]; if (!window.confirm(`Rolle „${r.n}“ löschen?`)) return; roleEdit(l => l.splice(i, 1)); change(() => state.classes.forEach(c => { if (Array.isArray(c.roleSel)) c.roleSel = c.roleSel.filter(x => x !== r.k); }), { keepList: true }); renderRoleSel(); renderRoleDlg(); return; }
+  if (b.dataset.rmv) { const i = +b.dataset.i; if (i > 0) roleEdit(l => { [l[i - 1], l[i]] = [l[i], l[i - 1]]; }); renderRoleDlg(); return; }
+  if (b.dataset.rreset) { if (!window.confirm('Eigene Rollen und Änderungen verwerfen und die Standardrollen wiederherstellen?')) return; change(() => { delete state.roles; }, { keepList: true }); renderRoleSel(); renderRoleDlg(); }
+});
+$('roleDlg').addEventListener('change', e => {
+  const t = e.target; if (t.dataset.ri == null) return;
+  const i = +t.dataset.ri, f = t.dataset.rf, v = t.value.trim();
+  if (!v) { renderRoleDlg(); return; }
+  roleEdit(l => { l[i][f] = f === 'i' ? [...v].slice(0, 2).join('') : v.slice(0, 30); });
+  if (typeof renderTeams === 'function') try { renderAll({ keepList: true }); } catch (er) {}
+});
+$('roleDlg').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('input')) e.target.blur(); if (e.key === 'Escape') $('roleDlg').hidden = true; });
 
 /* =====================================================================
    🎓 Schuljahreswechsel: alten Stand als Archivdatei sichern, Klasse fürs neue Jahr vorbereiten
