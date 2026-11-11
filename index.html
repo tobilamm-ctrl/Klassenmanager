@@ -1189,6 +1189,7 @@
   .od-dlg { width: 560px; } .od-crumb { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; } .od-crumb button { padding: 2px 8px; font-size: .85rem; } .od-crumb span { color: var(--muted); }
   .od-list { max-height: 50vh; overflow: auto; display: flex; flex-direction: column; gap: 4px; border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px; }
   .od-it { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; text-align: left; font-weight: 600; border-color: #e5e7eb; color: var(--ink); } .od-it small { color: var(--muted); font-weight: 400; white-space: nowrap; } .od-it.off { opacity: .45; pointer-events: none; }
+  #odSaveRow[hidden], #odMore[hidden] { display: none; } #odMore { font-size: .8rem; color: var(--muted); text-align: center; margin-top: -4px; }
   .od-sub { font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 4px 2px 0; }
   #odConf .nc-body > button { text-align: left; } #odConf small { display: block; font-weight: 400; opacity: .8; }
   #pdfBusy { position: fixed; inset: 0; z-index: 4000; background: rgba(255,255,255,.9); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--accent); font-size: 1.1rem; }
@@ -1842,7 +1843,7 @@
             <p class="hint" style="margin:2px 0 0">Jede Änderung wird sofort im Speicher dieser App auf dem iPad abgelegt und beim nächsten Start wieder geladen – ohne Datei. Die Daten verlassen das Gerät nicht. Mit „📤 Als Datei sichern“ machst du eine Sicherung (z. B. für den PC). Ausschalten löscht den Speicher der App auf diesem Gerät.</p>
           </div>
           <p class="hint">Eine Datei enthält alle Klassen mit Schülern, Regeln, Räumen, Verlauf und Diensten. Für „Zuletzt verwendet“ merkt sich der Browser nur die Verweise auf die Dateien, nicht deren Inhalt.</p>
-          <p class="hint" style="margin:0">Version 2026-12-19</p>
+          <p class="hint" style="margin:0">Version 2026-12-20</p>
         </div>
       </details>
       <details class="card" open id="bkCard">
@@ -2294,7 +2295,7 @@
     <div class="cdlg-title" id="odTitle">☁️ Aus OneDrive öffnen</div>
     <div class="nc-body">
       <div class="od-crumb" id="odCrumb"></div>
-      <div class="od-list" id="odList"></div>
+      <div class="od-list" id="odList"></div><div id="odMore" hidden>↓ Weitere Ordner – in der Liste nach unten wischen</div>
       <div class="row" id="odSaveRow" hidden><label class="nc-name" style="flex:1">Dateiname<input id="odName" placeholder="z. B. Klasse 5a"></label><button class="primary" id="odSaveHere" style="align-self:flex-end">☁️ Hier speichern</button></div>
       <div class="row" style="justify-content:flex-end"><button id="odCancel">Abbrechen</button></div>
     </div>
@@ -6878,21 +6879,23 @@ async function odMe() {
   const r = await odFetch('/me?$select=displayName,userPrincipalName');
   if (r.ok) { const j = await r.json(); lsSet('km-od-user', { name: j.displayName, upn: j.userPrincipalName }); }
 }
+// Element-Adresse: eigenes OneDrive oder eine eingebundene Verknüpfung (z. B. geteilter Ordner/Teams-Bibliothek in „Meine Dateien“)
+const odItem = (id, drive) => drive ? `/drives/${drive}/items/${id}` : `/me/drive/items/${id}`;
 function odRecentAdd(f) {
   const l = (lsGet('km-od-recent', []) || []).filter(x => x.id !== f.id);
-  l.unshift({ id: f.id, name: f.name, path: f.path || '', time: Date.now() });
+  l.unshift({ id: f.id, name: f.name, path: f.path || '', drive: f.drive || '', time: Date.now() });
   lsSet('km-od-recent', l.slice(0, 5));
 }
 // Datei aus OneDrive laden
-async function odOpen(id, quiet) {
-  const m = await odFetch(`/me/drive/items/${id}`, {}, quiet ? null : { a: 'open', id });
+async function odOpen(id, quiet, drive) {
+  const m = await odFetch(odItem(id, drive), {}, quiet ? null : { a: 'open', id, drive: drive || '' });
   if (!m.ok) throw await odErr(m);
   const meta = await m.json();
   const c = await fetch(meta['@microsoft.graph.downloadUrl'], { cache: 'no-store' });   // vorab berechtigte Download-Adresse (ohne Anmelde-Kopfzeile)
   if (!c.ok) throw new Error('Download ' + c.status);
   const text = await c.text();
-  const path = ((meta.parentReference && meta.parentReference.path) || '').replace(/^\/drive\/root:?/, '') || '/';
-  const ref = { id: meta.id, name: meta.name, eTag: meta.eTag, path };
+  const path = ((meta.parentReference && meta.parentReference.path) || '').replace(/^\/drives?(\/[^/]+)?\/root:?/, '') || '/';
+  const ref = { id: meta.id, name: meta.name, eTag: meta.eTag, path, drive: drive || '' };
   if (!loadData(text, meta.name, null, ref)) return false;
   undoStack = []; redoStack = []; dirty = false;
   odRecentAdd(ref); await idbSet('odlocal', { od: ref, text, synced: true, time: Date.now() });
@@ -6907,7 +6910,7 @@ async function odSave(silent, force) {
   const s = snap(), body = fileData();
   try {
     const h = { 'Content-Type': 'application/json' }; if (od.eTag && !force) h['If-Match'] = od.eTag;
-    const r = await odFetch(`/me/drive/items/${od.id}/content`, { method: 'PUT', headers: h, body }, silent ? null : { a: 'save' });
+    const r = await odFetch(`${odItem(od.id, od.drive)}/content`, { method: 'PUT', headers: h, body }, silent ? null : { a: 'save' });
     if (r.status === 412) { odBusy = false; odConflict(); return; }
     if (!r.ok) throw await odErr(r);
     const j = await r.json();
@@ -6924,15 +6927,15 @@ async function odSave(silent, force) {
   } finally { odBusy = false; renderFileInfo(); }
 }
 // neue Datei in einem OneDrive-Ordner anlegen
-async function odSaveNew(folderId, name) {
+async function odSaveNew(folderId, name, drive) {
   if (!/\.json$/i.test(name)) name += '.json';
   const s = snap(), body = fileData();
-  const r = await odFetch(`/me/drive/items/${folderId}:/${encodeURIComponent(name)}:/content?@microsoft.graph.conflictBehavior=fail`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body }, { a: 'saveas' });
+  const r = await odFetch(`${odItem(folderId, drive)}:/${encodeURIComponent(name)}:/content?@microsoft.graph.conflictBehavior=fail`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body }, { a: 'saveas' });
   if (r.status === 409) { window.alert(`„${name}“ gibt es in diesem Ordner schon – bitte einen anderen Namen wählen.`); return false; }
   if (!r.ok) throw await odErr(r);
   const j = await r.json();
-  const path = ((j.parentReference && j.parentReference.path) || '').replace(/^\/drive\/root:?/, '') || '/';
-  od = { id: j.id, name: j.name, eTag: j.eTag, path }; odLast = s;
+  const path = ((j.parentReference && j.parentReference.path) || '').replace(/^\/drives?(\/[^/]+)?\/root:?/, '') || '/';
+  od = { id: j.id, name: j.name, eTag: j.eTag, path, drive: drive || '' }; odLast = s;
   fileHandle = null; fileName = j.name; dirty = false;
   odRecentAdd(od); await idbSet('odlocal', { od, text: body, synced: true, time: Date.now() });
   renderFileInfo(); renderOdBox();
@@ -6949,7 +6952,7 @@ $('odConf').addEventListener('click', async e => {
   const b = e.target.closest('button[data-c]'); if (!b) return;
   const k = b.dataset.c; $('odConf').hidden = true;
   if (k === 'mine') { odConflictOpen = false; await odSave(false, true); }
-  else if (k === 'theirs') { odConflictOpen = false; try { await odOpen(od.id); } catch (er) { setResult('☁️ Laden nicht möglich: ' + er.message, 'warn'); } }
+  else if (k === 'theirs') { odConflictOpen = false; try { await odOpen(od.id, false, od.drive); } catch (er) { setResult('☁️ Laden nicht möglich: ' + er.message, 'warn'); } }
   else if (k === 'copy') { odConflictOpen = false; const nm = (od ? od.name.replace(/\.json$/i, '') : 'Klassenmanager') + ' (iPad ' + new Date().toLocaleDateString('de-DE') + ')'; odPick('save', nm); }
   else { setResult('☁️ Automatisches Speichern pausiert, bis du entscheidest (💾 Speichern).', 'warn'); }
 });
@@ -6968,32 +6971,40 @@ async function odList() {
   $('odSaveRow').hidden = odNav.mode !== 'save';
   if (odNav.mode === 'save' && !$('odName').value) $('odName').value = odNav.suggest;
   const rec = odNav.mode === 'open' && odNav.stack.length === 1 ? (lsGet('km-od-recent', []) || []) : [];
-  $('odList').innerHTML = (rec.length ? '<div class="od-sub">Zuletzt verwendet</div>' + rec.map(f => `<button class="od-it" data-file="${f.id}"><span>📄 ${esc(f.name)}</span><small>${esc(f.path || '')}</small></button>`).join('') + '<div class="od-sub">Alle Dateien</div>' : '') + '<p class="hint">Wird geladen …</p>';
+  $('odList').innerHTML = (rec.length ? '<div class="od-sub">Zuletzt verwendet</div>' + rec.map(f => `<button class="od-it" data-file="${f.id}" data-drive="${esc(f.drive || '')}"><span>📄 ${esc(f.name)}</span><small>${esc(f.path || '')}</small></button>`).join('') + '<div class="od-sub">Alle Dateien</div>' : '') + '<p class="hint">Wird geladen …</p>';
   try {
-    const r = await odFetch(`/me/drive/items/${cur.id}/children?$select=id,name,folder,file,lastModifiedDateTime&$top=500&$orderby=name`, {}, { a: odNav.mode === 'save' ? 'saveas' : 'pick' });
-    if (!r.ok) throw await odErr(r);
-    const items = (await r.json()).value || [];
-    const folders = items.filter(i => i.folder), files = items.filter(i => i.file && /\.json$/i.test(i.name));
+    // alle Seiten holen; Verknüpfungen zu geteilten Ordnern (remoteItem) wie normale Ordner behandeln
+    let url = `${odItem(cur.id, cur.drive)}/children?$select=id,name,folder,file,remoteItem,lastModifiedDateTime&$top=200`, items = [];
+    for (let pg = 0; url && pg < 20; pg++) {
+      const r = await odFetch(url, {}, { a: odNav.mode === 'save' ? 'saveas' : 'pick' });
+      if (!r.ok) throw await odErr(r);
+      const j = await r.json(); items = items.concat(j.value || []); url = j['@odata.nextLink'] || '';
+    }
+    const norm = i => { const ri = i.remoteItem; if (!ri) return { id: i.id, drive: cur.drive || '', name: i.name, folder: i.folder, file: i.file, lastModifiedDateTime: i.lastModifiedDateTime, link: false };
+      return { id: ri.id, drive: (ri.parentReference && ri.parentReference.driveId) || '', name: i.name, folder: ri.folder, file: ri.file, lastModifiedDateTime: ri.lastModifiedDateTime || i.lastModifiedDateTime, link: true }; };
+    const coll = new Intl.Collator('de', { numeric: true, sensitivity: 'base' }), all = items.map(norm).sort((a, b) => coll.compare(a.name, b.name));
+    const folders = all.filter(i => i.folder), files = all.filter(i => i.file && /\.json$/i.test(i.name));
     const fmt = d => new Date(d).toLocaleDateString('de-DE') + ' ' + new Date(d).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-    const html = folders.map(f => `<button class="od-it" data-dir="${f.id}" data-name="${esc(f.name)}"><span>📁 ${esc(f.name)}</span><small>${f.folder.childCount} Einträge</small></button>`).join('') +
-      files.map(f => `<button class="od-it${odNav.mode === 'save' ? ' off' : ''}" data-file="${f.id}"><span>📄 ${esc(f.name)}</span><small>${fmt(f.lastModifiedDateTime)}</small></button>`).join('');
+    const html = folders.map(f => `<button class="od-it" data-dir="${f.id}" data-drive="${esc(f.drive)}" data-name="${esc(f.name)}"><span>${f.link ? '🔗' : '📁'} ${esc(f.name)}</span><small>${f.folder.childCount != null ? f.folder.childCount + ' Einträge' : ''}</small></button>`).join('') +
+      files.map(f => `<button class="od-it${odNav.mode === 'save' ? ' off' : ''}" data-file="${f.id}" data-drive="${esc(f.drive)}"><span>📄 ${esc(f.name)}</span><small>${fmt(f.lastModifiedDateTime)}</small></button>`).join('');
     $('odList').innerHTML = $('odList').innerHTML.replace('<p class="hint">Wird geladen …</p>', '') + (html || '<p class="hint">Hier gibt es keine Ordner und keine Klassenmanager-Dateien (.json).</p>');
+    const L = $('odList'), more = () => { $('odMore').hidden = L.scrollHeight - L.clientHeight - L.scrollTop < 8; }; L.scrollTop = 0; L.onscroll = more; more();
   } catch (e) { if (e.message !== 'login') $('odList').innerHTML = `<p class="hint">OneDrive konnte nicht gelesen werden: ${esc(e.message)}</p>`; }
 }
 $('odDlg').addEventListener('click', async e => {
   if (e.target === $('odDlg') || e.target.closest('#odCancel')) { $('odDlg').hidden = true; $('odName').value = ''; return; }
   const up = e.target.closest('[data-up]'); if (up) { odNav.stack = odNav.stack.slice(0, +up.dataset.up + 1); return odList(); }
-  const d = e.target.closest('[data-dir]'); if (d) { odNav.stack.push({ id: d.dataset.dir, name: d.dataset.name }); return odList(); }
+  const d = e.target.closest('[data-dir]'); if (d) { odNav.stack.push({ id: d.dataset.dir, name: d.dataset.name, drive: d.dataset.drive || '' }); return odList(); }
   const f = e.target.closest('[data-file]');
   if (f && odNav.mode === 'open') {
     if (dirty && !window.confirm('Es gibt ungespeicherte Änderungen. Trotzdem eine andere Datei öffnen?')) return;
     $('odDlg').hidden = true;
-    try { await odOpen(f.dataset.file); } catch (er) { if (er.message !== 'login') window.alert('Die Datei konnte nicht geöffnet werden: ' + er.message); }
+    try { await odOpen(f.dataset.file, false, f.dataset.drive || ''); } catch (er) { if (er.message !== 'login') window.alert('Die Datei konnte nicht geöffnet werden: ' + er.message); }
     return;
   }
   if (e.target.closest('#odSaveHere')) {
     const name = $('odName').value.trim(); if (!name) return;
-    try { if (await odSaveNew(odNav.stack[odNav.stack.length - 1].id, name)) { $('odDlg').hidden = true; $('odName').value = ''; } }
+    try { const top = odNav.stack[odNav.stack.length - 1]; if (await odSaveNew(top.id, name, top.drive)) { $('odDlg').hidden = true; $('odName').value = ''; } }
     catch (er) { if (er.message !== 'login') window.alert('Speichern in OneDrive hat nicht geklappt: ' + er.message); }
   }
 });
@@ -7059,7 +7070,7 @@ async function odStart() {
       if (af.a === 'pick') odPick('open');
       else if (af.a === 'saveas') odPick('save');
       else if (af.a === 'save') await odSave(false);
-      else if (af.a === 'open') await odOpen(af.id);
+      else if (af.a === 'open') await odOpen(af.id, false, af.drive);
       else if (af.a === 'reload') await odCheckRemote(true);
       else if (af.a === 'pub') { openSend(); await pubStart(); }
       else if (af.a === 'resume') { if (od && snap() !== odLast) await odSave(true); setResult('☁️ Bei Microsoft wieder angemeldet.', 'ok'); }
@@ -7080,7 +7091,7 @@ async function odStart() {
     if (loadData(loc.text, loc.od.name, null, loc.od)) { odLast = null; dirty = true; undoStack = []; redoStack = []; renderAll(); setResult(`☁️ „${loc.od.name}“: Änderungen von diesem Gerät, die noch nicht in OneDrive sind, wurden wiederhergestellt und werden jetzt übertragen.`, 'warn'); odSave(true); }
     return true;
   }
-  try { if (await odOpen(loc.od.id, true)) return true; }
+  try { if (await odOpen(loc.od.id, true, loc.od.drive)) return true; }
   catch (e) {
     if (loc.text && loadData(loc.text, loc.od.name, null, loc.od)) {
       undoStack = []; redoStack = []; dirty = false; odLast = snap(); renderAll();
@@ -7100,7 +7111,7 @@ async function odCheckRemote(manual) {
   if (!manual && (document.visibilityState !== 'visible' || document.querySelector('.cdlg-back:not([hidden])') || (typeof drag !== 'undefined' && drag))) return;
   odChecking = true;
   try {
-    const r = await odFetch(`/me/drive/items/${od.id}?$select=id,eTag`, {}, manual ? { a: 'reload' } : null);
+    const r = await odFetch(`${odItem(od.id, od.drive)}?$select=id,eTag`, {}, manual ? { a: 'reload' } : null);
     if (!r.ok) throw await odErr(r);
     const j = await r.json();
     if (j.eTag === od.eTag) { if (manual) setResult('☁️ Du hast bereits den neuesten Stand.', 'ok'); return; }
@@ -7113,7 +7124,7 @@ async function odCheckRemote(manual) {
 // neuen Stand laden – angezeigte Klasse, Ansicht und laufende Gruppeneinteilung bleiben erhalten
 async function odReload() {
   const keep = { cur: state.current, teams: ui.teams, view: ui.view, mode: ui.mode, flipped: ui.flipped, present: ui.present };
-  if (!(await odOpen(od.id, true))) return;
+  if (!(await odOpen(od.id, true, od.drive))) return;
   if (state.classes.some(c => c.id === keep.cur)) { state.current = keep.cur; ui.teams = keep.teams; }
   ui.mode = keep.mode; ui.flipped = keep.flipped;
   odLast = snap(); renderAll(); renderFileInfo();
@@ -11422,17 +11433,18 @@ const bkBase = () => ((od ? od.name : fileName) || 'Klassenmanager.json').replac
 const bkIsMine = n => /^Sicherung \d{4}-\d{2}-\d{2} /.test(n) && n.endsWith(' ' + bkBase() + '.json');
 let bkBusy = false, bkErr = '', bkPermAsk = false;
 async function odParent() {
-  const r = await odFetch(`/me/drive/items/${od.id}?$select=parentReference`); if (!r.ok) throw await odErr(r);
-  return (await r.json()).parentReference.id;
+  const r = await odFetch(`${odItem(od.id, od.drive)}?$select=parentReference`); if (!r.ok) throw await odErr(r);
+  const p = (await r.json()).parentReference; return { id: p.id, drive: od.drive ? p.driveId : '' };
 }
-async function odFolder(pid, name) {
-  const r = await odFetch(`/me/drive/items/${pid}/children`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, folder: {}, '@microsoft.graph.conflictBehavior': 'fail' }) });
-  if (r.ok) return (await r.json()).id;
-  const g = await odFetch(`/me/drive/items/${pid}:/${encodeURIComponent(name)}`); if (!g.ok) throw await odErr(g);
-  return (await g.json()).id;
+async function odFolder(par, name) {
+  const pid = par.id, dr = par.drive;
+  const r = await odFetch(`${odItem(pid, dr)}/children`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, folder: {}, '@microsoft.graph.conflictBehavior': 'fail' }) });
+  if (r.ok) return { id: (await r.json()).id, drive: dr };
+  const g = await odFetch(`${odItem(pid, dr)}:/${encodeURIComponent(name)}`); if (!g.ok) throw await odErr(g);
+  return { id: (await g.json()).id, drive: dr };
 }
-async function odPut(fid, name, text) {
-  const r = await odFetch(`/me/drive/items/${fid}:/${encodeURIComponent(name)}:/content?@microsoft.graph.conflictBehavior=replace`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: text });
+async function odPut(f, name, text) {
+  const r = await odFetch(`${odItem(f.id, f.drive)}:/${encodeURIComponent(name)}:/content?@microsoft.graph.conflictBehavior=replace`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: text });
   if (!r.ok) throw await odErr(r);
 }
 async function bkDir(interactive) {
@@ -11459,8 +11471,8 @@ async function bkRun(manual) {
     where = '🌐 nur in diesem Browser';
     if (od) {
       const fid = await odFolder(await odParent(), 'Sicherungen'); await odPut(fid, name, text);
-      const r = await odFetch(`/me/drive/items/${fid}/children?$select=id,name&$top=200`);
-      if (r.ok) { const old = ((await r.json()).value || []).filter(x => bkIsMine(x.name)).sort((a, b) => b.name.localeCompare(a.name)).slice(BK_KEEP); for (const x of old) await odFetch(`/me/drive/items/${x.id}`, { method: 'DELETE' }); }
+      const r = await odFetch(`${odItem(fid.id, fid.drive)}/children?$select=id,name&$top=200`);
+      if (r.ok) { const old = ((await r.json()).value || []).filter(x => bkIsMine(x.name)).sort((a, b) => b.name.localeCompare(a.name)).slice(BK_KEEP); for (const x of old) await odFetch(odItem(x.id, fid.drive), { method: 'DELETE' }); }
       where = '☁️ OneDrive › ' + (od.path && od.path !== '/' ? od.path.replace(/^\//, '') + ' › ' : '') + 'Sicherungen';
     } else if (FS) {
       const dir = await bkDir(manual);

@@ -695,3 +695,5 @@ Version 2026-12-12
 2026-12-18: Fehler behoben - mit Tafel-Fenster auf dem 2. Bildschirm sprang der Klassenmanager nach dem Wechsel in ein anderes Programm/einen anderen Tab immer wieder auf die Fernbedienung („Verbindung verloren“).
 
 2026-12-19: Schutz vor veralteten Kopien beim Übertragen an die Schüler. Jede Klasse hat einen Stand-Stempel (letzte Änderung). Eine ältere Datei (z. B. eine Kopie oder ein Gerät, das lange im Ruhezustand war) überschreibt den Stand bei den Kindern nicht mehr; es erscheint ein Hinweis. Absichtlich älteren Stand senden: „📲 An Schüler“ > GitHub > „Trotzdem diesen Stand senden“. Liegt bei GitHub/OneDrive ein älterer Stand, überträgt die aktuelle Datei nach spätestens 3 Minuten selbst neu.
+
+2026-12-20: OneDrive-Auswahl (Öffnen / Speichern unter): Verknüpfungen zu geteilten Ordnern und Teams-/SharePoint-Bibliotheken (🔗) werden jetzt angezeigt und lassen sich öffnen und speichern. Lange Ordnerlisten werden vollständig geladen, Sortierung wie im Explorer (2026-27 vor Apps); Hinweis „Weitere Ordner – nach unten wischen“.
