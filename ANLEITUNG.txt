@@ -1,190 +1,705 @@
-HAUSAUFGABENHEFT (SCHÜLER-APP FÜRS IPAD) – ANLEITUNG
-====================================================
+KLASSENMANAGER ALS WEB-APP (PWA) – ANLEITUNG
+=======================================
 
-Was ist das Hausaufgabenheft?
------------------------------
-Eine kleine App für die Schüler-iPads: Stundenplan ansehen, Hausaufgabenheft
-mit Abhaken, Proben mit Countdown und eigene Notizen. Die Lehrkraft schickt
-Stundenplan, Hausaufgaben und Proben aus dem Klassenmanager per QR-Code.
+Inhalt dieses Ordners
+---------------------
+index.html            der Klassenmanager
+manifest.webmanifest  Name, Symbol und Farben der App
+sw.js                 sorgt dafür, dass die App offline funktioniert
+icons/                App-Symbole
 
-Datenschutz
------------
-- Alle Einträge bleiben NUR auf dem jeweiligen iPad (im Speicher der App).
-- Es wird nichts ins Internet geschickt, es gibt kein Konto und keinen Server.
-- Die QR-Codes enthalten keine Schülernamen – nur Stundenplan, Hausaufgaben
-  und Proben der Klasse.
-- Der Kamerazugriff wird nur beim Scannen genutzt; es werden keine Bilder gespeichert.
+Wichtig zum Datenschutz: Hochgeladen wird NUR das leere Programm. Deine Klassen,
+Schülernamen und Sitzpläne werden nie hochgeladen – sie bleiben in deinen
+Sitzplan-Dateien (.json) auf deinem Computer.
 
 
-1. Einmalig: online stellen (z. B. GitHub Pages)
-------------------------------------------------
-Genauso wie beim Klassenmanager, aber als EIGENES Repository, z. B. „hausaufgabenheft“ (ein schon angelegtes Repository „schulplaner“ kann einfach bleiben):
-Den INHALT dieses Ordners hochladen (index.html, manifest.webmanifest, sw.js,
-Ordner icons) → Settings → Pages → Branch „main“, „/ (root)“ → Save.
-Adresse dann z. B.: https://DEINNAME.github.io/hausaufgabenheft/
+1. Einmalig: den Ordner ins Internet stellen (GitHub Pages, kostenlos)
+-----------------------------------------------------------------------
+1. Auf https://github.com ein kostenloses Konto anlegen.
+2. Oben rechts auf „+“ → „New repository“.
+   Name z. B. „sitzplan“, Sichtbarkeit „Public“, auf „Create repository“ klicken.
+3. Im neuen Repository auf „uploading an existing file“ (bzw. „Add file“ → „Upload files“) klicken.
+4. Den INHALT dieses Ordners hineinziehen: index.html, manifest.webmanifest,
+   sw.js und den Ordner icons. (ANLEITUNG.txt ist nicht nötig.)
+   Unten auf „Commit changes“ klicken.
+5. Im Repository auf „Settings“ → links „Pages“.
+   Bei „Branch“ „main“ und „/ (root)“ wählen → „Save“.
+6. Nach ca. 1–2 Minuten steht dort die Adresse, z. B.
+   https://DEINNAME.github.io/sitzplan/
 
-Tipp: Die Adresse als QR-Code an die Tafel zeigen, dann müssen die Kinder sie
-nicht abtippen.
-
-
-2. Auf den Schüler-iPads installieren
--------------------------------------
-Safari öffnen → Adresse aufrufen → Teilen-Knopf → „Zum Home-Bildschirm“.
-WICHTIG: Die App immer über das Symbol auf dem Home-Bildschirm starten.
-(Safari und die installierte App haben getrennte Speicher. Außerdem löscht
-iPadOS Daten von Webseiten, die nur in Safari geöffnet werden, nach einigen
-Wochen ohne Nutzung – bei der installierten App passiert das nicht.)
-
-Werden die iPads zentral verwaltet (MDM, z. B. Jamf oder Relution), kann die
-IT-Betreuung die Adresse als Web-App direkt auf alle iPads verteilen.
+(Alternative ohne GitHub: den Ordner bei einem Anbieter wie Netlify per
+ Drag & Drop hochladen. Wichtig ist nur, dass die Adresse mit https:// beginnt.)
 
 
-3. Stundenplan, Hausaufgaben und Proben schicken
-------------------------------------------------
-Im Klassenmanager (Stundenplan oder Klassenliste): „📲 An Schüler“ →
-auswählen, was geschickt werden soll → „⛶ Groß anzeigen“ (für den Beamer).
-Die Kinder tippen im Hausaufgabenheft auf „📷 Empfangen“ und halten das iPad auf
-den Code. Bei viel Inhalt wechseln mehrere Codes automatisch – einfach
-draufhalten, bis „Übernehmen“ erscheint.
+2. App installieren
+-------------------
+PC/Laptop (Chrome oder Edge):
+  Die Adresse öffnen → in der Adressleiste auf das Installieren-Symbol klicken
+  oder im Tool unter „Datei“ auf „⬇ Als App installieren“.
+  Danach startet „Klassenmanager“ wie ein normales Programm (Startmenü/Taskleiste).
 
-- Beim ersten Mal fragt das iPad nach der Kamera → „Erlauben“.
-- Erneut senden ist jederzeit möglich: Neue Hausaufgaben kommen dazu, geänderte
-  werden aktualisiert. Häkchen, eigene Einträge und Notizen der Kinder bleiben.
-- Ohne Kamera: Foto vom Code machen und in der Kamera-Ansicht
-  „🖼 Foto wählen“ antippen.
+Android-Tablet (Chrome):  Menü ⋮ → „App installieren“ bzw. „Zum Startbildschirm hinzufügen“.
+iPad/iPhone (Safari):     Teilen-Knopf → „Zum Home-Bildschirm“.
 
 
-4. Was die Kinder selbst machen können
---------------------------------------
-- Hausaufgaben abhaken, eigene Hausaufgaben und Proben eintragen
-  (das Fälligkeitsdatum wird nach dem Stundenplan vorgeschlagen)
-- zu jedem Eintrag eine eigene Notiz schreiben (✎ antippen)
-- bei geteilten Stunden die eigene Gruppe wählen (Stunde antippen)
-- im Stundenplan wochenweise blättern
-- ⚙ → Sicherung speichern/laden (z. B. bei neuem iPad) oder alle Daten löschen
-
-- 🎒 Packliste: im Stundenplan steht über dem nächsten Schultag „🎒 2/7“
-  (bzw. neben dem Wochen-Umschalter). Antippen öffnet die Liste. Unter „✎“ trägt das Kind einmal
-  das Material pro Fach ein (z. B. „Buch, Heft, Atlas“) und hakt beim Packen ab.
-- 📣 Mitteilungen vom Lehrer erscheinen neben dem Stundenplan über der Packliste,
-  bis „✓ Gelesen“ getippt wird.
-- 🔔 Erinnerungen (⚙): Zahl offener Hausaufgaben am App-Symbol; tägliche
-  Erinnerung und Proben/Termine als Kalender-Eintrag – der Kalender des iPads
-  erinnert dann auch bei geschlossener App. (Eine Web-App kann ohne Server
-  keine eigenen zeitgesteuerten Benachrichtigungen schicken.)
-
-Abgehakte Hausaufgaben bleiben (mit Häkchen) stehen, bis der Abgabetag erreicht
-ist (13 Uhr), dann wandern sie unter „Erledigt“. Überfällige, nicht abgehakte
-Hausaufgaben bleiben neben dem Stundenplan sichtbar, bis sie abgehakt sind. Proben verschwinden am
-Probentag um 13 Uhr. Ferien und Feiertage (Bayern) sind im Stundenplan grau.
+3. Letzte Datei beim Start
+--------------------------
+Die App öffnet beim Start automatisch die zuletzt gespeicherte oder geöffnete Datei.
+- Beim ersten Mal fragt der Browser, ob die App die Datei bearbeiten darf
+  → „Zulassen“ bzw. „Bei jedem Besuch erlauben“ wählen.
+- In der installierten App merkt sich Chrome/Edge diese Erlaubnis dauerhaft.
+- Falls doch einmal eine Bestätigung nötig ist, erscheint über dem Plan
+  „Zuletzt verwendet: … [Öffnen]“ – ein Klick genügt.
+Das automatische Öffnen und das direkte Überschreiben beim Speichern gibt es nur in
+Chrome und Edge am PC. Auf Tablets wird beim Speichern eine Datei heruntergeladen.
 
 
-5. Aktualisieren
+4. Aktualisieren
 -------------
 Neue index.html bei GitHub hochladen (gleicher Name). Nach 1–2 Minuten ist sie
 online (GitHub → Reiter „Actions“: grüner Haken = fertig).
 Ab dieser Version lädt die App beim Start immer die neueste Fassung, sobald
-Internet da ist. Die Versionsnummer steht unter ⚙.
+Internet da ist. Die Versionsnummer steht unter „Datei“.
 Falls doch noch die alte Version erscheint: App ganz schließen (vom unteren
 Rand nach oben wischen, App nach oben wegschieben) und neu öffnen.
 
 
 
-6. Neuer Name
--------------
-Die App heißt jetzt „Hausaufgabenheft“. Auf iPads, auf denen sie schon
-installiert ist, bleibt der alte Name unter dem Symbol stehen (iPadOS übernimmt
-ihn nur beim Hinzufügen). Wer den neuen Namen möchte: Sicherung speichern (⚙),
-Symbol löschen, über Safari neu „Zum Home-Bildschirm“ hinzufügen, Sicherung laden.
-Die Einträge bleiben aber auch ohne das erhalten.
+5. Schüler-iPads (App „Hausaufgabenheft“)
+------------------------------------
+Mit „📲 An Schüler“ (Stundenplan oder Klassenliste) zeigt der Klassenmanager
+einen QR-Code mit Stundenplan, offenen Hausaufgaben und anstehenden Proben –
+ohne Schülernamen. Die Schüler scannen ihn in der App „Hausaufgabenheft“
+(eigener Ordner „hausaufgabenheft-app“, eigene Anleitung).
 
-- 14-täglicher Wechsel: Ferien und Feiertage zählen nicht mit. An freien Tagen steht
-  im Stundenplan der Name der Ferien bzw. des Feiertags statt der Fächer.
 
-Mit der Klasse verbinden (OneDrive): „📷 Empfangen“ und den Verbindungs-Code der Lehrkraft
-scannen, dann mit dem Schulkonto anmelden. Ab dann holt die App Änderungen der Lehrkraft
-beim Öffnen selbst – oder mit 🔄 oben. Eigene Einträge bleiben nur auf dem iPad.
-Solange die App offen ist, schaut sie alle 30 Sekunden nach neuen Einträgen der Lehrkraft.
-Automatische Sicherung: Ist die App mit der Klasse verbunden und angemeldet, legt sie nach
-Änderungen eine Sicherung im eigenen Schul-OneDrive ab (Ordner „Hausaufgabenheft“).
-Nach dem Zurücksetzen des iPads: Verbindungs-Code scannen, anmelden – die App bietet die
-Sicherung zum Wiederherstellen an (oder Einstellungen → „☁️ Sicherung aus OneDrive laden“).
-Ferien-Countdown: Neben „Demnächst“ steht, wie viele Schultage es noch bis zu den nächsten Ferien sind.
+6. Auf dem iPad arbeiten (Speichern)
+------------------------------------
+Safari auf dem iPad kann eine Datei nicht direkt überschreiben. Deshalb:
+- Unter „Datei“ „📱 Auf diesem Gerät automatisch speichern“ einschalten.
+  Jede Änderung wird sofort im Speicher der App auf dem iPad abgelegt und beim
+  nächsten Start automatisch geladen. Die Daten verlassen das iPad nicht.
+- „📤 Als Datei sichern“ öffnet das Teilen-Menü → „In Dateien sichern“ →
+  Ordner wählen. So machst du eine Sicherung bzw. bringst die Daten zum PC.
+  (Hängt das iPad eine Nummer an den Namen, ist das egal – öffnen lässt sich
+  jede dieser Dateien.)
+- Vom PC zum iPad: Datei mit „📂 Öffnen“ laden – sie wird dann automatisch
+  in den Gerätespeicher übernommen.
+- Ausschalten des Häkchens löscht den Gerätespeicher (vorher sichern!).
+Tipp: Regelmäßig (z. B. wöchentlich) „📤 Als Datei sichern“ – falls das iPad
+verloren geht oder zurückgesetzt wird.
 
-NEU in Version 2026-11-10: 📅 Kalender
-Neuer Reiter „📅 Kalender“: Monatsübersicht mit Proben, Terminen und Hausaufgaben (◀ ▶ blättern,
-„Heute“). Einen Tag antippen: unten stehen alle Einträge dieses Tages. Dort tragen die Kinder
-eigene Termine (⭐, z. B. Training, Geburtstag – mit Uhrzeit) oder Proben ein. Eigene Termine
-bleiben nur auf dem iPad (und in der eigenen OneDrive-Sicherung) und werden von Einträgen der
-Lehrkraft nie gelöscht. Einträge antippen = bearbeiten oder löschen.
 
-NEU in Version 2026-11-11: ☁️ Einträge über das eigene OneDrive abgleichen
-Ist die App mit der Klasse verbunden und angemeldet, liegen die Einträge des Kindes nicht mehr nur
-auf dem iPad, sondern zusätzlich im eigenen Schul-OneDrive (Ordner „Hausaufgabenheft“). Jedes Symbol
-der App – z. B. eines im Schulmodus und eines im Privatmodus – holt beim Öffnen den neuesten Stand,
-führt ihn mit dem iPad zusammen und speichert Änderungen wenige Sekunden später wieder dorthin.
-Bei gleichzeitigen Änderungen gewinnt die neuere; Löschungen werden mitgenommen. Ein neu eingerichtetes
-Symbol übernimmt die Einträge sofort (Verbindungs-Code scannen, anmelden – fertig).
-Symbol oben neben 🔄:  ☁️✓ grün = alles gespeichert · ↻ grau = wird abgeglichen ·
-!-orange = kein Internet (wird später abgeglichen) · !-rot = bitte antippen (anmelden bzw. erneut versuchen).
-Die Datei sieht nur das Kind selbst; sie wird nicht geteilt. Ohne Internet arbeitet die App ganz normal weiter.
+7. Neu: Termine, Mitteilungen, Vertretungsmappe, Abhak-Tabelle
+--------------------------------------------------------------
+- „＋ Probe/Termin“ im Stundenplan: Termine wie Wandertag oder Elternabend
+  (auch mehrtägig, mit Uhrzeit). Sie gehen mit „📲 An Schüler“ auf die iPads.
+- 📣 Mitteilungen an die Klasse: rechts über der Übersicht im Stundenplan.
+  Mit 📌 „Dauerhaft“ können die Schüler sie nicht wegtippen; Datum leer = ohne Ende.
+- 📁 Vertretungsmappe (Sitzplan → Drucken): Sitzplan mit Diensten und Hinweisen,
+  Stundenplan der Woche, Termine, offene Hausaufgaben, Namensliste zum Abhaken.
+- Abhak-Tabelle: Zeitraum „Woche“ oder „Monat“ mit ◀ ▶ blättern.
 
-NEU in Version 2026-11-12: 🗳 Abstimmen und 🌐 Klasse ohne Anmeldung
-- 🗳 oben in der Kopfzeile: an Abstimmungen der Lehrkraft teilnehmen. Die drei Symbole an der
-  Tafel der Reihe nach antippen (⌫ = letztes löschen), dann antworten. Häkchen „Deine Stimme
-  ist angekommen“; bis zum Ende änderbar. Bei der Wortwolke bis zu 3 Wörter senden (erscheinen
-  erst nach Freigabe durch die Lehrkraft). Anonym, Internet nötig.
-- Klasse ohne Anmeldung (GitHub): Hat die Lehrkraft die Klasse über GitHub veröffentlicht,
-  enthält die App-Adresse den Zusatz ?k=… Als Webclip eingerichtet (Jamf), holt die App bei
-  jedem Start Stundenplan, Hausaufgaben, Proben/Termine und Mitteilungen der Lehrkraft – auch
-  wenn das iPad seinen Speicher gelöscht hat (z. B. Wechsel Schul-/Privatmodus). Alternativ
-  einmal den Verbindungs-Code der Lehrkraft scannen. Es ist keine Anmeldung nötig; 🔄 holt
-  sofort den neuesten Stand, sonst automatisch jede Minute.
-- Hinweis: Eigene Einträge der Kinder liegen weiterhin nur auf dem iPad; wenn der Speicher
-  gelöscht wird, sind diese weg (die Einträge der Lehrkraft kommen wieder).
-- ☁️ Meine Einträge sichern (Einstellungen ⚙): Die Sicherung der eigenen Einträge im eigenen
-  Schul-OneDrive funktioniert jetzt auch ohne OneDrive-Verbindung zur Klasse – also auch, wenn die
-  Klasse über GitHub/Webclip kommt. „☁️ Meine Einträge im OneDrive sichern – anmelden“ antippen und
-  mit dem Schulkonto anmelden. Danach wird automatisch abgeglichen (Symbol ☁️ oben).
-  Hat das iPad seinen Speicher gelöscht: wieder dort anmelden – die eigenen Einträge sind zurück.
-  „Sicherung ausschalten“ beendet den Abgleich (die Datei im OneDrive bleibt erhalten).
+- Partner & Gruppen: Gruppennamen per Klick (✎) umbenennen. Klick auf einen Namen
+  = Rolle festlegen (👑 Gruppenleiter/in, ⏱️ Zeitwächter/in, ✍️ Schriftführer/in,
+  🎤 Sprecher/in, 📦 Materialmanager/in, 🤫 Lautstärkewächter/in, 🔍 Qualitäts-
+  prüfer/in, 💪 Motivator/in). „🎭 Rollen verteilen“ verteilt sie zufällig.
+- Fach anklicken (Stundenplan → Fächer): „Material“ eintragen – kommt mit dem
+  Stundenplan in die Packliste der Schüler.
 
-NEU in Version 2026-11-13: 🗳 In der Abstimmung bleiben
-- Die drei Symbole nur einmal antippen: Das iPad bleibt mit der Tafel verbunden (🗳 oben ist grün).
-  Jede neue Frage der Lehrkraft erscheint von selbst – auch wenn das Fenster geschlossen war.
-  Zwischen zwei Fragen steht „Warte auf die nächste Frage …“.
-- Bei „Eigene Antworten“ (z. B. Klassensprecherwahl) erscheinen die Antworten als Liste; je nach
-  Einstellung der Lehrkraft dürfen bis zu 3 angetippt werden (nochmal antippen = abwählen).
-- Die Verbindung endet, wenn die Lehrkraft die Runde beendet (spätestens 10 Minuten nach der letzten
-  Frage) oder mit „Abstimmung verlassen“.
+- Neuer Reiter „⚙️ Einstellungen“: Datei, Klasse und Schüler. In den anderen
+  Bereichen stehen oben Dateiname, Klasse und „Speichern“ (Klick auf den
+  Dateinamen öffnet die Einstellungen).
+- Stundenplan: Fach anklicken → „Schüler in diesem Fach“ (z. B. Religion/Ethik).
+  Bei 14-täglichem Wechsel (⇄) legst du fest, wer Gruppe 1 ist. Klick auf ein
+  Fach im Plan zeigt, wer in der angezeigten Woche welches Fach hat.
+- Fach in zwei Gruppen (z. B. getrennter Unterricht): Fächerleiste → Fach anklicken →
+  „in zwei Gruppen“, Gruppe 1 antippen. Gilt für alle Stunden des Fachs und auch für
+  den 14-täglichen Wechsel (⇄) – die Zuordnung muss nicht pro Stunde gemacht werden.
+- Abhak-Tabelle: „↕ Nachname/Vorname“ sortiert. Klick auf einen Namen öffnet die
+  Übersicht des Kindes (mit ◀ ▶ zum nächsten Kind, Drucken möglich).
+- 14-täglicher Wechsel: Ferien und Feiertage zählen nicht mit – wer vor den Ferien
+  dran war, hat beim nächsten Stattfinden das andere Fach. An freien Tagen steht
+  im Stundenplan statt der Fächer der Name der Ferien bzw. des Feiertags.
+- Gruppeneinteilung speichern: „💾 Einteilung speichern“ (Menü Gruppeneinteilung oder
+  große Ansicht) – mit Gruppennamen und Rollen, in der Datei der Klasse. Aufrufen über
+  die Liste darunter oder im Präsentationsmodus über 👥 → „Gespeicherte Einteilungen“.
+- Tischordnung „Gruppenarbeit“ (oben über dem Plan: 🪑 Normal | 👥 Gruppenarbeit):
+  eigene Anordnung mit Klassenzimmer (gesperrte Tische frei) und Gruppenraum (🚪 zu-
+  und abschaltbar). Einmal unter „Raum einrichten“ Tischinseln bauen (Tische markieren →
+  Tischgruppe). Gruppen kommen automatisch oder von Hand an die Inseln (📍 ziehen oder
+  auswählen). Die normale Sitzordnung bleibt unverändert. Gespeicherte Einteilungen
+  merken sich die Tische mit.
+  Mit 🚪 erscheint der Gruppenraum als fester Bereich oben im Plan – beide Räume sind
+  gleichzeitig zu sehen. Unter „Raum einrichten“ lassen sich seine Tische dort
+  verschieben, mit „＋ Tisch“ / „－ Tisch“ hinzufügen oder entfernen und wie gewohnt zu
+  Tischgruppen zusammenfassen. Ausgeschaltet bleiben die Tische gespeichert.
+  Raumtiefe (Karte „Tische & Objekte“): Der Raum lässt sich hinten kürzen, damit kein
+  leerer Streifen bleibt – per Regler oder „✂️ Auf die Möbel zuschneiden“.
+  Beim Zuschalten rückt das ganze Klassenzimmer (Möbel und Tafel) nach unten, der Plan
+  wird entsprechend länger – nichts überschneidet sich. Beim Ausschalten rückt alles
+  wieder nach oben.
+  Tische und Objekte lassen sich nicht über den Raumrand hinausschieben; Tische des
+  Gruppenraums bleiben in ihrem Bereich.
+  An jeder Insel steht ein Namensschild mit allen Kindern der Gruppe (auch wenn es mehr
+  sind als Stühle). Das Namensschild lässt sich im Plan an einen anderen Tisch
+  ziehen – auf eine besetzte Insel gezogen, tauschen die beiden Gruppen die Plätze. Beim Umschalten auf „Gruppenarbeit“ werden die Dienste ausgeblendet;
+  „🧽 Dienste“ neben „Wer ist dran?“ blendet sie ein oder aus.
+
+- Begriffe: „Tischgruppe“ = zusammengestellte Tische im Raum (Karte „Tischgruppen“);
+  „Gruppe“ = Kinder aus der Gruppeneinteilung.
+- Das Dienste-Fenster steht unten links (an der Tür), in der Schülersicht oben rechts.
+- Drucken am iPad (Klassenmanager als Symbol auf dem Home-Bildschirm): iOS lässt dort
+  keinen direkten Druck zu. Stattdessen erstellt der Klassenmanager ein PDF und zeigt
+  „📄 PDF ist fertig“ – „🖨 Drucken / Teilen“ öffnet das Teilen-Menü mit „Drucken“,
+  „In Dateien sichern“, Mail usw. Am PC wird wie gewohnt direkt gedruckt.
+- ☁️ OneDrive (Schulkonto, Karte „Datei“): „Aus OneDrive öffnen“ öffnet eine Datei direkt
+  aus OneDrive; danach wird in genau diese Datei gespeichert – auf Wunsch automatisch
+  (wenige Sekunden nach jeder Änderung). Wurde die Datei inzwischen an einem anderen
+  Gerät gespeichert, fragt der Klassenmanager, welche Fassung gelten soll. Die Anmeldung
+  bei Microsoft hält etwa einen Tag; ohne Internet bleiben Änderungen auf dem Gerät und
+  werden später übertragen. Funktioniert nur über die Internetadresse (GitHub), nicht
+  als lokale Datei.
+- 📲 An Schüler → „☁️ Über OneDrive veröffentlichen“: legt eine Datei für das Hausaufgabenheft
+  im OneDrive (Ordner „Klassenmanager“) ab, teilt sie zum Lesen mit Personen der Schule und
+  zeigt einen Verbindungs-Code. Die Kinder scannen ihn einmal und melden sich mit dem
+  Schulkonto an. Danach wird jede Änderung (Stundenplan, Hausaufgaben, Proben, Mitteilungen)
+  automatisch übertragen; die Kinder bekommen sie beim Öffnen der App oder mit 🔄.
+- Abgelaufene Microsoft-Anmeldung wird beim Öffnen der App still erneuert (ohne Eingabe),
+  solange das Konto auf dem Gerät angemeldet bleibt („Angemeldet bleiben“ bestätigen).
+- 🔄 oben neben „Speichern“ (bei einer OneDrive-Datei): holt den neuesten Stand. Automatisch
+  geschieht das auch, wenn die App wieder geöffnet wird, und jede Minute – angezeigte Klasse,
+  Ansicht und Gruppeneinteilung bleiben dabei erhalten.
+
+🏠 Startseite (Reiter „Start“): heutiger Stundenplan mit laufender Stunde, „Heute vorzuzeigen/
+abzugeben“ (Hausaufgaben und Abhaklisten), Proben/Termine/Hausaufgaben der nächsten Tage,
+Mitteilungen, Dienste, Ferien-Countdown, Schnellzugriff und Speicherstatus. Unten lässt sich
+einstellen, ob beim Öffnen die Startseite oder die zuletzt benutzte Ansicht erscheint.
+⚙️ Einstellungen (Datei, Klasse, Schüler, OneDrive) jetzt oben rechts.
+
+🖥 Tafel (Reiter „Tafel“): Tafelbilder aus Bausteinen – Uhr, Countdown (Ferien oder eigener
+Termin), Text/Aufgabe, Bild, QR-Code (aus Link), Heute vorzulegen, Arbeitsphase (Ruhe, Flüstern,
+Partner-, Gruppenarbeit), Ampel und Punktestand. Bausteine ziehen = verschieben, grüner Punkt =
+Größe, ⚙ = Einstellungen, ✕ / Entf = löschen. Tafelbilder gelten für alle Klassen (oder „nur für
+diese Klasse“); pro Wochentag lässt sich ein Startbild festlegen. „⛶ Präsentieren“ zeigt das
+Tafelbild bildschirmfüllend (16:9); unten rechts: anderes/neues Tafelbild, Baustein hinzufügen,
+Anordnen, zum Sitzplan. Im Sitzplan-Präsentationsmodus führt „🖥 Tafel“ zur Tafel.
+
+NEU in Version 2026-11-10
+-------------------------
+⏱ Timer (Sitzplan → „⏱ Timer“, auch im Präsentationsmodus):
+- Oben wählen: „⏳ Countdown“ oder „⏱ Stoppuhr“.
+- Anzeige: Balken, Kreis (Zeitscheibe, wird kleiner) oder Sanduhr.
+- Ton am Ende: Gong, Glöckchen, Sanfte Melodie, Pfiff, Vogelzwitschern, Wecker oder kein Ton
+  (▶ = probehören). Häkchen „gleich bildschirmfüllend zeigen“ möglich.
+- ⛶ am Timer = bildschirmfüllend. Dort: antippen = Start/Pause, −1/＋1 min, ↺, ✕ (oder Esc).
+
+🎲 Würfel & Zufallszahl: Sitzplan → „🎯 Wer ist dran?“ → „🎲 Würfel & Zufallszahl“ oder im
+Präsentationsmodus 🎲. 1–6 Würfel, W6 als 3D-Würfel mit Augen, außerdem W4, W8, W10, W12,
+W20, W100. „Zufallszahl“: von–bis eingeben, „Ziehen“.
+
+🎯 Wer ist dran? – mehr Zufall: 1, 2 oder 3 Kinder auf einmal ziehen, und zwar aus allen
+Kindern, aus einer Tischgruppe, aus einer Gruppe der Gruppeneinteilung oder nur Mädchen/Jungen.
+Die gleiche Auswahl gibt es im 🎲-Fenster (auch im Präsentationsmodus).
+
+🪑 Neue Nachbarn: Sitzplan → Regeln → „Neue Nachbarn …“ ankreuzen. „🎲 Namen verteilen“
+setzt dann möglichst niemanden neben frühere Nachbarn (aktueller Plan und die letzten 3
+gespeicherten Pläne im Sitzplan-Verlauf). Unter dem Plan steht, ob alle Tischnachbarn neu sind.
+Andere Regeln (nicht nebeneinander, nach vorne …) haben Vorrang.
+
+🧩 Einblenden (Präsentationsmodus 🧩 bzw. große Gruppeneinteilung 🧩): Arbeitsphase, Ampel,
+Uhr und Ferien-Countdown erscheinen neben dem Plan. Arbeitsphase und Ampel antippen zum
+Wechseln. Wahlweise schaltet die Ampel per Mikrofon nach Lautstärke.
+
+🖥 Tafel – neue Bausteine:
+- ⏱ Timer (Countdown/Stoppuhr, Kreis/Sanduhr/Balken, Ton, −1/＋1, ⛶ bildschirmfüllend).
+- 🎲 Würfel (Anzahl und Würfelart unter ⚙; antippen = würfeln).
+- 🪑 Sitzplan der gewählten Klasse (nur Anzeige; normale Tischordnung oder Gruppenarbeit,
+  Schülersicht, Farben der Gruppeneinteilung).
+- 🚦 Ampel: unter ⚙ „🎤 Lautstärke-Ampel“ – schaltet automatisch nach der Lautstärke. Die Grenzen
+  richten sich nach dem Arbeitsphasen-Baustein (Ruhe streng, Gruppenarbeit großzügig);
+  „Empfindlichkeit“ verschiebt sie. Chrome fragt einmal nach dem Mikrofon. Es wird nichts
+  aufgenommen oder gespeichert, nur die Lautstärke gemessen. Die dB-Angabe ist ein Schätzwert.
+- Größe an allen vier Ecken änderbar.
+- 🖊 Zeichnen (oben neben „Präsentieren“ und in der Leiste unten rechts): Stiftfarben,
+  3 Strichstärken, 🧽 Radierer (über Striche wischen), ↶ letzten Strich entfernen, 🗑 alles
+  löschen, ✓ Fertig. Das Gezeichnete wird mit dem Tafelbild gespeichert.
+
+📅 Kalender (neuer Reiter): Monatsübersicht der Klasse mit Proben (📝), Terminen (📌),
+fälligen Hausaufgaben (📚) und Abhaklisten (📋), Ferien/Feiertage schraffiert. Zu viele
+Proben werden gelb markiert und oben aufgelistet – die Grenzen (pro Tag / pro Woche) stellst
+du oben selbst ein (Standard: 1 pro Tag, 3 pro Woche). Mit der Maus über einen Tag fahren
+(am iPad immer sichtbar): ＋📝 / ＋📌 trägt direkt an diesem Tag ein. Einträge anklicken = bearbeiten.
+
+NEU in Version 2026-11-12
+-------------------------
+📡 Fernbedienung (Tafel-PC vom iPad aus steuern)
+- An der Tafel (Tafel-PC): Tafel → „📡 Fernbedienung“ (auch 📡 in der Leiste unten rechts beim
+  Präsentieren oder auf der Startseite) → „📡 Code anzeigen“. Ein 4-stelliger Code erscheint.
+- Am iPad: Klassenmanager öffnen → „📡 Fernbedienung“ (Startseite oder Tafel) → Code eingeben →
+  „Mit Tafel verbinden“. Eine Klassendatei braucht das iPad dafür nicht.
+- Fernsteuerbar: Tafelbild oder Sitzplan zeigen, Präsentation beenden, Tafelbild wechseln,
+  Bausteine (Timer, Arbeitsphase, Ampel, Würfel, Punktestand), „Wer ist dran?“ (1–3 Kinder),
+  Timer im Sitzplan, Arbeitsphase der Einblendung.
+- Oben steht, ob und wie verbunden ist: „direkt im Schulnetz“, „direkt über das Internet“ oder
+  „über eine Umleitung (verschlüsselt)“. „blockiert“ heißt: Das Netz lässt keine Verbindung zu.
+- Bricht die Verbindung ab (WLAN, Neuladen der Tafel), verbindet sich das iPad von selbst neu.
+  Der Code bleibt gleich, solange das Tafel-Fenster offen ist.
+- Tipp: Den Tafel-PC einmal mit F11 auf Vollbild stellen. Vom iPad aus kann der Browser aus
+  Sicherheitsgründen kein Vollbild einschalten.
+- Datenschutz: Zum Finden der Geräte wird der kostenlose Vermittlungsdienst von PeerJS genutzt
+  (nur technische Verbindungsdaten wie Netzwerkadressen und der Code). Die Befehle gehen
+  verschlüsselt direkt von Gerät zu Gerät; klappt das nicht, über einen Umleitungsserver von PeerJS
+  (ebenfalls verschlüsselt). Bitte von der Schule kurz bestätigen lassen.
+
+🚦 Ampel – neue Anzeige „🎚 Schallpegelmesser mit Zeiger“ (⚙ der Ampel → Anzeige): Halbkreis mit
+grünem, gelbem und rotem Bereich (je nach Arbeitsphase und Empfindlichkeit) und Zeiger.
+📢 Warnton: Ist es länger als 5 Sekunden im roten Bereich, ertönt ein kurzer lauter Signalton
+(danach mindestens 10 Sekunden Pause). Ein-/ausschaltbar, Lautstärke einstellbar (▶ = Probe).
+Auch bei der eingeblendeten Ampel im Präsentationsmodus (🧩) wählbar.
+
+⏱ Timer: Lautstärke des Tons am Ende einstellbar (Timer-Fenster und ⚙ des Timer-Bausteins).
+Arbeitsphasen heißen jetzt kurz „Partner“ und „Gruppe“ (passt auch in kleine Bausteine).
+
+NEU in Version 2026-11-13
+-------------------------
+🕒 Uhr-Baustein: unter ⚙ „Anzeige“ digital oder analog (mit Zeigern; Sekundenzeiger über „Sekunden anzeigen“).
+
+📡 Fernbedienung – erweitert:
+- Anzeige an der Tafel: Tafelbild, Sitzplan, Stundenplan, Kalender, Präsentation beenden.
+- Arbeitsphase einblenden (immer erreichbar): erscheint groß oben links über allem – auch im
+  Vollbild –, bis „aus“ gewählt wird. An der Tafel lässt sich die Einblendung verschieben
+  (Position wird gemerkt) und mit ✕ ausblenden.
+- Vollbild: Timer bildschirmfüllend (1–30 min oder Stoppuhr, mit Pause, −1/＋1, Schließen) und
+  Uhr bildschirmfüllend (digital oder analog).
+- Tafelbild-Bausteine: zusätzlich Anzahl und Art der Würfel, Timerart (Countdown/Stoppuhr),
+  Dauer und Anzeige des Timers, Uhr digital/analog.
+- Sitzplan: Normal/Gruppenarbeit, Gruppenraum, Schülersicht, Wer ist dran?, Gruppeneinteilung
+  (Paare, je 3/4/5, 4/5/6 Gruppen – neu bilden), Liste neben dem Plan, Farben, groß anzeigen,
+  Rollen verteilen, an die Tische setzen, verwerfen, gespeicherte Einteilungen laden, Timer.
+- Die Tafel zeigt unten links an, dass eine Fernbedienung verbunden ist („📡 Fernbedienung
+  verbunden“; antippen = Code und Einstellungen).
 
 NEU in Version 2026-11-14
-- Kopfzeile neu geordnet: 🗳 Abstimmen steht jetzt links, abgesetzt durch einen Trennstrich von den
-  Knöpfen fürs Speichern/Abgleichen (☁️, 🔄) und „📷 Empfangen“.
+-------------------------
+⛶ Stundenplan und Kalender lassen sich bildschirmfüllend präsentieren (Knopf „⛶ Präsentieren“
+oben in der jeweiligen Ansicht oder über die Fernbedienung). Unten rechts: zur Tafel, zum
+Sitzplan, Beenden (oder Esc).
+📡 Fernbedienung:
+- Zeigt immer nur die Einstellungen, die zur aktuellen Anzeige an der Tafel passen
+  (Tafelbild → Bausteine, Sitzplan → Sitzplan-Werkzeuge, Stundenplan/Kalender → Blättern und
+  Eintragen). Arbeitsphase und Vollbild-Timer/-Uhr sind immer erreichbar.
+- Stundenplan: Woche vor/zurück, ＋ Hausaufgabe, ＋ Probe/Termin.
+  Kalender: Monat vor/zurück, ＋ Hausaufgabe, ＋ Probe/Termin.
+  Hausaufgabe ohne Datum = bis zur nächsten Stunde im Fach. Nach dem Eintragen erscheint am iPad
+  kurz eine Bestätigung; der Eintrag steht sofort an der Tafel (und wird mit der Datei gespeichert).
 
 NEU in Version 2026-11-15
-- 🗓 Änderungen für einzelne Tage: Fällt eine Stunde aus, gibt es Vertretung, einen anderen Raum oder einen
-  Hinweis, steht das jetzt direkt im Stundenplan (nach dem nächsten Empfangen).
-- 🎯 Klassenziel: Wenn deine Lehrkraft ein Klassenziel freigibt, siehst du rechts neben dem Stundenplan,
-  wie weit eure Klasse schon ist – und wenn es geschafft ist, gibt es Konfetti. Gibt es kein Ziel,
-  erscheint auch nichts.
+-------------------------
+📡 Fernbedienung:
+- 🖊 Zeichnen auf dem Tafelbild direkt am iPad (unten bei den Tafelbild-Optionen): Farben,
+  Strichstärken, Radierer, letzten Strich entfernen, alles löschen. Die Bausteine sind als graue
+  Kästen angedeutet; das Gezeichnete erscheint sofort an der Tafel und wird mitgespeichert.
+- Sitzplan: Rückmeldungen der Tafel (z. B. „Rollen verteilt“ oder „Keine Rollen ausgewählt“)
+  erscheinen jetzt auch am iPad. „🎨 Farben im Plan“ wirkt jetzt auch in der Tischordnung
+  Gruppenarbeit. „📍 Tische neu verteilen“ setzt die Gruppen zufällig neu an die Tischinseln.
+- Stundenplan und Kalender nutzen im Präsentationsmodus die ganze Bildschirmhöhe.
 
-NEU in Version 2026-11-16
-- ☁️ und 🔄 bleiben jetzt ruhig: Das regelmäßige Nachsehen im Hintergrund (Lehrerdatei, eigene Sicherung)
-  passiert unsichtbar. ☁️ dreht sich nur noch, wenn wirklich etwas gespeichert wird; ⏳ erscheint nur,
-  wenn du 🔄 selbst antippst. Das Nachsehen beim Lehrer löst außerdem keine unnötige Sicherung mehr aus.
+NEU in Version 2026-11-16: 📡 Fernbedienung einfacher koppeln
+- An der Tafel: „📡 Fernbedienung“ → „📡 Tafel erreichbar machen“. Statt eines Zahlencodes
+  erscheinen drei Symbole (z. B. ⚽ 🔔 🐟). Optional einen Namen vergeben (z. B. „Raum 12“).
+  Die Tafel bleibt erreichbar – auch nach Neuladen oder Neustart des PCs –, bis du die
+  Fernbedienung ausschaltest. Unten links steht der Name mit den Symbolen.
+- Am iPad: „📡 Fernbedienung“ → die drei Symbole der Reihe nach antippen (keine Tastatur nötig).
+- Beim ersten Mal fragt die Tafel: „Neue Fernbedienung … zulassen?“ → „✓ Zulassen“.
+  Unbekannte Geräte können die Tafel also nicht ohne deine Zustimmung steuern.
+- Danach merkt sich das iPad die Tafel: „📡 Mit Raum 12 verbinden“ – ein Tipp, keine Nachfrage.
+- An der Tafel unter „📡 Fernbedienung“: zugelassene Geräte ansehen und mit ✕ entfernen,
+  „🔀 Neue Symbole“ (alle Geräte müssen dann neu koppeln) oder Fernbedienung ausschalten.
 
-NEU in Version 2026-11-17
-- Die Wochenauswahl springt beim Durchblättern nicht mehr: Der zusätzliche 🎒-Packlisten-Knopf neben
-  „＋ Hausaufgabe“ ist entfernt. Die Packliste steht weiterhin oben über dem passenden Tag.
+NEU in Version 2026-11-17: 📊 Abstimmung und 🌐 Klasse über GitHub (ohne Anmeldung)
+---------------------------------------------------------------------------------
+📊 Abstimmung:
+- Starten über „📊 Abstimmung“ auf der Startseite, in der Tafel-Leiste oder in der
+  Sitzplan-Präsentation (📊).
+- Arten: 👍 Daumen (👍 👌 👎), 😀 Blitzlicht (4 Gesichter), A/B/C/D (2–4 Antworten, optional
+  mit Text und richtiger Antwort), Ja/Nein, Skala 1–5, Noten 1–6 (mit Durchschnitt),
+  ☁ Wortwolke. Frage optional.
+- Die Tafel zeigt bildschirmfüllend die Frage, drei Symbole und die Zahl der Stimmen
+  („x von y“ = anwesende Kinder laut Klassenliste).
+- Kinder: im Hausaufgabenheft auf 🗳 tippen und die drei Symbole antippen. Die Stimme kann
+  bis zum Ende geändert werden. Anonym: Es werden keine Namen übertragen, nur eine zufällige
+  Gerätekennung, damit jedes iPad nur eine Stimme hat.
+- Ergebnis ist zunächst verdeckt: „👁 Ergebnis zeigen“, bei A–D mit richtiger Antwort
+  „✓ Auflösen“ (richtige Antwort grün), „⏹ Beenden“ (keine Stimmen mehr), „✕ Schließen“.
+- Wortwolke: Jedes Kind kann bis zu 3 Wörter (max. 20 Zeichen) senden. Wörter erscheinen erst
+  nach Freigabe: „🛂 Freigeben“ → ✓ oder ✕. Gleiche Wörter (Groß-/Kleinschreibung egal)
+  werden zusammengezählt und größer dargestellt.
+- Fernbedienung: Der Abschnitt „📊 Abstimmung“ ist immer verfügbar: Art, Frage (bei A–D Anzahl
+  und richtige Antwort) wählen und starten; laufend Stimmen und Balken sehen, Ergebnis zeigen
+  oder verbergen, auflösen, beenden, schließen, Wörter der Wortwolke freigeben oder ablehnen.
+- Funktioniert wie die Fernbedienung über eine direkte Verbindung (Internet nötig,
+  Vermittlungsdienst PeerJS). Die Antworten werden nirgends gespeichert und sind nach dem
+  Schließen weg.
 
-NEU in Version 2026-11-18: 📅 Stundenplan wechselt automatisch
-- Legt die Lehrkraft einen neuen Stundenplan „ab“ einem Datum an, zeigt das Heft ab dieser Woche
-  automatisch den neuen Plan – frühere Wochen behalten den alten. Alle Pläne, die das Heft einmal
-  bekommen hat, bleiben gespeichert (auch in der OneDrive-Sicherung).
+🌐 Klasse über GitHub (ohne Anmeldung der Kinder):
+- Wozu: Schüler-iPads verlieren beim Wechsel Schul-/Privatmodus ihren Speicher bzw. die
+  OneDrive-Verbindung. Die Klasse steckt dann in der App-Adresse (Jamf-Webclip) und ist bei
+  jedem Start wieder da – ohne Anmeldung der Kinder.
+- Einmalig einrichten:
+  1) Auf github.com ein neues ÖFFENTLICHES Repository anlegen, z. B. „klassendaten“, mit
+     README. Es sollte getrennt von den App-Repositories sein, damit GitHub Pages nicht bei
+     jeder Änderung neu baut.
+  2) Profilbild → Settings → Developer settings → Personal access tokens → Fine-grained
+     tokens → Generate new token: Repository access „Only select repositories“ → klassendaten;
+     Permissions → Repository permissions → Contents: „Read and write“; Ablaufdatum wählen
+     (z. B. Ende des Schuljahres).
+  3) Im Klassenmanager „📲 An Schüler“ → Kasten „🌐 Ohne Anmeldung der Kinder …“: Repository
+     (benutzername/klassendaten), Zweig (leer = main), Token und die Adresse des
+     Hausaufgabenhefts (z. B. https://DEINNAME.github.io/hausaufgabenheft/) eintragen →
+     „✓ Speichern & prüfen“.
+- Der Token bleibt nur auf diesem Gerät, nicht in der Klassendatei. Auf jedem weiteren Gerät,
+  von dem aus Änderungen übertragen werden sollen, einmal eintragen. Nicht auf fremden oder
+  gemeinsam genutzten Rechnern speichern; „Zugang von diesem Gerät löschen“ entfernt ihn.
+- Pro Klasse: „🌐 Über GitHub veröffentlichen“. Danach erscheinen die App-Adresse für den
+  Webclip (📋 Kopieren) und ein Verbindungs-Code. Die Adresse sieht so aus:
+  …/hausaufgabenheft/?k=benutzername/klassendaten/main/<zufälliger Schlüssel>. Diese Adresse
+  dem Jamf-Admin für den Webclip der Klasse geben – oder die Kinder scannen einmal den
+  Verbindungs-Code (📷 Empfangen).
+- Änderungen (Hausaufgaben, Proben/Termine, Mitteilungen, Stundenplan – wie oben angehakt)
+  werden automatisch spätestens nach ca. 15–25 Sekunden übertragen; „🔄 Jetzt übertragen“
+  sofort. Bei den Kindern kommen sie beim Öffnen der App bzw. jede Minute an. GitHub kann die
+  Datei bis zu ca. 5 Minuten zwischenspeichern.
+- Datenschutz: Die Datei ist öffentlich lesbar für jeden, der die Adresse kennt (der Schlüssel
+  ist zufällig und nicht zu erraten). Sie enthält keine Schülernamen – trotzdem in Mitteilungen
+  keine Namen verwenden. Bitte vorher mit der Schulleitung bzw. dem Datenschutzbeauftragten
+  abstimmen.
+- „Verbindung beenden“ löscht die Datei aus dem Repository. Die OneDrive-Verbindung kann
+  parallel bestehen bleiben.
 
-NEU in Version 2026-11-19
-- 🎯 Klassenziel: Auch die neuen Darstellungen der Lehrkraft (Baum, Burg, Bergsteiger, Ballons, Aquarium,
-  Sternbild, Lichterkette) werden als Fortschrittsbalken mit passendem Symbol angezeigt.
+NEU in Version 2026-11-18: 📊 Abstimmungsrunden, eigene Antworten, Kreisdiagramm · 🌐 Zugang in der Klassendatei
+---------------------------------------------------------------------------------------------------------
+📊 Abstimmung:
+- Neue Art „📝 Eigene Antworten“: bis zu 12 Antworten, eine pro Zeile (z. B. die Kandidaten der
+  Klassensprecherwahl). „Stimmen pro Kind“: 1, 2 oder 3. Die Kinder sehen die Antworten als Liste
+  zum Antippen und können bis zum Ende umentscheiden.
+- „🏆 Rangfolge“ sortiert nach Stimmen und zeigt die Plätze (gleich viele Stimmen = gleicher Platz).
+  Bei „Eigene Antworten“ ist die Rangfolge von Anfang an eingeschaltet.
+- „◔ Kreis“ / „▤ Balken“: Ergebnis als Kreisdiagramm (mit Prozenten und Legende) oder als Balken.
+- Abstimmungsrunde: Die Kinder tippen die drei Symbole nur noch einmal an und bleiben verbunden.
+  Nach „⏹ Beenden“ → „＋ Nächste Frage“ (oder „✕ Schließen“ und wieder „📊 Abstimmung“) erscheint die
+  nächste Frage bei allen sofort – auch wenn sie das Fenster geschlossen hatten.
+  Unten rechts zeigt die Tafel „📊 Abstimmungsrunde … verbunden“. Die Runde endet mit
+  „⏹ Runde beenden“ (im Abstimmungs-Fenster oder an der Fernbedienung) oder automatisch nach
+  10 Minuten ohne offene Frage. Die Kinder können mit „Abstimmung verlassen“ selbst gehen.
+- Die Fernbedienung kann all das ebenfalls: eigene Antworten eingeben, Stimmen pro Kind, Kreis/Balken,
+  Rangfolge, nächste Frage, Runde beenden.
 
-2026-12-19: Ein älterer Stand der Lehrkraft (z. B. aus einer alten Kopie der Klassendatei) wird ignoriert – Hausaufgaben verschwinden dadurch nicht mehr.
+🌐 GitHub-Zugang in der Klassendatei:
+- Beim Einrichten (bzw. „⚙ GitHub-Zugang“) gibt es das Häkchen „Zugang in der Klassendatei speichern“.
+  Ist es gesetzt, steht der Zugang (mit Token) in deiner Klassendatei. Jedes Gerät, das diese Datei
+  öffnet (z. B. über OneDrive), überträgt dann automatisch – ohne eigene Einrichtung.
+- Nur verwenden, wenn die Klassendatei nur bei dir liegt (nicht in einem geteilten Ordner, nicht auf
+  einem gemeinsam genutzten Stick oder Rechner). In QR-Codes und in der Datei für die Kinder ist der
+  Zugang nie enthalten. Häkchen entfernen und speichern = Zugang wieder aus der Datei nehmen.
+- „Zugang löschen“ entfernt ihn vom Gerät und aus der Klassendatei. Im Notfall den Token auf GitHub
+  sperren (Settings → Developer settings → Personal access tokens → Token → Delete).
+
+NEU in Version 2026-11-19: 📲 „An Schüler“ mit Reitern
+- Oben für alle Wege gleich: Was soll gesendet werden? (Stundenplan, Hausaufgaben, Proben & Termine,
+  Mitteilungen). Darunter drei Reiter:
+  📷 Direkt – die wechselnden QR-Codes zum Scannen (wie bisher).
+  ☁️ OneDrive – Verbindung über OneDrive einrichten/verwalten; ist sie eingerichtet, steht der
+     Verbindungs-Code gleich darunter.
+  🌐 GitHub – Zugang, Webclip-Adresse und Verbindungs-Code.
+- Ein ✓ am Reiter zeigt, dass die Klasse über diesen Weg verbunden ist. Der zuletzt benutzte Reiter
+  wird beim nächsten Öffnen wieder gezeigt. „⛶ Groß anzeigen“ zeigt den Code des gewählten Reiters.
+
+NEU in Version 2026-11-20: 🎧 Klangkulisse
+- In der Tafel-Leiste (und in der Sitzplan-Präsentation) gibt es den Knopf 🎧. Er öffnet ein Fenster
+  mit 22 Geräuschen: Natur (Regen, Gewitter, Wind, Meer, Bach, Wald, Vögel, Grillen, Frösche,
+  Kaminfeuer, Wal, Windspiel), Alltag (Café, Zug, Autofahrt, Ventilator, Brunnen, Tastatur),
+  Rauschen (weiß, rosa, braun) und ruhiges Klavier.
+- Antippen = an/aus. Mehrere Geräusche lassen sich mischen; jedes aktive Geräusch hat einen eigenen
+  Lautstärkeregler, oben gibt es die Gesamtlautstärke. „⏹ Alle aus“ stoppt alles; „▶ Zuletzt“
+  startet die zuletzt gewählte Mischung wieder.
+- Das Fenster kann geschlossen werden – die Geräusche laufen weiter (🎧 leuchtet dann).
+- Fernbedienung: Abschnitt „🎧 Klangkulisse“ mit allen Geräuschen, Lautstärke −/＋ und „Alle aus“.
+  Hinweis: Der Browser der Tafel spielt Ton erst ab, nachdem dort einmal irgendwo geklickt wurde.
+- Alle Geräusche werden im Browser erzeugt (keine Audiodateien, kein Internet nötig).
+
+NEU in Version 2026-11-21: 🎧 Klangkulisse klingt natürlicher
+- Alle Geräusche in echtem Stereo mit warmem Raumhall statt „aus der Dose“.
+- Wasser (Bach, Brunnen, Regentropfen) wird jetzt aus vielen einzelnen Tropfen/Blasen gebildet statt
+  aus gefiltertem Rauschen – das blecherne, hohle Klingen ist weg.
+- Wellen rollen einzeln an (mit Gischt), Wind kommt in Böen, Gewitter grollt länger.
+- Windspiel und Klavier mit echten Obertönen und leichter Schwebung, Vögel singen melodischer,
+  Grillen/Frösche/Tastatur/Kaminfeuer aus naturnah geformten Einzelgeräuschen, Café mit
+  Stimmengemurmel statt Rauschen.
+
+NEU in Version 2026-11-22: 📋 Strichliste (Klassenliste → Reiter „📋 Strichliste“)
+- Für wiederkehrende Kontrollen. Normalfall: alles in Ordnung – nur Ausnahmen antippen.
+- Vorbelegt: „📦 Material“ mit 📱 iPad vergessen · 🔋 iPad nicht geladen · ✏️ Stift vergessen ·
+  ⚡ Stift nicht geladen. Feld antippen = +1 für heute (höchstens 1 pro Kind, Punkt und Tag),
+  nochmal antippen = zurücknehmen. Heutige Striche sind umrandet.
+- Die Zahl zeigt die Summe im Zählzeitraum (Halbjahr ab 1.8. bzw. 16.2., Schuljahr, Monat, seit Datum
+  oder gesamt). Ab „orange“ (Standard 3) und „rot“ (Standard 5) wird das Feld farbig; wer rot ist,
+  steht zusätzlich auf der Startseite.
+- Über das Datum oben kann man für einen früheren Tag nachtragen. Abwesende Kinder sind ausgegraut.
+- Name antippen = Verlauf mit allen Daten (📋 Kopieren, z. B. für ein Elterngespräch).
+- ▾/▸ klappt die Liste ein und aus (wird gemerkt). Mit den Schaltern oben wechselt man die Liste.
+- ⚙: weitere eigene Strichlisten anlegen (Name, Symbol, Zählpunkte, Schwellen, Zeitraum), Zählpunkte
+  umbenennen/sortieren/löschen, Liste (ohne Striche) in eine andere Klasse kopieren.
+- Datenschutz: Die Striche liegen nur in deiner Klassendatei; sie gehen nie an die Schüler-iPads
+  (nicht in QR-Codes, OneDrive- oder GitHub-Klassendateien).
+
+NEU in Version 2026-11-23: Abhak-Tabelle, Strichlisten und Ausdruck
+- Neuer Status „– entschuldigt“ (z. B. krank): Klick auf ein Feld: leer → ✓ → ✗ → – → leer.
+- Eine Hausaufgabe/Abhakliste gilt als erledigt, sobald bei JEDEM Kind etwas eingetragen ist
+  (✓, ✗ oder –). Sie verschwindet dann aus „nur noch nicht komplett erledigte“ und rutscht im
+  Hausaufgabenheft unter „Erledigt“.
+- Strichlisten direkt in der Abhak-Tabelle: zwischen Σ und der ersten Hausaufgabe eine schmale
+  Spalte je Strichliste (z. B. 📦) mit der Summe im Zählzeitraum (orange/rot wie in der Strichliste).
+  Klick auf die Überschrift klappt sie in die einzelnen Zählpunkte auf (📱 🔋 ✏️ ⚡) – dort zählt
+  ein Klick +1 für heute, nochmal = zurück. Die Spalten bleiben beim Seitwärtsscrollen stehen.
+- „🖨 Übersicht drucken“:
+  · Zeitraum per Schnellwahl (wie in der Tabelle, Woche, Monat, Halbjahr, Schuljahr, gesamt) oder frei.
+  · „Strichlisten“ ankreuzen: Anzahl und Daten erscheinen in der Schülerübersicht und als Spalten in
+    der Klassentabelle.
+  · Neu: „Kompakte Liste Vergessen“ – alle Kinder mit ✗ oder Strichen untereinander (für dich).
+  · Schülerübersicht mit „Nur Vergessenes“ (Kinder ohne Vergessenes fallen weg) und „Mehrere Kinder
+    pro Seite“ (mit Schnittlinie, z. B. als Zettel für die Eltern).
+
+NEU in Version 2026-11-24: Speicher-Anzeige in der Kopfzeile
+- Vor dem Dateinamen steht immer ein Symbol für deine Klassendatei (wird nicht mehr abgeschnitten):
+  ✓ grün = alles gespeichert (Maus darauf bzw. antippen: „zuletzt gespeichert 10:42 Uhr“)
+  ● orange = ungespeicherte Änderungen (antippen = speichern)
+  ↻ grau = wird gerade gespeichert (OneDrive)
+  ! rot = Speichern fehlgeschlagen bzw. Anmeldung abgelaufen (antippen = erneut speichern)
+- Ist die Klasse über OneDrive oder GitHub mit den Schüler-iPads verbunden, zeigt 📤 den Stand der
+  Schülerdatei: 📤✓ aktuell (mit Uhrzeit der letzten Übertragung), 📤↻ Änderungen werden gleich
+  übertragen, 📤! Übertragung fehlgeschlagen bzw. auf diesem Gerät kein Zugang. Antippen öffnet
+  „📲 An Schüler“ im passenden Reiter.
+
+NEU in Version 2026-11-25: Textbausteine für Bemerkungen
+- Im Bemerkungsfeld (Rechtsklick auf ein Feld der Abhak-Tabelle bzw. 📝-Modus) stehen Bausteine zum
+  Antippen: Heft vergessen · nicht vollständig · krank gewesen · keine Zeit · nicht verstanden ·
+  nicht aufgeschrieben · Material zu Hause · Unterschrift fehlt · wird nachgereicht ·
+  zu spät abgegeben · unordentlich.
+- Antippen = hinzufügen (mehrere werden mit Komma verbunden), nochmal antippen = entfernen.
+  Doppelklick = übernehmen und sofort speichern. Eigener Text bleibt weiterhin möglich.
+- ✎ am Ende: Bausteine selbst bearbeiten (mit ; getrennt). Sie werden in der Datei gespeichert.
+
+NEU in Version 2026-11-26: Klassenziel, Glücksrad, Fernbedienung zum Abhaken und mehr
+🎯 Klassenziel / Belohnung
+- Tafel → Baustein „🎯 Klassenziel“ oder Startseite → Karte „Klassenziel“ (⚙ = Einstellungen).
+- Darstellung: Murmelglas, Sterne, Thermometer, Puzzle (auch mit eigenem Foto) oder Rakete. Name,
+  Belohnung, Zielanzahl, Farbe, Ton/Animation mit Lautstärke, „Abziehen erlaubt“ ja/nein.
+- Mehrere Ziele möglich, Gruppenwettbewerb (jede Gruppe sammelt im eigenen Glas), Verlauf mit
+  Begründung („Wofür?“), „Neues Ziel starten“ archiviert das erreichte Ziel.
+- Automatische Punkte (Regeln): alle Hausaufgaben da, Hausaufgaben-Quote, Material vollständig,
+  leise Arbeitsphase (Mikrofon + Timer), Arbeitsphase geschafft, Abhakliste rechtzeitig vollständig,
+  Quiz/Abstimmung richtig. Wahlweise automatisch oder nur als Vorschlag (an der Tafel/Fernbedienung
+  bestätigen). Minuspunkte gibt es nie automatisch.
+- „📲 bei den Schülern anzeigen“: dann erscheint das Ziel im Hausaufgabenheft. Ohne Ziel (oder ohne
+  Haken) sehen die Schüler gar nichts davon.
+🎡 Glücksrad: Tafelbaustein mit allen anwesenden Namen (Gezogene auf Wunsch entfernen), ⛶ = Vollbild.
+🧮 Kopfrechnen / Aufgabe des Tages: Tafelbaustein mit Rechenarten und Zahlenraum, Lösung einblenden.
+🎧 Klangkulisse als Tafelbaustein: Lieblingsgeräusche antippen, Lautstärke, „Alle“ öffnet das Mischpult.
+📡 Fernbedienung
+- Die Fernbedienung ist jetzt ein eigener Menüpunkt „📡 Fernbedienung“ oben in der Leiste – App-Titel
+  und alle anderen Menüpunkte bleiben bedienbar, mit „📡 Fernbedienung“ geht es zurück.
+- Neu: ✅ Abhaken (Hausaufgaben, Abhaklisten und Strichlisten direkt am Tablet), 🎯 Klassenziel
+  (+1 mit Begründung, Vorschläge bestätigen), 🎡 Glücksrad im Vollbild starten/drehen,
+  📷 Foto an die Tafel (Kamera oder Fotos, auf Wunsch aufs Tafelbild legen), 🔴 Zeiger (roter Punkt).
+🔁 Wiederkehrende Einträge: im Dialog „Hausaufgabe/Abhakliste“ Wochentage ankreuzen – der Eintrag wird
+  dann an diesen Tagen automatisch neu angelegt (nicht in den Ferien).
+🗓 Änderungen für einzelne Tage: Stundenplan → „✏️ Tagesänderung“, dann eine Stunde anklicken:
+  fällt aus, Vertretung, Raumänderung oder Hinweis. Erscheint auf der Startseite und – nach „An Schüler“ –
+  auch im Hausaufgabenheft.
+🪑 Platzwünsche beim Verteilen: Regeln „soll hinten sitzen“, „an der Fensterseite“, „an der Türseite“,
+  „nicht ganz vorne“ (Fensterseite links/rechts einstellbar).
+🏷 Lehrer-Symbole am Platz (Einstellungen → Schülerliste → 🏷): Brille, Hörgerät, Förderbedarf,
+  Nachteilsausgleich, Allergie, DaZ, Begabung, Linkshänder, Konzentration. Nur in deiner Ansicht –
+  nie in Präsentation, Druck oder auf Schüler-iPads.
+
+NEU in Version 2026-11-27
+- 💾 Automatisch speichern: Am PC (Chrome/Edge) wird die geöffnete Datei jetzt nach jeder Änderung
+  von selbst gespeichert (● wird nach wenigen Sekunden zu ✓). Beim allerersten Mal fragt der Browser
+  einmal nach der Erlaubnis – einfach bestätigen.
+- ⏻ oben rechts neben 💾: speichert und schließt die App (im Browser-Tab bitte den Tab selbst schließen).
+- 📡 Fernbedienung – Abhaken mit Namensfeldern: Offen / Vergessen / Entschuldigt / Erledigt.
+  Name antippen: offen → ✓ → ✗ → – → offen. Strichlisten: für jede Kategorie alle Namen als Felder,
+  antippen = Strich für heute (Zahl = Anzahl im Zeitraum).
+- 📡 Reihenfolge: Glücksrad · Foto · Zeiger stehen jetzt unten, darunter „🖊 Zeichnen auf dem Tafelbild“.
+- 🎡 Glücksrad: Das zuletzt gezogene Kind verschwindet sofort beim nächsten Drehen. Daneben steht die
+  Liste der bereits Gezogenen (auch auf der Fernbedienung). ↺ leert die Liste.
+- 🎧 Klangkulisse-Baustein und Fernbedienung: „▶ Letzte“ startet die zuletzt gespielte Mischung.
+
+NEU in Version 2026-11-28
+- 📡 Fernbedienung: Glücksrad, „📷 Foto an die Tafel“ und „🖼 Bild aus Fotos“ stehen jetzt im Bereich
+  „Vollbild“. Der 🔴 Zeiger hat einen eigenen Bereich, darunter folgt „🖊 Zeichnen auf dem Tafelbild“.
+
+NEU in Version 2026-11-29: Stundenplan aufgeräumt
+- Links: „⚙️ Plan ▾“ (Raster/Stundenzeiten, Fächerleiste, Samstag, Plan leeren) und „✏️ Tagesänderung“.
+  Rechts: ＋ Hausaufgabe · ＋ Probe/Termin · 📲 An Schüler · 🖨 Drucken · ⛶ Präsentieren.
+- Die Wochenauswahl ◀ KW ▶ steht jetzt mittig direkt im Stundenplan-Feld.
+- Fächerleiste: Ein Fach auf ein anderes Fach in der Liste ziehen = Reihenfolge ändern
+  (die grüne Linie zeigt, wo es landet).
+- Fach bearbeiten: Die Farbe lässt sich wieder ändern (die Farbauswahl lag hinter dem Fenster).
+
+NEU in Version 2026-11-30: Übersichtlicher
+📡 Fernbedienung mit Reitern (der zuletzt benutzte Reiter bleibt gemerkt):
+  🖥 Tafel – Anzeige, Tafelbild/Sitzplan/Stundenplan, Zeiger, Zeichnen
+  ✅ Klasse – Abhaken, Strichlisten, Klassenziel
+  ⏱ Phase & Vollbild – Arbeitsphase, Timer/Stoppuhr, Uhr, Glücksrad, Foto, Klangkulisse
+  📊 Abstimmung
+  Ein roter Punkt am Reiter zeigt, dass dort etwas läuft oder wartet (z. B. ein Klassenziel-Vorschlag).
+🏠 Startseite anpassen: „⚙ Anpassen“ oben rechts auf der Startseite (oder Einstellungen → Module &
+  Startseite). Karten ein-/ausblenden, mit ↑ ↓ anordnen und links, rechts oder unten platzieren.
+🧩 Module ein- und ausschalten: Einstellungen → „Module & Startseite“. Klassenziel, Strichlisten,
+  Dienste, Lehrer-Symbole, Abstimmung, Klangkulisse, Glücksrad, Kopfrechnen, Foto, Zeiger, Zeichnen –
+  und jeder Tafel-Baustein einzeln. Ausgeschaltetes verschwindet aus Menüs, Startseite und Fernbedienung;
+  die Daten bleiben erhalten. Die Einstellung wird in der Datei gespeichert.
+
+NEU in Version 2026-12-01: 📅 Stundenplan „gültig ab“
+- Stundenplan → „⚙️ Plan ▾“ → „📅 Stundenpläne“: bei „＋ Neuer Plan ab“ Datum wählen → „Anlegen“. Der neue Plan beginnt
+  am Montag der gewählten Woche und ist zuerst eine Kopie des vorherigen – nur die Änderungen eintragen.
+- Jede Woche zeigt automatisch den Plan, der in ihr gilt (Hinweis „📅 Plan 2 · ab 09.11.“ neben der KW,
+  antippen = Pläne verwalten). Was du in einer Woche änderst, gilt für den Plan dieser Woche.
+- Pläne verwalten: Namen geben (z. B. „1. Halbjahr“), Startdatum verschieben, 👁 anzeigen, 🗑 löschen.
+  Alte Pläne bleiben erhalten, damit auch frühere Wochen stimmen. Fächer gelten für alle Pläne gemeinsam.
+- Startseite, „in der nächsten Stunde“, Packliste und Tagesänderungen richten sich nach dem Plan des Tages.
+- Schüler: Das Hausaufgabenheft bekommt den aktuellen und kommende Pläne sowie eine kleine Zeitleiste.
+  Jeden Plan, den es einmal bekommen hat, hebt es auf – beim Zurückblättern stimmt der Plan also auch
+  später noch. Geänderte ältere Pläne werden zwei Wochen lang automatisch mitgeschickt.
+
+NEU in Version 2026-12-02: 🎯 Klassenziel – bewegte Darstellungen
+- Neu zur Auswahl (⚙ beim Klassenziel → Darstellung): 🌳 Baum, der wächst (Blätter, ab der Hälfte Blüten,
+  am Ziel Äpfel) · 🏰 Burg, Stein für Stein (am Ziel wird die Fahne gehisst) · 🧗 Bergsteiger zum Gipfel
+  (beim Gruppenwettbewerb alle Gruppen auf einem Berg) · 🎈 Luftballons (am Ziel hebt der Korb ab) ·
+  🐠 Aquarium (Fische, Pflanzen, Luftblasen, Schatztruhe) · ✨ Sternbild · 💡 Lichterkette mit Feuerwerk.
+- Neue Punkte fliegen sichtbar ein (Stein fällt, Ballon steigt auf, Fisch springt ins Wasser …).
+- „ruhige Darstellung“ schaltet die Dauerbewegung (schwimmende Fische, wiegende Blätter usw.) ab.
+- Stundenplan: Der Menüpunkt heißt jetzt „📅 Stundenpläne“; die Plan-Anzeige neben der Woche ist kleiner
+  und verschiebt die Wochenauswahl nicht mehr.
+
+NEU in Version 2026-12-03: gemerkte Tafeln eindeutig benennen
+- Fernbedienung (iPad) → gemerkte Tafeln: ✎ = eigenen Namen vergeben (z. B. „Raum 12“, „PC Lehrerzimmer“) –
+  gilt nur auf diesem Gerät. Darunter steht, welches Gerät es ist, welche Klasse zuletzt offen war und
+  wann du zuletzt verbunden warst. Haben zwei Tafeln denselben Namen, macht die App sie automatisch
+  unterscheidbar. Tipp: Den Namen kannst du auch an der Tafel selbst festlegen („Name dieser Tafel“).
+
+NEU in Version 2026-12-04: Gruppeneinteilung groß – auch an der Tafel und per Fernbedienung
+- Tafel präsentieren → Leiste unten „👥 Gruppen“: zeigt die Gruppeneinteilung bildschirmfüllend
+  (gibt es noch keine, öffnet sich das Menü zum Bilden).
+- Fernbedienung → Reiter „⏱ Phase & Vollbild“ → „👥 Gruppeneinteilung bildschirmfüllend“: groß anzeigen /
+  schließen (oder Gruppen bilden) – egal, ob die Tafel gerade Tafelbild oder Sitzplan zeigt.
+
+NEU in Version 2026-12-05: neue Tafelbausteine und Textformatierung
+- 🧽 Dienste: zeigt die aktuellen Dienste aus dem Sitzplan mit Namen.
+- 🧮 Kopfrechnen → ⚙ „⚡ Blitzrechnen“: 5–20 Aufgaben nacheinander (alle 2–10 Sekunden eine neue,
+  mit Zeitbalken), am Ende alle Lösungen zum Vergleichen (👁).
+- 😀 Stimmung: „📲 Per iPad“ = anonyme Abfrage im Hausaufgabenheft (wie die Abstimmung, Code steht im
+  Baustein) oder „👆 Antippen“ = die Kinder tippen ihr Gesicht an der Tafel an. Ergebnis erst mit „👁“.
+- 🔋 Geräuschbudget: Batterie mit z. B. 30 Sekunden „zu laut“ für eine Arbeitsphase (Mikrofon). Rot zieht
+  voll ab, Gelb ein Viertel. Mit Restbudget geschafft = 🎉 und – mit der neuen Klassenziel-Regel
+  „🔋 Geräuschbudget eingehalten“ – ein Punkt.
+- 🙋 Wer ist fertig?: Namen antippen = fertig (gilt für heute), Zähler und Balken, darunter
+  „Wenn du fertig bist …“. Auch über die Fernbedienung (Reiter Tafel → Baustein).
+- 👥 Gruppen: die aktuelle Gruppeneinteilung klein auf dem Tafelbild, 🎲 neu bilden, ⛶ groß.
+- 🗒 Notizzettel: farbiger Zettel, Doppelklick = direkt schreiben (Strg+Enter oder Klick daneben = fertig).
+- 📝 Text / Aufgabe: Knöpfe für F (fett), K (kursiv), U (unterstrichen), M (markieren), rote/blaue/grüne
+  Schrift, „• Liste“ und „1. Liste“ – mit Vorschau. Automatische Aufzählung: Zeile mit „1. “ oder „• “
+  beginnen, Enter = nächster Punkt (2., 3. …), Enter in einem leeren Punkt beendet die Liste.
+  Schreibweise: **fett**, *kursiv*, __unterstrichen__, ==markiert==, [rot]…[/rot].
+
+NEU in Version 2026-12-06
+- 🪙 Neuer Baustein „Zufall“: Münzwurf (Kopf/Zahl, mit Wurf-Animation), Zufallszahl (von … bis …) oder
+  Karte ziehen (32 oder 52 Spielkarten oder eigene Karten wie Themen/Aufgaben – ohne Wiederholung, ↺ = neu
+  mischen). Auch über die Fernbedienung.
+- Notizzettel ist aus der Auswahl entfernt (vorhandene bleiben erhalten). Dafür hat „Text / Aufgabe“ jetzt
+  auch kräftige Hintergrundfarben.
+- Doppelklick auf einen Baustein = seine Einstellungen.
+- Bausteinliste: Bausteine mit der Maus ziehen = eigene Reihenfolge (gilt auch für „＋ Baustein“ in der
+  Präsentation, gespeichert in der Datei, „↺ Standard“ setzt zurück).
+- Knöpfe auf Bausteinen funktionieren jetzt auch im Anordnen-Modus beim ersten Antippen.
+- 🔋 Geräuschbudget: startet das Mikrofon direkt mit „▶ Start“ (beim ersten Mal fragt der Browser), zeigt
+  die aktuelle Lautstärke als Balken mit den Grenzen für Gelb/Rot und ca. dB. Gelb zieht jetzt die Hälfte ab.
+- Sitzplan: Reihenfolge links jetzt Dienste · Wer ist dran? · Regeln · Gruppeneinteilung · Tischgruppen ·
+  Tische & Objekte · Sitzplan-Verlauf · Anzeige · Drucken.
+
+NEU in Version 2026-12-07: Gruppeneinteilung in der Präsentation
+- Die Gruppenliste neben dem Plan hat oben rechts ⛶ = groß anzeigen.
+- Menü 👥 in der Präsentation: „⛶ Groß anzeigen“ ist jetzt auch hier da, dazu „🎭 Rollen, die verteilt
+  werden“ (antippen = ein/aus), „🎭 Rollen verteilen“ und „✕ Rollen weg“.
+- Große Ansicht: Die Rollenauswahl ist gleich aufgeklappt.
+
+NEU in Version 2026-12-08: 🗣 Uhrzeit in Worten (Lernuhr)
+- Baustein „Uhr“ → ⚙ → „Uhrzeit in Worten“ einschalten (digital und analog). Sprechweise wählbar:
+  „Viertel nach drei / Viertel vor vier“, regional „viertel vier / dreiviertel vier“ oder digital
+  „fünfzehn Uhr fünfzehn“; optional mit Tageszeit (morgens, nachmittags …).
+  Minutengenau: „fünf vor halb vier“, „drei Minuten nach halb vier“, „zwanzig vor vier“ …
+- Text auf der Tafel antippen = verbergen („Wie spät ist es?“), nochmal antippen = zeigen.
+
+NEU in Version 2026-12-09: 📝 Unterrichtsinhalte je Stunde (nur für dich)
+- Stundenplan → „📝 Inhalte“ einschalten und eine Stunde anklicken – oder jederzeit Doppelklick auf eine
+  Stunde. Inhalt eintragen, Speichern (Strg+Enter). Gilt für genau diesen Tag und diese Stunde.
+- Im Fenster steht zur Anknüpfung der Inhalt der letzten Stunde desselben Fachs.
+- Die Stunde zeigt eine kurze Vorschau (📝 …), die Startseite den Inhalt unter der jeweiligen Stunde.
+- 🔒 Nur für dich: wird nicht an die Schüler geschickt, nicht beim Präsentieren und nicht im Druck gezeigt.
+
+Version 2026-12-10
+- Abhak-Tabelle: Das rote Dreieck für eine Bemerkung erscheint jetzt auch bei überfälligen offenen Feldern
+  (gelblich hinterlegt).
+
+NEU in Version 2026-12-11: 🖥² Tafel auf dem 2. Bildschirm – hier normal weiterarbeiten
+- Voraussetzung: Windows zeigt die Bildschirme „Erweitern“ (Windows-Taste + P), Chrome oder Edge am PC.
+- Oben rechts „🖥²“ antippen: Ein Tafel-Fenster öffnet sich auf dem Beamer/Tafelbildschirm (beim ersten Mal
+  fragt der Browser nach „Fenster auf allen Bildschirmen verwalten“ → Zulassen; Pop-ups erlauben).
+  Ist es nicht bildschirmfüllend: dort „⛶ Vollbild“ antippen.
+- Danach zeigen alle „⛶ Präsentieren“-Knöpfe (Sitzplan, Tafel, Stundenplan, Kalender) auf dem 2. Bildschirm an,
+  dein Bildschirm bleibt frei zum Arbeiten. Steuern (Timer, Glücksrad, Abhaken, Zeiger …) über den Reiter
+  „📡 Fernbedienung“ – ganz ohne iPad und Internet.
+- Änderungen gehen in beide Richtungen: was du hier änderst, steht sofort auf der Tafel; was an der Tafel
+  passiert (z. B. Abhaken per Fernbedienung, Klassenziel-Punkte), wird hier übernommen und gespeichert.
+- Erneut „🖥²“ = Tafel-Fenster schließen.
+
+„Klassenmanager starten.bat“ (im Ordner neben sitzplan.html)
+- Doppelklick: schaltet Windows auf „Erweitern“ und öffnet den Klassenmanager als App-Fenster.
+- Oben in der Datei (Rechtsklick → Bearbeiten) kann bei KM_URL eure Internet-Adresse eingetragen werden
+  (z. B. https://DEINNAME.github.io/sitzplan/). Leer = sitzplan.html aus demselben Ordner.
+- Tipp: Verknüpfung davon auf den Desktop oder in den Autostart (Windows-Taste + R → shell:startup).
+- Zurück auf „Duplizieren“: Windows-Taste + P → „Duplizieren“.
+
+Version 2026-12-12
+- 🖥² Tafel auf dem 2. Bildschirm: Der Reiter „📡 Fernbedienung“ zeigt jetzt alle Knöpfe (vorher leer).
+  „✕ Trennen“ schließt das Tafel-Fenster.
+
+2026-12-13: Fehler behoben - nach dem Drucken verrutschten Stundeninhalte und weitere Layouts (Druckeinstellung hatte Teile der Gestaltung ueberschrieben).
+
+2026-12-14: Der Knopf 🖥² (Tafel auf 2. Bildschirm) sitzt jetzt oben rechts direkt links neben ⚙️ Einstellungen.
+
+2026-12-15: Unterrichtsinhalte drucken und exportieren
+  - Stundenplan: „🖨 Drucken“ fragt, ob die Inhalte mitgedruckt werden (Haken wird gemerkt).
+  - Vertretung (Sitzplan > Drucken): Haken „📝 Unterrichtsinhalte mitdrucken“. Vertretungsblatt: Inhalte des Tages als Tabelle; Vertretungsmappe zusätzlich Stundenplan mit Inhalten und Tabelle der Woche.
+  - ⚙️ Plan > „📤 Unterrichtsinhalte exportieren“: alle Einträge mit Datum, Stunde, Fach (wahlweise ein Fach/Zeitraum) als Excel-Datei (CSV) oder als Liste drucken.
+
+2026-12-16: Verschieben, Schuljahreswechsel, automatische Sicherung
+  - Unterrichtsinhalt verschieben: Doppelklick auf die Stunde > „➡ Verschieben …“. Ganzen Inhalt oder nur einen Teil auf eine der nächsten Stunden des Fachs übernehmen. In der ursprünglichen Stunde bleibt der Inhalt mit Hinweis „➡ verschoben auf …“. Beim Eintragen von „fällt aus“ wird das Verschieben automatisch angeboten. Der Hinweis erscheint auch im Druck und im Export.
+  - ⚙️ Einstellungen > Klasse > „🎓 Schuljahreswechsel …“: Archivdatei sichern, neuer Klassenname, Schüler übernehmen (Abgänger abhaken), auswählen, was geleert wird. Mit ↶ rückgängig.
+  - ⚙️ Einstellungen > „🛟 Automatische Sicherung“: täglich/wöchentlich/alle 2 Wochen eine datierte Kopie. OneDrive: Ordner „Sicherungen“ neben der Datei. PC-Datei: einmal einen Ordner wählen. Zusätzlich die letzten 5 im Browser (wiederherstellbar). Es bleiben je 10 Sicherungen.
+
+2026-12-17: Knopf „Verschieben“ ohne Pfeil, einzeilig wie die anderen Knöpfe; Eingabefenster etwas breiter.
+
+2026-12-18: Fehler behoben - mit Tafel-Fenster auf dem 2. Bildschirm sprang der Klassenmanager nach dem Wechsel in ein anderes Programm/einen anderen Tab immer wieder auf die Fernbedienung („Verbindung verloren“).
+
+2026-12-19: Schutz vor veralteten Kopien beim Übertragen an die Schüler. Jede Klasse hat einen Stand-Stempel (letzte Änderung). Eine ältere Datei (z. B. eine Kopie oder ein Gerät, das lange im Ruhezustand war) überschreibt den Stand bei den Kindern nicht mehr; es erscheint ein Hinweis. Absichtlich älteren Stand senden: „📲 An Schüler“ > GitHub > „Trotzdem diesen Stand senden“. Liegt bei GitHub/OneDrive ein älterer Stand, überträgt die aktuelle Datei nach spätestens 3 Minuten selbst neu.
+
+2026-12-20: OneDrive-Auswahl (Öffnen / Speichern unter): Verknüpfungen zu geteilten Ordnern und Teams-/SharePoint-Bibliotheken (🔗) werden jetzt angezeigt und lassen sich öffnen und speichern. Lange Ordnerlisten werden vollständig geladen, Sortierung wie im Explorer (2026-27 vor Apps); Hinweis „Weitere Ordner – nach unten wischen“.
+
+2026-12-21: Eigene Rollen für die Gruppenarbeit: bei „🎭 Rollen, die verteilt werden“ > „✎ Rollen bearbeiten“. Symbol und Namen ändern, Reihenfolge, eigene Rollen hinzufügen oder löschen, „Standardrollen wiederherstellen“. Gilt für alle Klassen (in der Datei gespeichert); welche Rollen verteilt werden, wie bisher je Klasse antippen.
+
+2026-12-22: Gruppeneinteilung „Gruppen mit je … Kindern“: Gruppengröße bleibt so nah wie möglich an der Vorgabe (z. B. 18 Kinder je 4 → 4,4,4,3,3 statt 5,5,4,4). Die Zahl im Gruppen-Menü wird sofort übernommen, auch ohne Enter.
+
+2026-12-23: Neues Design „Aurora“ zum Umschalten: ⚙️ Einstellungen > Module & Startseite > „🎨 Design“ (Klassisch / Aurora). Reine Optik: heller Farbverlauf, Glaskarten, dunkle Leiste links mit den Bereichen (ab 1000 px Breite, sonst Reiter oben). Alle Funktionen, Präsentieren, Tafel-Fenster und Drucken bleiben gleich. Die Wahl gilt pro Gerät.
