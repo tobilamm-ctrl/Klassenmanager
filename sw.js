@@ -1,8 +1,8 @@
 // Service Worker: hält die App offline verfügbar.
-// Es werden NUR die Programmdateien zwischengespeichert – nie Sitzplan-Dateien oder Schülerdaten.
+// Es werden NUR die Programmdateien zwischengespeichert – nie die Einträge der Schüler (die liegen nur im Speicher des iPads).
 // Die Seite selbst wird immer zuerst aus dem Internet geladen (neue Version sofort da);
 // nur ohne Verbindung kommt sie aus dem Zwischenspeicher.
-const CACHE = 'klassenmanager-v42';
+const CACHE = 'schulplaner-v12';
 const FILES = ['./', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png', './icons/favicon-48.png'];
 
